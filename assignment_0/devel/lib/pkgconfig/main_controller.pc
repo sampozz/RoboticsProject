@@ -1,8 +1,0 @@
-prefix=/home/sam/robotics_group_v/assignment_0/devel
-
-Name: main_controller
-Description: Description of main_controller
-Version: 0.0.0
-Cflags: 
-Libs: -L${prefix}/lib 
-Requires: 
