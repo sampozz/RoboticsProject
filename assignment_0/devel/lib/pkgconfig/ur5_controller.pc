@@ -1,0 +1,8 @@
+prefix=/home/sam/robotics_group_v/assignment_0/devel
+
+Name: ur5_controller
+Description: Description of ur5_controller
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

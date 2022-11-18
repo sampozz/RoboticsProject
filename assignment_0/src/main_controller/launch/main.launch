@@ -1,0 +1,5 @@
+<?xml version="1.0"?>
+
+<launch>
+    <node pkg="ur5_controller" type="sin_movement.py" name="sin_movement" />
+</launch>

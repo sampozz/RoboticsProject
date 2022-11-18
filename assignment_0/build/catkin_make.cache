@@ -1,0 +1,2 @@
+main_controller:ur5_controller
+-DCATKIN_DEVEL_PREFIX=/home/sam/robotics_group_v/assignment_0/devel -DCMAKE_INSTALL_PREFIX=/home/sam/robotics_group_v/assignment_0/install -G Unix Makefiles
