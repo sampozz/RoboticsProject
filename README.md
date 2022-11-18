@@ -1,12 +1,14 @@
 # Robotics Project - Group V
 
-## Instructions 
+## Getting started 
 
 The Locosim framework is required to run the project: https://github.com/mfocchi/locosim  
 
 Run `python3 ur5_generic.py` to start the simulation environment (RVIZ + Gazebo).
 
 Modify `params.py` to set initial parameters.
+
+## Develop and build assignments
 
 The following rules apply to every assignment:
 - Assignments are developed in different Catkin workspaces 
