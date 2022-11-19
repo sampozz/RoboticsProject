@@ -138,6 +138,7 @@ include_directories(
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/ur5_controller_node.cpp)
 add_executable(sin src/sin_movement.cpp)
+add_executable(direct_kin src/direct_kinematics_test.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -154,6 +155,7 @@ add_executable(sin src/sin_movement.cpp)
 #   ${catkin_LIBRARIES}
 # )
 target_link_libraries(sin ${catkin_LIBRARIES})
+target_link_libraries(direct_kin ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -183,7 +185,7 @@ catkin_install_python(PROGRAMS
 #   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
 # )
 
-install(TARGETS sin
+install(TARGETS sin direct_kin
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}

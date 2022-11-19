@@ -3,7 +3,7 @@
 <launch>
     
     <!-- Python script -->
-    <node pkg="ur5_controller" type="sin_movement.py" name="sin_movement_py" />
+    <!-- <node pkg="ur5_controller" type="sin_movement.py" name="sin_movement_py" /> -->
 
     <!-- C++ code -->
     <node pkg="ur5_controller" type="sin" name="sin_movement" />

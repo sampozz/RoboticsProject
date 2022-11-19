@@ -23,8 +23,8 @@ int main(int argc, char** argv)
     std_msgs::Float64MultiArray jointState_msg_array; 
     jointState_msg_array.data.resize(6);
     
+    // Desired joints position
     JointStateVector q_des = JointStateVector::Zero();
-    JointStateVector q_des0 = JointStateVector::Zero();
 
     JointStateVector amp;
     JointStateVector freq;
@@ -35,6 +35,7 @@ int main(int argc, char** argv)
     ros::Rate loop_rate(loop_frequency);
 
     // Init value (find it in params.py)
+    JointStateVector q_des0 = JointStateVector::Zero();
     q_des0 << -0.3223527113543909, -0.7805794638446351, -2.5675506591796875, -1.6347843609251917, -1.5715253988849085, -1.0017417112933558;
     
     while (ros::ok())
