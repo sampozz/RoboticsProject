@@ -27,10 +27,10 @@ robot_params['ur5'] = {
     'control_mode': 'point',  # 'trajectory','point'
     'real_robot': False,
     'control_type': 'position',  # 'position', 'torque'
-    'gripper': False,
+    'gripper': True,
     'spawn_x': 0.5,
     'spawn_y': 0.35,
-    'spawn_z': 1.75,
+    'spawn_z': 0.75,
     'buffer_size': 6000
 }  # note the frames are all aligned with base for joints = 0
 

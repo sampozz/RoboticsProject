@@ -6,9 +6,11 @@ This repository contains the source files for the project of the course Introduc
 
 The Locosim framework is required to run the project: https://github.com/mfocchi/locosim  
 
-Run `python3 ur5_generic.py` to start the simulation environment (RVIZ + Gazebo).
+Run `python3 locosim/ur5_generic.py` to start the simulation environment (RVIZ + Gazebo).
 
-Modify `params.py` to set initial parameters.
+The `locosim` folder contains the sources that have been modified from the original locosim.
+
+Modify `locosim/params.py` to set initial parameters.
 
 # Develop and build assignments
 
