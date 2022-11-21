@@ -168,6 +168,7 @@ target_link_libraries(direct_kin ${catkin_LIBRARIES})
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/sin_movement.py
+  scripts/homing_procedure.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 
