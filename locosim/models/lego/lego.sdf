@@ -18,12 +18,12 @@
       </inertial>
       <collision name="collision">
         <geometry>
-          <mesh><uri>/home/sam/robotics_group_v/lego/lego.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
-          <mesh><uri>/home/sam/robotics_group_v/lego/lego.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
         </geometry>
       </visual>
     </link>
