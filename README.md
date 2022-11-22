@@ -43,6 +43,7 @@ Create a new launch file to test other nodes.
 
 - `scripts/sin_movement.py` and `src/sin_movement.cpp` are used to make the robot joints move following a sine wave. The two nodes do the same thing.  
 - `src/direct_kinematics_test.cpp` is used to move the robot by changing the joints values q_des0 to different known values q_des1. A filter is applied to make the movement smooth.   
+- `scripts/homing_procedure.py` is used to set robot joints to the initial value of params.py
  
 ## Package: View Camera Output
 
