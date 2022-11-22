@@ -27,7 +27,7 @@ robot_params['ur5'] = {
     'control_mode': 'point',  # 'trajectory','point'
     'real_robot': False,
     'control_type': 'position',  # 'position', 'torque'
-    'gripper': True,
+    'gripper': False,
     'spawn_x': 0.5,
     'spawn_y': 0.35,
     'spawn_z': 0.75,
