@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
-#include "kinematics_lib/ur5_kinematics.h"
+#include "ur5_kinematics_lib/ur5_kinematics.h"
 #include <iostream>
 
 std::string joint_names[] = {"shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"};
@@ -33,8 +33,6 @@ int main(int argc, char** argv)
     // Init node
     ros::init(argc, argv, "direct_kin_test");
     ros::NodeHandle node;
-
-    ur5_init_dh_params();
     
     // Subscribe to topic: listen to ur5 joints values
     ros::Subscriber sub = node.subscribe("/ur5/joint_states", 1000, compute_direct_kin);

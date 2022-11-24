@@ -5,23 +5,19 @@
 #include <math.h>
 
 /* Custom types */
+
 typedef Eigen::Matrix<double, 6, 1> JointStateVector;
-typedef Eigen::Matrix<double, 6, 1> DHParameters;
 typedef Eigen::Matrix<double, 3, 1> Coordinates;
 typedef Eigen::Matrix<double, 3, 3> RotationMatrix;
 typedef Eigen::Matrix<double, 4, 4> HomoTrMatrix;
 
-/* UR5 parameters */
-// extern DHParameters dh_a;
-// extern DHParameters dh_d;
-// extern DHParameters dh_alpha;
+/* UR5 DH parameters */
+
+static const double dh_a[] = {0, -0.425, -0.3922, 0, 0, 0};
+static const double dh_d[] = {0.1625, 0, 0, 0.1333, 0.0997, 0.0996};
+static const double dh_alpha[] = {M_PI / 2, 0.0, 0.0, M_PI / 2, -M_PI / 2, 0};
 
 /* Functions */
-
-/**
- * Initialize links_length, joints_dimension, joints_limit vectors with the values of the UR5 parameters
- */
-void ur5_init_dh_params();
 
 /**
  * Compute direct kinematics of UR5

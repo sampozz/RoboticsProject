@@ -1,27 +1,9 @@
-#include "kinematics_lib/ur5_kinematics.h"
-
-DHParameters dh_a;
-DHParameters dh_d;
-DHParameters dh_alpha;
+#include "ur5_kinematics_lib/ur5_kinematics.h"
 
 /* Public functions */
 
-void ur5_init_dh_params()
-{
-    // dh_a << 0.0, -0.425, -0.3922, 0.0, 0.0, 0.0;
-    // dh_d << 0.089159, 0.0, 0.0, 0.10915, 0.09465, 0.0823;
-    // dh_alpha << M_PI / 2, 0.0, 0.0, M_PI / 2, -M_PI / 2, 0;
-}
-
 void ur5_direct(JointStateVector &th, Coordinates &pe, RotationMatrix &re)
 {
-    DHParameters dh_a;
-    DHParameters dh_d;
-    DHParameters dh_alpha;
-    dh_a << 0, -0.425, -0.3922, 0, 0, 0;
-    dh_d << 0.1625, 0, 0, 0.1333, 0.0997, 0.0996;
-    dh_alpha << M_PI / 2, 0.0, 0.0, M_PI / 2, -M_PI / 2, 0;
-    
     HomoTrMatrix t10m;
     HomoTrMatrix t21m;
     HomoTrMatrix t32m;
