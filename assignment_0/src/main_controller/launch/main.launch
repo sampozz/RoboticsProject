@@ -10,6 +10,6 @@
 
     <!-- C++ code -->
     <!-- <node pkg="ur5_controller" type="sin" name="sin_movement" /> -->
-    <node pkg="ur5_controller" type="direct_kin" name="direct_kin" />
+    <!-- <node pkg="ur5_controller" type="direct_kin" name="direct_kin" /> -->
 
 </launch>
