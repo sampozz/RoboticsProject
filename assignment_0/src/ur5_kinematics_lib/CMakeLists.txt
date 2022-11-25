@@ -37,6 +37,7 @@ include_directories(
 add_library(${PROJECT_NAME}
   src/ur5_direct.cpp
   src/ur5_inverse.cpp
+  src/ur5_rotation.cpp
 )
 
 ## Specify libraries to link a library or executable target against

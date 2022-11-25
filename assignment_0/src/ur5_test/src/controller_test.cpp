@@ -12,9 +12,10 @@ int main(int argc, char** argv)
 
     // Define a destination for the robot
     Coordinates dest;
-    dest << 0.1978, -0.6579, 0.2324;
+    dest << 0.2, -0.2, 0.2;
     RotationMatrix rot;
-    rot << 0.2990, -0.8513, 0.4321, -0.6107, 0.1766, 0.7720, -0.7333, -0.4941, -0.4670;
+    // rot << 0.2990, -0.8513, 0.4321, -0.6107, 0.1766, 0.7720, -0.7333, -0.4941, -0.4670;
+    euler_to_rot(0, M_PI / 2, M_PI / 2, rot);
 
     // Wait a bit, just to avoid shit
     ros::Duration(0.5).sleep();

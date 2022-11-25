@@ -25,7 +25,8 @@ void compute_direct_kin(const sensor_msgs::JointState::ConstPtr& msg)
     // Compute kinematics
     ur5_direct(th, pos, rot);
 
-    std::cout << pos << std::endl << "\n";
+    std::cout << "Position: " << pos.transpose() << std::endl;
+    std::cout << "Rotation: " << rot << std::endl;
 }
 
 int main(int argc, char** argv)

@@ -35,4 +35,10 @@ void ur5_direct(JointStateVector &th, Coordinates &pe, RotationMatrix &re);
  */
 void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th);
 
+/**
+ * Compute rotation matrix from euler angles.
+ * rot: output - rotation matrix
+ */
+void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot);
+
 #endif
