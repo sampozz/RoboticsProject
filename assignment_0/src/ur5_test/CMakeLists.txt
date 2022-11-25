@@ -9,6 +9,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   ur5_kinematics_lib
+  ur5_controller_lib
 )
 
 find_package(Eigen3 REQUIRED)
@@ -43,6 +44,7 @@ add_executable(sin src/sin_movement.cpp)
 add_executable(joints src/joint_movement.cpp)
 add_executable(direct_kin src/direct_kinematics_test.cpp)
 add_executable(inverse_kin src/inverse_kinematics_test.cpp)
+add_executable(controller_test src/controller_test.cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -52,6 +54,7 @@ target_link_libraries(sin ${catkin_LIBRARIES})
 target_link_libraries(joints ${catkin_LIBRARIES})
 target_link_libraries(direct_kin ${catkin_LIBRARIES})
 target_link_libraries(inverse_kin ${catkin_LIBRARIES})
+target_link_libraries(controller_test ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -66,7 +69,7 @@ catkin_install_python(PROGRAMS
 )
 
 ## Mark libraries for installation
-install(TARGETS sin joints direct_kin inverse_kin
+install(TARGETS sin joints direct_kin inverse_kin controller_test
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
