@@ -90,7 +90,10 @@ void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th)
 
     /* Finding th4 */
     HomoTrMatrix t43m = t32f(th(2)).inverse() * t21f(th(1)).inverse() * t10f(th(0)).inverse() * t60 * t65f(th(5)).inverse() * t54f(th(4)).inverse();
-    Coordinates x_hat43; 
+    Coordinates x_hat43;
     x_hat43 << t43m(0, 0), t43m(1, 0), t43m(2, 0);
     th(3) = real(atan2(x_hat43(1), x_hat43(0)) * complex_converter);
+
+    for (int i = 0; i < 6; i++) 
+        th(i) = fmod(th(i), 2 * M_PI);
 }

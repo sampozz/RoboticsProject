@@ -28,8 +28,8 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
     filter[0] = filter[1] = desired_joints;
 
     // Movement loop
-    double error = (current_joints - final_joints).norm();
-    while (ros::ok() && error > 0.005)
+    double joint_error = (current_joints - final_joints).norm();
+    while (ros::ok() && (joint_error > 0.005))
     {
         // Compute filter
         desired_joints = secondOrderFilter(final_joints);
@@ -42,11 +42,11 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
         ros::spinOnce();
 
         // Compute error between current position and final position
-        error = (current_joints - final_joints).norm();
+        joint_error = (current_joints - final_joints).norm();
     }
 
     std::cout << "Final joints values: " << current_joints.transpose() << std::endl;
-    std::cout << "Error: " << error << std::endl;
+    std::cout << "Error: " << joint_error << std::endl;
 }
 
 /* Private functions */
@@ -60,7 +60,7 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
             {
-                current_joints(j) = msg->position[i];
+                current_joints(j) = fmod(msg->position[i], 2 * M_PI);
             }
         }
     }
