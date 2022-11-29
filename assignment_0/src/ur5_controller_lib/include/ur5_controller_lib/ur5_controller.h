@@ -35,12 +35,24 @@ private:
      * Compute joint values by following consecutive approximations.
      * Use this function iteratively to send joint states to the robot and avoid steps
      */
-    JointStateVector secondOrderFilter(const JointStateVector &final_pos);
+    JointStateVector second_order_filter(const JointStateVector &final_pos);
+
+    /**
+     * Check if the desired state vector is equal to the current vector by comparing
+     * the normalized values of the angles in the range [0, 2 * pi].
+     * If check is succesful, replace values in the current_joints vector
+     */
+    void adjust_desired_joints(JointStateVector &current_joints, JointStateVector &desired_joints);
+
+    /**
+     * Compute difference between the two vector, by normalizing the angles
+     */
+    double compute_error(JointStateVector &current_joints, JointStateVector &desired_joints);
 
 public:
     /**
      * Constructor.
-     * Initialize ros publishers and subscribers 
+     * Initialize ros publishers and subscribers
      */
     UR5Controller();
 

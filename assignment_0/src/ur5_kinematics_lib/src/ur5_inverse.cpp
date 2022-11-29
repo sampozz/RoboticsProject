@@ -93,7 +93,4 @@ void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th)
     Coordinates x_hat43;
     x_hat43 << t43m(0, 0), t43m(1, 0), t43m(2, 0);
     th(3) = real(atan2(x_hat43(1), x_hat43(0)) * complex_converter);
-
-    for (int i = 0; i < 6; i++) 
-        th(i) = fmod(th(i), 2 * M_PI);
 }

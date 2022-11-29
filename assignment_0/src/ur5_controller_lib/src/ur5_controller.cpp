@@ -24,15 +24,18 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
     ur5_inverse(pos, rot, final_joints);
     std::cout << "Desired joints values: " << final_joints.transpose() << std::endl;
 
+    // Check if initial joints angles are equal to the computed angles
+    adjust_desired_joints(final_joints, desired_joints);
+    std::cout << "Adjusted joints values: " << final_joints.transpose() << std::endl;
+
     // Init a filter for smooth transition
     filter[0] = filter[1] = desired_joints;
 
     // Movement loop
-    double joint_error = (current_joints - final_joints).norm();
-    while (ros::ok() && (joint_error > 0.005))
+    while (ros::ok() && compute_error(final_joints, current_joints) > 0.01)
     {
         // Compute filter
-        desired_joints = secondOrderFilter(final_joints);
+        desired_joints = second_order_filter(final_joints);
 
         // Send position to topic
         send_joint_state(desired_joints);
@@ -40,13 +43,8 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
         // Loop state
         loop_rate.sleep();
         ros::spinOnce();
-
-        // Compute error between current position and final position
-        joint_error = (current_joints - final_joints).norm();
     }
-
     std::cout << "Final joints values: " << current_joints.transpose() << std::endl;
-    std::cout << "Error: " << joint_error << std::endl;
 }
 
 /* Private functions */
@@ -60,7 +58,7 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
             {
-                current_joints(j) = fmod(msg->position[i], 2 * M_PI);
+                current_joints(j) = msg->position[i];
             }
         }
     }
@@ -80,11 +78,44 @@ void UR5Controller::send_joint_state(JointStateVector &desired_pos)
     joint_state_pub.publish(joint_state_msg_array);
 }
 
-JointStateVector UR5Controller::secondOrderFilter(const JointStateVector &final_pos)
+JointStateVector UR5Controller::second_order_filter(const JointStateVector &final_pos)
 {
     double dt = 1 / loop_frequency;
     double gain = dt / (0.1 * settling_time + dt);
     filter[0] = (1 - gain) * filter[0] + gain * final_pos;
     filter[1] = (1 - gain) * filter[1] + gain * filter[0];
     return filter[1];
+}
+
+double norm_angle(double angle)
+{
+    if (angle > 0)
+        angle = fmod(angle, 2 * M_PI);
+    else
+        angle = 2 * M_PI - fmod(-angle, 2 * M_PI);
+    return angle;
+}
+
+void UR5Controller::adjust_desired_joints(JointStateVector &desired_joints, JointStateVector &current_joints)
+{
+    double current_norm, desired_norm;
+    for (int i = 0; i < 6; i++)
+    {
+        current_norm = norm_angle(current_joints(i));
+        desired_norm = norm_angle(desired_joints(i));
+        // std::cout << "current: " << current_norm << " desired: " << desired_norm << std::endl;
+        if (current_norm >= desired_norm - 0.01 && current_norm <= desired_norm + 0.01)
+            current_joints(i) = desired_joints(i);
+    }
+}
+
+double UR5Controller::compute_error(JointStateVector &desired_joints, JointStateVector &current_joints)
+{
+    JointStateVector current_normed, desired_normed;
+    for (int i = 0; i < 6; i++)
+    {
+        current_normed(i) = norm_angle(current_joints(i));
+        desired_normed(i) = norm_angle(desired_joints(i));
+    }
+    return (current_normed - desired_normed).norm();
 }
