@@ -1,5 +1,6 @@
 #include "ur5_controller_lib/ur5_controller.h"
 #include <std_msgs/Float64MultiArray.h>
+#include <std_msgs/Int32.h>
 
 /* Public functions */
 
@@ -11,6 +12,7 @@ UR5Controller::UR5Controller(double loop_frequency, double joints_error, double 
 
     // Publisher initialization
     joint_state_pub = node.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1000);
+    gripper_state_pub = node.advertise<std_msgs::Int32>("/ur5/gripper_controller/command", 1);
 
     // Subscriber initialization
     joint_state_sub = node.subscribe("/ur5/joint_states", 1, &UR5Controller::joint_state_callback, this);
@@ -51,6 +53,12 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
     std::cout << "Final joints values: " << current_joints.transpose() << std::endl;
 }
 
+void UR5Controller::ur5_set_gripper(int diameter)
+{
+    gripper_diameter = diameter;
+    send_gripper_state(diameter);
+}
+
 /* Private functions */
 
 void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg)
@@ -81,6 +89,18 @@ void UR5Controller::send_joint_state(JointStateVector &desired_pos)
 
     // Publish desired joint states message
     joint_state_pub.publish(joint_state_msg_array);
+}
+
+void UR5Controller::send_gripper_state(int diameter)
+{
+    std_msgs::Int32 diameter_msg;
+    diameter_msg.data = diameter;
+
+    // Publish desired gripper state message
+    gripper_state_pub.publish(diameter_msg);
+    
+    // Locosim manages this movement, wait a bit
+    ros::Duration(2.0).sleep();
 }
 
 JointStateVector UR5Controller::second_order_filter(const JointStateVector &final_pos)

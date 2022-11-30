@@ -11,6 +11,7 @@ private:
     ros::NodeHandle node;
     ros::Rate loop_rate;
     ros::Publisher joint_state_pub;
+    ros::Publisher gripper_state_pub;
     ros::Subscriber joint_state_sub;
 
     double settling_time;
@@ -25,7 +26,7 @@ private:
     JointStateVector current_joints;
     GripperStateVector current_gripper;
 
-    bool is_grabbing = false;
+    int gripper_diameter;
 
     /**
      * Callback function, listen to /ur5/joint_states topic and update current_pos
@@ -37,6 +38,8 @@ private:
      * then send the array to ros topic defined by the joint_state_pub publisher
      */
     void send_joint_state(JointStateVector &desired_pos);
+
+    void send_gripper_state(int diameter);
 
     /**
      * Compute joint values by following consecutive approximations.
@@ -76,6 +79,8 @@ public:
      * 5. end
      */
     void ur5_move_to(Coordinates &pos, RotationMatrix &rot);
+
+    void ur5_set_gripper(int diameter);
 };
 
 #endif

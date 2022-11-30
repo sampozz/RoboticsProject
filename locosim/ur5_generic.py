@@ -11,7 +11,7 @@ import time
 from rospy import Time
 import tf
 from base_controller_fixed import BaseControllerFixed
-from std_msgs.msg import Float64MultiArray
+from std_msgs.msg import Float64MultiArray, Int32
 from controller_manager_msgs.srv import LoadControllerRequest, LoadController
 from controller_manager_msgs.srv import SwitchControllerRequest, SwitchController
 import params as conf
@@ -108,6 +108,10 @@ class Ur5Generic(BaseControllerFixed):
     def loadModelAndPublishers(self, xacro_path):
         super().loadModelAndPublishers(xacro_path)
 
+        # define a publisher to get gripper commands from cpp code
+        self.gripper_cmd_sub = ros.Subscriber(
+            "/" + self.robot_name + "/gripper_controller/command", Int32, callback=self._receive_gripper_cmd, queue_size=1)
+
         self.sub_ftsensor = ros.Subscriber("/" + self.robot_name + "/wrench", WrenchStamped,
                                            callback=self._receive_ftsensor, queue_size=1, tcp_nodelay=True)
         self.switch_controller_srv = ros.ServiceProxy(
@@ -135,6 +139,17 @@ class Ur5Generic(BaseControllerFixed):
         self.active_controller = self.available_controllers[0]
 
         self.broadcaster = tf.TransformBroadcaster()
+
+    def _receive_gripper_cmd(self, msg):
+        diameter = int(msg.data)
+        grip_des = self.gm.mapToGripperJoints(diameter)
+        rate = ros.Rate(1 / conf.robot_params[p.robot_name]['dt'])
+
+        while abs(self.gm.getDesGripperJoints()[0] - grip_des) > 0.01:
+            self.gm.move_gripper(diameter)
+            self.send_reduced_des_jstate(self.q)
+            rate.sleep()
+
 
     def _receive_ftsensor(self, msg):
         contactForceTool0 = np.zeros(3)

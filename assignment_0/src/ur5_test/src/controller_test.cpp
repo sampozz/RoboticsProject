@@ -24,8 +24,8 @@ int main(int argc, char **argv)
 
     auto xe = [](double t) {
         Coordinates c;
-        // c << 0.4 * sin(2 * M_PI * t), 0.4 * cos(2 * M_PI * t), 0.5;
-        c << 0.4 * t, 0.4 * (1 - t), 0.5;
+        c << 0.4 * sin(2 * M_PI * t), 0.4 * cos(2 * M_PI * t), 0.5;
+        // c << 0.4 * t, 0.4 * (1 - t), 0.5;
         return c;
     };
 
@@ -34,7 +34,11 @@ int main(int argc, char **argv)
     {
         Coordinates x = xe(linear_space[i]);
         controller.ur5_move_to(x, rot);
-        
+        if (i % 2 == 0) {
+            controller.ur5_set_gripper(50);
+        } else {
+            controller.ur5_set_gripper(100);
+        }
     }
 
     return 0;
