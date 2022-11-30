@@ -144,12 +144,13 @@ class Ur5Generic(BaseControllerFixed):
         diameter = int(msg.data)
         grip_des = self.gm.mapToGripperJoints(diameter)
         rate = ros.Rate(1 / conf.robot_params[p.robot_name]['dt'])
+        timer = 2 # Run for a maximum of two seconds
 
-        while abs(self.gm.getDesGripperJoints()[0] - grip_des) > 0.01:
+        while abs(self.gm.getDesGripperJoints()[0] - grip_des) > 0.01 and timer > 0:
             self.gm.move_gripper(diameter)
             self.send_reduced_des_jstate(self.q)
             rate.sleep()
-
+            timer -= round(conf.robot_params[p.robot_name]['dt'], 3)
 
     def _receive_ftsensor(self, msg):
         contactForceTool0 = np.zeros(3)
