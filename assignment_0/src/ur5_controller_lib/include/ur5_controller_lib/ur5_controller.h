@@ -13,8 +13,10 @@ private:
     ros::Publisher joint_state_pub;
     ros::Subscriber joint_state_sub;
 
-    double settling_time = 10.;
-    double loop_frequency = 1000.;
+    double settling_time;
+    double loop_frequency;
+    double joints_error;
+
     std::string joint_names[9] = {"shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint",
                                   "wrist_1_joint", "wrist_2_joint", "wrist_3_joint",
                                   "hand_1_joint", "hand_2_joint", "hand_3_joint"};
@@ -57,10 +59,12 @@ private:
 
 public:
     /**
-     * Constructor.
-     * Initialize ros publishers and subscribers
+     * Constructor. Initialize ros publishers and subscribers.
+     * @param loop_frequency Specifies the rate of received and sent instruction in a movement loop.
+     * @param joints_error Acceptable error between desired position and effective position at the end of a movement operation. Higher value => less precision.
+     * @param settling_time Required time to complete a movement operation. Higher value => higher speed.
      */
-    UR5Controller();
+    UR5Controller(double loop_frequency, double joints_error, double settling_time);
 
     /**
      * Move end effector to desired position (pos) and rotation (rot)

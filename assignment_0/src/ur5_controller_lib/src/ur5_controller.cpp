@@ -3,8 +3,12 @@
 
 /* Public functions */
 
-UR5Controller::UR5Controller() : loop_rate(1000.)
+UR5Controller::UR5Controller(double loop_frequency, double joints_error, double settling_time) : loop_rate(loop_frequency)
 {
+    this->loop_frequency = loop_frequency;
+    this->joints_error = joints_error;
+    this->settling_time = settling_time;
+
     // Publisher initialization
     joint_state_pub = node.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1000);
 
@@ -32,7 +36,7 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
     filter[0] = filter[1] = desired_joints;
 
     // Movement loop
-    while (ros::ok() && compute_error(final_joints, current_joints) > 0.01)
+    while (ros::ok() && compute_error(final_joints, current_joints) > joints_error)
     {
         // Compute filter
         desired_joints = second_order_filter(final_joints);
@@ -57,9 +61,7 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
         for (int j = 0; j < 9; j++)
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
-            {
                 current_joints(j) = msg->position[i];
-            }
         }
     }
 }

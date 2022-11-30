@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ur5_controller");
 
     // Istantiate controller
-    UR5Controller controller;
+    UR5Controller controller(1000.0, 0.005, 10.0);
 
     // Wait a bit, just to avoid shit
     ros::Duration(0.5).sleep();
