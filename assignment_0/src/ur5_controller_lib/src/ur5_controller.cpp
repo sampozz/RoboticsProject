@@ -52,9 +52,9 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot)
 void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg)
 {
     // Get joints values from topic
-    for (int i = 0; i < 6; i++)
+    for (int i = 0; i < 9; i++)
     {
-        for (int j = 0; j < 6; j++)
+        for (int j = 0; j < 9; j++)
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
             {
@@ -67,13 +67,16 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
 void UR5Controller::send_joint_state(JointStateVector &desired_pos)
 {
     std_msgs::Float64MultiArray joint_state_msg_array;
-    joint_state_msg_array.data.resize(6);
+    joint_state_msg_array.data.resize(9);
 
     // Create message object
     for (int i = 0; i < 6; i++)
-    {
         joint_state_msg_array.data[i] = desired_pos[i];
-    }
+
+    // Add the state of the gripper
+    for (int i = 0; i < 3; i++)
+        joint_state_msg_array.data[i + 6] = current_gripper(i);
+
     // Publish desired joint states message
     joint_state_pub.publish(joint_state_msg_array);
 }

@@ -15,10 +15,15 @@ private:
 
     double settling_time = 10.;
     double loop_frequency = 1000.;
-    std::string joint_names[6] = {"shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"};
+    std::string joint_names[9] = {"shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint",
+                                  "wrist_1_joint", "wrist_2_joint", "wrist_3_joint",
+                                  "hand_1_joint", "hand_2_joint", "hand_3_joint"};
 
     JointStateVector filter[2];
     JointStateVector current_joints;
+    GripperStateVector current_gripper;
+
+    bool is_grabbing = false;
 
     /**
      * Callback function, listen to /ur5/joint_states topic and update current_pos
@@ -45,7 +50,8 @@ private:
     void adjust_desired_joints(JointStateVector &current_joints, JointStateVector &desired_joints);
 
     /**
-     * Compute difference between the two vector, by normalizing the angles
+     * Compute difference between the two vector, by normalizing the angles.
+     * Eg. -PI/2 will be equal to 3*PI/2
      */
     double compute_error(JointStateVector &current_joints, JointStateVector &desired_joints);
 

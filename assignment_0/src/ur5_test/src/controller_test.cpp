@@ -16,20 +16,21 @@ int main(int argc, char **argv)
     Coordinates dest;
     RotationMatrix rot = RotationMatrix::Identity();
 
-    double linear_space[100];
-    for (int i = 0; i < 100; i++)
+    double linear_space[10];
+    for (int i = 0; i < 10; i++)
     {
-        linear_space[i] = (double)i * 5. / 100.;
+        linear_space[i] = (double)i * 5. / 10.;
     }
 
     auto xe = [](double t) {
         Coordinates c;
-        c << 0.4 * sin(2 * M_PI * t), 0.4 * cos(2 * M_PI * t), 0.5;
+        // c << 0.4 * sin(2 * M_PI * t), 0.4 * cos(2 * M_PI * t), 0.5;
+        c << 0.4 * t, 0.4 * (1 - t), 0.5;
         return c;
     };
 
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 10; i++)
     {
         Coordinates x = xe(linear_space[i]);
         controller.ur5_move_to(x, rot);
