@@ -22,7 +22,6 @@ private:
                                   "wrist_1_joint", "wrist_2_joint", "wrist_3_joint",
                                   "hand_1_joint", "hand_2_joint", "hand_3_joint"};
 
-    JointStateVector filter[2];
     JointStateVector current_joints;
     GripperStateVector current_gripper;
 
@@ -39,10 +38,21 @@ private:
      */
     void send_joint_state(JointStateVector &desired_pos);
 
+    /**
+     * Send selected diameter to /ur5/gripper_controller/command
+     */
     void send_gripper_state(int diameter);
 
     /**
      * Compute joint values by following consecutive approximations.
+     * The velocity of the end effector reamins constant.
+     *  Use this function iteratively to send joint states to the robot and avoid steps
+     */
+    JointStateVector linear_filter(const JointStateVector &final_pos);
+
+    /**
+     * Compute joint values by following consecutive approximations. 
+     * The velocity of the end effector gradually diminishes when reaching the final position.
      * Use this function iteratively to send joint states to the robot and avoid steps
      */
     JointStateVector second_order_filter(const JointStateVector &final_pos);
@@ -71,15 +81,20 @@ public:
 
     /**
      * Move end effector to desired position (pos) and rotation (rot)
+     * @param pos Final cartesian position of the end effector 
+     * @param rot Final rotation of the end effector 
+     * @param select_filter false => linear filter, true => second order filter
      * This function follows the procedure:
      * 1. read the /ur5/joint_states topic and get the initial position
      * 2. compute inverse kinematics to get desired joint values
      * 3. compute a filter for a smooth transition
      * 4. publish joints values to topic at each iteration
-     * 5. end
      */
-    void ur5_move_to(Coordinates &pos, RotationMatrix &rot);
+    void ur5_move_to(Coordinates &pos, RotationMatrix &rot, bool select_filter);
 
+    /**
+     *  Open and close the gripper at the selected diameter 
+     */
     void ur5_set_gripper(int diameter);
 };
 

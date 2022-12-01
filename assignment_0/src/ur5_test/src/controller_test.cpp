@@ -17,10 +17,10 @@ int main(int argc, char **argv)
     dest << 0.3, 0.3, -0.3;
     RotationMatrix rot = RotationMatrix::Identity();
 
-    double linear_space[10];
-    for (int i = 0; i < 10; i++)
+    double linear_space[100];
+    for (int i = 0; i < 100; i++)
     {
-        linear_space[i] = (double)i * 5. / 10.;
+        linear_space[i] = (double)i * 5. / 100.;
     }
 
     auto xe = [](double t) {
@@ -31,15 +31,15 @@ int main(int argc, char **argv)
     };
 
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 100; i++)
     {
         Coordinates x = xe(linear_space[i]);
-        controller.ur5_move_to(x, rot);
-        if (i % 2 == 0) {
-            controller.ur5_set_gripper(50);
-        } else {
-            controller.ur5_set_gripper(100);
-        }
+        controller.ur5_move_to(x, rot, false);
+        // if (i % 2 == 0) {
+        //     controller.ur5_set_gripper(50);
+        // } else {
+        //     controller.ur5_set_gripper(100);
+        // }
     }
 
     return 0;
