@@ -14,6 +14,7 @@ int main(int argc, char **argv)
     ros::Duration(0.5).sleep();
 
     Coordinates dest;
+    dest << 0.3, 0.3, -0.3;
     RotationMatrix rot = RotationMatrix::Identity();
 
     double linear_space[10];

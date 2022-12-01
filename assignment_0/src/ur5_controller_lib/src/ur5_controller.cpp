@@ -66,10 +66,15 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
     // Get joints values from topic
     for (int i = 0; i < 9; i++)
     {
-        for (int j = 0; j < 9; j++)
+        for (int j = 0; j < 6; j++)
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
                 current_joints(j) = msg->position[i];
+        }
+        for (int j = 6; j < 9; j++)
+        {
+            if (joint_names[j].compare(msg->name[i]) == 0)
+                current_gripper(j - 6) = msg->position[i];
         }
     }
 }
@@ -98,7 +103,7 @@ void UR5Controller::send_gripper_state(int diameter)
 
     // Publish desired gripper state message
     gripper_state_pub.publish(diameter_msg);
-    
+
     // Locosim manages this movement, wait a bit
     ros::Duration(2.0).sleep();
 }
