@@ -67,6 +67,12 @@ void UR5Controller::ur5_set_gripper(int diameter)
     send_gripper_state(diameter);
 }
 
+void UR5Controller::ur5_get_joint_states(JointStateVector &joints)
+{
+    ros::spinOnce();
+    joints = current_joints;
+}
+
 /* Private functions */
 
 void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg)

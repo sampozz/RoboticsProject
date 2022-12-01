@@ -96,6 +96,8 @@ public:
      *  Open and close the gripper at the selected diameter 
      */
     void ur5_set_gripper(int diameter);
+
+    void ur5_get_joint_states(JointStateVector &joints);
 };
 
 #endif
