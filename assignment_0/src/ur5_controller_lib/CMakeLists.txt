@@ -39,6 +39,7 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/ur5_controller.cpp
+  src/ur5_follow_path.cpp
 )
 
 ## Specify libraries to link a library or executable target against

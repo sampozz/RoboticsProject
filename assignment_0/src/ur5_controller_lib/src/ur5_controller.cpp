@@ -24,7 +24,7 @@ UR5Controller::UR5Controller(double loop_frequency, double joints_error, double 
 
 void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, bool select_filter)
 {
-    // Read the /ur5/joint_states topic and get the initial position
+    // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
     JointStateVector desired_joints = current_joints;
     std::cout << "Initial joints values: " << current_joints.transpose() << std::endl;
@@ -48,7 +48,7 @@ void UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, bool sele
         // Compute filter
         if (select_filter)
             desired_joints = second_order_filter(final_joints);
-        else 
+        else
             desired_joints = linear_filter(final_joints);
 
         // Send position to topic
@@ -159,6 +159,26 @@ void UR5Controller::adjust_desired_joints(JointStateVector &desired_joints, Join
         if (current_norm >= desired_norm - 0.01 && current_norm <= desired_norm + 0.01)
             current_joints(i) = desired_joints(i);
     }
+}
+
+bool UR5Controller::validate_path(double *path, int n)
+{
+    // Compute direct kinematics on every configuration inside the path
+    for (int j = 0; j < n; j++)
+    {
+        Coordinates testing_position;
+        RotationMatrix testing_rotation;
+        JointStateVector intermediate_testing_joints;
+
+        intermediate_testing_joints << path[j * 6], path[j * 6 + 1], path[j * 6 + 2],
+            path[j * 6 + 3], path[j * 6 + 4], path[j * 6 + 5];
+        ur5_direct(intermediate_testing_joints, testing_position, testing_rotation);
+
+        // Check position constraints
+        if (testing_position(2) > 0.71)
+            return false;
+    }
+    return true;
 }
 
 double UR5Controller::compute_error(JointStateVector &desired_joints, JointStateVector &current_joints)

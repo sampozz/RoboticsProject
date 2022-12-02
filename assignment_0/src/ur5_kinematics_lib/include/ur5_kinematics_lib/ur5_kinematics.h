@@ -22,26 +22,41 @@ static const double dh_alpha[] = {M_PI / 2, 0.0, 0.0, M_PI / 2, -M_PI / 2, 0};
 
 /**
  * Compute direct kinematics of UR5
- * th: input - six joints values (angles)
- * pe: output - cartesian position of the end effector
- * re: output - rotation matrix of the end effector
+ * @param th: input - six joints values (angles)
+ * @param pe: output - cartesian position of the end effector
+ * @param re: output - rotation matrix of the end effector
  */
 void ur5_direct(JointStateVector &th, Coordinates &pe, RotationMatrix &re);
 
 /**
- * Compute inverse kinematics of UR5
- * pe: input - desired cartesian position of the end effector
- * re: input - desired rotation matrix of the end effector
- * th: output - six joints values (angles)
+ * Compute inverse kinematics of UR5, return the first solution only
+ * @param pe: input - desired cartesian position of the end effector
+ * @param re: input - desired rotation matrix of the end effector
+ * @param th: output - six joints values (angles)
  */
 void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th);
 
 /**
+ * Compute inverse kinematics of UR5, return all the 8 solutions
+ * @param pe: input - desired cartesian position of the end effector
+ * @param re: input - desired rotation matrix of the end effector
+ * @param th: output - six joints values (angles)
+ */
+void ur5_inverse_complete(Coordinates &pe, RotationMatrix &re, Eigen::Matrix<double, 8, 6> &th);
+
+/**
  * Compute rotation matrix from euler angles.
- * rot: output - rotation matrix
+ * @param rot: output - rotation matrix
  */
 void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot);
 
-double* ur5_motion_plan(Coordinates &initial_pos, RotationMatrix &initial_rot, Coordinates &final_pos, RotationMatrix &final_rot, double dt);
+/**
+ * Compute the joints values to follow a path between initial and final positions by finding the coefficients of a third degree system.
+ * @param initial_joints Starting joints configuration  
+ * @param final_joints Final joints configuration
+ * @param n Number of configurations to compute in between the path
+ * @return Pointer to a vector of n * 6 elements, representing the computed configurations 
+ */
+double *ur5_motion_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n);
 
 #endif
