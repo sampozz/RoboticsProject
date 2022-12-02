@@ -42,4 +42,6 @@ void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th);
  */
 void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot);
 
+double* ur5_motion_plan(Coordinates &initial_pos, RotationMatrix &initial_rot, Coordinates &final_pos, RotationMatrix &final_rot, double dt);
+
 #endif

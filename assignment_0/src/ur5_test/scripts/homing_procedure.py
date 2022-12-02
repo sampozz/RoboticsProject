@@ -51,7 +51,7 @@ def homing_procedure():
             
             # Send message to topic
             msg = Float64MultiArray()
-            msg.data = q_des_q0
+            msg.data = np.concatenate((q_des_q0, [0, 0, 0]), axis=None)
             pub_reduced_des_jstate.publish(msg)
 
         rate.sleep()

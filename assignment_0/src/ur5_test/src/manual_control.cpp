@@ -32,7 +32,7 @@ int main(int argc, char **argv)
         cout << "Selected position: " << pos.transpose() << endl;
 
         cout << "\n========= movement output ==========" << endl;
-        controller.ur5_move_to(pos, rot, true);
+        controller.ur5_move_to(pos, rot, false);
         cout << "========= movement output ==========\n" << endl;
         
         controller.ur5_get_joint_states(joints);

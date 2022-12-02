@@ -32,11 +32,7 @@ private:
      */
     void joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg);
 
-    /**
-     * Convert the JointStateVector desired_pos to a Float64MultiArray,
-     * then send the array to ros topic defined by the joint_state_pub publisher
-     */
-    void send_joint_state(JointStateVector &desired_pos);
+    
 
     /**
      * Send selected diameter to /ur5/gripper_controller/command
@@ -97,7 +93,16 @@ public:
      */
     void ur5_set_gripper(int diameter);
 
+    /**
+     * Save current joint state vector in the parameter joints. 
+     */
     void ur5_get_joint_states(JointStateVector &joints);
+    
+    /**
+     * Convert the JointStateVector desired_pos to a Float64MultiArray,
+     * then send the array to ros topic defined by the joint_state_pub publisher
+     */
+    void send_joint_state(JointStateVector &desired_pos);
 };
 
 #endif

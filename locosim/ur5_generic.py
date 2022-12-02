@@ -65,8 +65,8 @@ class Ur5Generic(BaseControllerFixed):
         else:
             self.gripper = False
 
-        # self.world_name = None # only the workbench
-        self.world_name = 'empty.world'
+        self.world_name = None # only the workbench
+        # self.world_name = 'empty.world'
         # self.world_name = 'palopoli.world'
 
         print("Initialized ur5 generic  controller---------------------------------------------------------------")

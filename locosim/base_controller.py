@@ -47,7 +47,7 @@ from base_controllers.utils.common_functions import getRobotModel
 #dynamics
 np.set_printoptions(threshold=np.inf, precision = 5, linewidth = 1000, suppress = True)
 import  params as conf
-robotName = "go1"
+robotName = "shelfino"
 
 
 class BaseController(threading.Thread):
