@@ -1,8 +1,5 @@
 #include "ur5_controller_lib/ur5_controller.h"
 
-static JointStateVector lin_filter;
-static double v_ref;
-
 void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n)
 {
     // Read the /ur5/joint_states topic and get the initial configuration
@@ -42,10 +39,6 @@ void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
     // Now *path contains a valid path to follow
     std::cout << "Accettable path found!" << std::endl;
 
-    // Filter configuration
-    lin_filter = initial_joints;
-    v_ref = 0.0;
-
     // Movement loop
     int i = -1;
     while (++i < n)
@@ -54,10 +47,11 @@ void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
         intermediate_joints << path[i * 6], path[i * 6 + 1], path[i * 6 + 2],
             path[i * 6 + 3], path[i * 6 + 4], path[i * 6 + 5];
 
-        std::cout << intermediate_joints.transpose() << std::endl;
-
         if (intermediate_joints.norm() == 0)
             continue;
+
+        // Filter configuration
+        init_filters();
 
         // Movement loop (between two intermediate points)
         while (ros::ok() && compute_error(current_joints, intermediate_joints) > joints_error)

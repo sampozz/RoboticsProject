@@ -168,26 +168,6 @@ void UR5Controller::adjust_desired_joints(JointStateVector &desired_joints, Join
     }
 }
 
-bool UR5Controller::validate_path(double *path, int n)
-{
-    // Compute direct kinematics on every configuration inside the path
-    for (int j = 0; j < n; j++)
-    {
-        Coordinates testing_position;
-        RotationMatrix testing_rotation;
-        JointStateVector intermediate_testing_joints;
-
-        intermediate_testing_joints << path[j * 6], path[j * 6 + 1], path[j * 6 + 2],
-            path[j * 6 + 3], path[j * 6 + 4], path[j * 6 + 5];
-        ur5_direct(intermediate_testing_joints, testing_position, testing_rotation);
-
-        // Check position constraints
-        if (testing_position(2) > 0.71)
-            return false;
-    }
-    return true;
-}
-
 double UR5Controller::compute_error(JointStateVector &desired_joints, JointStateVector &current_joints)
 {
     JointStateVector current_normed, desired_normed;

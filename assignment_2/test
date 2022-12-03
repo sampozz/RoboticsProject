@@ -1,0 +1,39 @@
+Executing state function 0
+Executing state function 1
+Initial joints values: -0.322315   -0.7805  -2.56728  -1.63461  -1.57136  -1.00164
+
+
+Valid! 0
+
+
+DIFFERENCE: 0.404957
+
+
+Valid! 1
+
+
+DIFFERENCE: 4.63974
+
+
+Valid! 2
+
+
+DIFFERENCE: 4.78571
+
+
+Valid! 3
+
+
+DIFFERENCE: 5.52854
+
+
+DIFFERENCE: 6.34264
+
+
+DIFFERENCE: 6.53517
+
+
+DIFFERENCE: 6.82061
+
+
+DIFFERENCE: 7.13747
