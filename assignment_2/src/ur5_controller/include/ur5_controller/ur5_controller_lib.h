@@ -108,6 +108,7 @@ public:
      * @param pos Final cartesian position of the end effector
      * @param rot Final rotation of the end effector
      * @param n Number of intermediate points
+     * @return true if path was valid and movement succeded
      * This function follows the procedure:
      * 1. Read the /ur5/joint_states topic and get the initial configuration 
      * 2. Compute complete inverse kinematics to find all the possibile final configurations
@@ -115,7 +116,7 @@ public:
      * 4. Compute direct kinematics on every configuration inside the path and check position constraints
      * 5. If the path is acceptable, follow it 
      */
-    void ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n);
+    bool ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n);
 
     /**
      *  Open and close the gripper at the selected diameter

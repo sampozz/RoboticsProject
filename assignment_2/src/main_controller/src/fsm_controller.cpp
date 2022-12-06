@@ -1,11 +1,15 @@
-#include "ur5_controller_lib/ur5_controller.h"
+#include "ros/ros.h"
 #include "main_controller/fsm.h"
+#include "ur5_controller/MoveTo.h"
 
 using namespace std;
 
-UR5Controller *ur5_controller_ptr = NULL;
-Coordinates home_pos, load_pos, unload_pos;
-RotationMatrix default_rot;
+ur5_controller::Coordinates home_pos, load_pos, unload_pos;
+ur5_controller::EulerRotation default_rot;
+
+ur5_controller::MoveTo service;
+
+ros::ServiceClient client;
 
 void init();
 void ur5_homing();
@@ -25,10 +29,9 @@ int main(int argc, char **argv)
 {
     // ROS Node initialization
     ros::init(argc, argv, "fsm_controller");
-    
-    // Init ur5 controller 
-    UR5Controller ur5_controller(1000.0, 0.005, 10.0);
-    ur5_controller_ptr = &ur5_controller;
+    ros::NodeHandle fsm_node;
+
+    client = fsm_node.serviceClient<ur5_controller::MoveTo>("move_to");
 
     // Initial state
     current_state = STATE_INIT;
@@ -54,14 +57,18 @@ int main(int argc, char **argv)
 
 void init()
 {
-    
-    // Default rotation matrix, gripper points downward
-    euler_to_rot(0, 0, 0, default_rot);
     // Initial and waiting position
-    home_pos << 0.1, -0.2, 0.4;
+    home_pos.x = 0.1;
+    home_pos.y = -0.2;
+    home_pos.z = 0.4;
     // Where to find a megablock from mobile robot
-    load_pos << 0.0, -0.35, 0.7;
-    unload_pos << 0.45, 0.1, 0.6;
+    load_pos.x = 0.0;
+    load_pos.y = -0.35;
+    load_pos.z = 0.7;
+    // Basket test
+    unload_pos.x = 0.45;
+    unload_pos.y = 0.1;
+    unload_pos.z = 0.6;
 
     current_state = STATE_UR5_HOME;
 }
@@ -69,7 +76,9 @@ void init()
 void ur5_homing()
 {
     // Move ur5 to home position
-    ur5_controller_ptr->ur5_follow_path(home_pos, default_rot, 20);
+    service.request.pos = home_pos;
+    service.request.rot = default_rot;
+    client.call(service);
 
     current_state = STATE_UR5_LOAD;
 }
@@ -77,9 +86,10 @@ void ur5_homing()
 void ur5_load()
 {
     // Move ur5 to load position
-    ur5_controller_ptr->ur5_follow_path(load_pos, default_rot, 20);
+    service.request.pos = load_pos;
+    service.request.rot = default_rot;
+    client.call(service);
     // Grab
-    ur5_controller_ptr->ur5_set_gripper(20);
 
     current_state = STATE_UR5_UNLOAD;
 }
@@ -87,11 +97,14 @@ void ur5_load()
 void ur5_unload()
 {
     // Move ur5 to home position
-    ur5_controller_ptr->ur5_follow_path(home_pos, default_rot, 20);
+    service.request.pos = home_pos;
+    service.request.rot = default_rot;
+    client.call(service);
     // Move ur5 to unload position
-    ur5_controller_ptr->ur5_follow_path(unload_pos, default_rot, 20);
+    service.request.pos = unload_pos;
+    service.request.rot = default_rot;
+    client.call(service);
     // Grab
-    ur5_controller_ptr->ur5_set_gripper(100);
 
     current_state = STATE_UR5_HOME;
 }

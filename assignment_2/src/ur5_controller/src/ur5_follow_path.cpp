@@ -1,4 +1,4 @@
-#include "ur5_controller_lib/ur5_controller.h"
+#include "ur5_controller/ur5_controller_lib.h"
 #include <map>
 
 using namespace std;
@@ -16,7 +16,7 @@ void printpath(double *p, int n)
 
 int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints);
 
-void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n)
+bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n)
 {
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
@@ -52,7 +52,7 @@ void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
     if (!is_valid)
     {
         std::cout << "Could not find a valid path" << std::endl;
-        return;
+        return false;
     }
 
     // Movement loop
@@ -83,6 +83,7 @@ void UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
         }
     }
     std::cout << "Final joints values: " << current_joints.transpose() << std::endl;
+    return true;
 }
 
 bool UR5Controller::validate_path(double *path, int n)
@@ -123,16 +124,3 @@ int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &in
     }
     return list;
 }
-
-/*
-
-  1.65593  -2.31841   2.25145  -1.50384    1.5708 -0.085138     DIFFERENCE: 6.34264
-  1.65593  -1.76588    1.9688   1.36788   -1.5708   3.05645     DIFFERENCE: 7.13747
--0.319356  -3.22382    1.9688 -0.315769    1.5708   1.89015     DIFFERENCE: 6.82061
--0.319356  -2.90673   2.25145   2.22608   -1.5708  -1.25144     DIFFERENCE: 6.53517
-  1.65593 -0.234858  -2.25145  0.915512    1.5708 -0.085138     DIFFERENCE: 4.63974
-  1.65593 0.0822309   -1.9688  -2.82582   -1.5708   3.05645     DIFFERENCE: 4.78571
--0.319356  -1.37571   -1.9688   1.77371    1.5708   1.89015     DIFFERENCE: 5.52854
--0.319356 -0.823181  -2.25145  -1.63776   -1.5708  -1.25144     DIFFERENCE: 0.404957
-
-*/

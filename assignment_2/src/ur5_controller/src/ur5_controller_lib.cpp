@@ -1,4 +1,4 @@
-#include "ur5_controller_lib/ur5_controller.h"
+#include "ur5_controller/ur5_controller_lib.h"
 #include <std_msgs/Float64MultiArray.h>
 #include <std_msgs/Int32.h>
 
