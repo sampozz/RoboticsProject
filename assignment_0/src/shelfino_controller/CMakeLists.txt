@@ -25,6 +25,7 @@ catkin_package(
     INCLUDE_DIRS include
     LIBRARIES ${PROJECT_NAME}
     CATKIN_DEPENDS roscpp
+    CATKIN_DEPENDS kinematics_lib
 )
 
 ###########
@@ -44,11 +45,6 @@ add_library(${PROJECT_NAME}
   src/shelfino_controller_lib.cpp
 )
 
-## Specify libraries to link a library or executable target against
-target_link_libraries(${PROJECT_NAME}
-  ${catkin_LIBRARIES}
-)
-
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
@@ -59,6 +55,8 @@ add_executable(shelfino src/shelfino_test.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
+target_link_libraries(shelfino shelfino_controller ${catkin_LIBRARIES})
 target_link_libraries(shelfino ${catkin_LIBRARIES})
 
 #############

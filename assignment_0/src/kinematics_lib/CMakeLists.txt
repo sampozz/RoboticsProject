@@ -39,6 +39,7 @@ add_library(${PROJECT_NAME}
   src/ur5_inverse.cpp
   src/ur5_rotation.cpp
   src/ur5_motion_plan.cpp
+  src/shelfino_trajectory.cpp
 )
 
 ## Specify libraries to link a library or executable target against

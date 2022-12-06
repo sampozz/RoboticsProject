@@ -16,24 +16,28 @@ private:
     ros::Rate loop_rate;
 
     double loop_frequency;
+    double angular_velocity;
+    double linear_velocity;
 
     ros::Publisher velocity_pub;
     ros::Subscriber odometry_sub;
 
     Coordinates current_position;
-    RotationMatrix current_rotation;
+    double current_rotation;
     Coordinates odometry_position;
-    RotationMatrix odometry_rotation;
+    double odometry_rotation;
 
     /**
      * Callback function, listen to /shelfino/odom topic and update odometry position and rotation
      */
     void odometry_callback(const nav_msgs::Odometry::ConstPtr &msg);
 
-    void send_velocity(Velocity &linear_vel, Velocity &angular_vel);
+    void send_velocity(double linear_vel, double angular_vel);
 
 public:
-    ShelfinoController(double loop_frequency);
+    ShelfinoController(double linear_velocity, double angular_velocity, double loop_frequency);
+
+    void shelfino_move_to(Coordinates &pos, double yaw);
 };
 
 #endif
