@@ -17,6 +17,7 @@ find_package(Eigen3 3.3 REQUIRED)
 add_service_files(
   FILES
   MoveTo.srv
+  SetGripper.srv
 )
 
 add_message_files(

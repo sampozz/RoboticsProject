@@ -1,15 +1,18 @@
 #include "ros/ros.h"
 #include "main_controller/fsm.h"
 #include "ur5_controller/MoveTo.h"
+#include "ur5_controller/SetGripper.h"
 
 using namespace std;
 
 ur5_controller::Coordinates home_pos, load_pos, unload_pos;
 ur5_controller::EulerRotation default_rot;
 
-ur5_controller::MoveTo service;
+ur5_controller::MoveTo ur5_move_srv;
+ur5_controller::SetGripper ur5_gripper_srv;
 
-ros::ServiceClient client;
+ros::ServiceClient ur5_move_client;
+ros::ServiceClient ur5_gripper_client;
 
 void init();
 void ur5_homing();
@@ -31,7 +34,8 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "fsm_controller");
     ros::NodeHandle fsm_node;
 
-    client = fsm_node.serviceClient<ur5_controller::MoveTo>("move_to");
+    ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("move_to");
+    ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("set_gripper");
 
     // Initial state
     current_state = STATE_INIT;
@@ -76,9 +80,9 @@ void init()
 void ur5_homing()
 {
     // Move ur5 to home position
-    service.request.pos = home_pos;
-    service.request.rot = default_rot;
-    client.call(service);
+    ur5_move_srv.request.pos = home_pos;
+    ur5_move_srv.request.rot = default_rot;
+    ur5_move_client.call(ur5_move_srv);
 
     current_state = STATE_UR5_LOAD;
 }
@@ -86,10 +90,12 @@ void ur5_homing()
 void ur5_load()
 {
     // Move ur5 to load position
-    service.request.pos = load_pos;
-    service.request.rot = default_rot;
-    client.call(service);
+    ur5_move_srv.request.pos = load_pos;
+    ur5_move_srv.request.rot = default_rot;
+    ur5_move_client.call(ur5_move_srv);
     // Grab
+    ur5_gripper_srv.request.diameter = 20;
+    ur5_gripper_client.call(ur5_gripper_srv);
 
     current_state = STATE_UR5_UNLOAD;
 }
@@ -97,14 +103,16 @@ void ur5_load()
 void ur5_unload()
 {
     // Move ur5 to home position
-    service.request.pos = home_pos;
-    service.request.rot = default_rot;
-    client.call(service);
+    ur5_move_srv.request.pos = home_pos;
+    ur5_move_srv.request.rot = default_rot;
+    ur5_move_client.call(ur5_move_srv);
     // Move ur5 to unload position
-    service.request.pos = unload_pos;
-    service.request.rot = default_rot;
-    client.call(service);
+    ur5_move_srv.request.pos = unload_pos;
+    ur5_move_srv.request.rot = default_rot;
+    ur5_move_client.call(ur5_move_srv);
     // Grab
+    ur5_gripper_srv.request.diameter = 100;
+    ur5_gripper_client.call(ur5_gripper_srv);
 
     current_state = STATE_UR5_HOME;
 }

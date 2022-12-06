@@ -9,7 +9,7 @@
     <!-- <node pkg="ur5_controller" type="sin_movement.py" name="sin_movement_py" /> -->
 
     <!-- C++ code -->
-    <!-- <node pkg="ur5_controller" type="sin" name="sin_movement" /> -->
-    <!-- <node pkg="ur5_controller" type="direct_kin" name="direct_kin" /> -->
+    <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" />
+    <node pkg="main_controller" type="fsm" name="fsm" />
 
 </launch>
