@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 #include "std_msgs/Float64MultiArray.h"
 #include <iostream>
 

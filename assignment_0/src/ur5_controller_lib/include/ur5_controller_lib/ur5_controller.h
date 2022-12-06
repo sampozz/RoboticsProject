@@ -1,7 +1,7 @@
 #ifndef __UR5_CONTROLLER_H__
 #define __UR5_CONTROLLER_H__
 
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 #include "ros/ros.h"
 #include <sensor_msgs/JointState.h>
 

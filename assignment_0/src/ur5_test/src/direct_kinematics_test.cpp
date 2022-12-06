@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 #include <iostream>
 
 std::string joint_names[] = {"shoulder_pan_joint", "shoulder_lift_joint", "elbow_joint", "wrist_1_joint", "wrist_2_joint", "wrist_3_joint"};

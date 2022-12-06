@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(ur5_kinematics_lib)
+project(kinematics_lib)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)

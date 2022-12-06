@@ -1,4 +1,4 @@
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 
 /* Public functions */
 

@@ -1,16 +1,8 @@
 #ifndef __UR5_KINEMATICS_H__
 #define __UR5_KINEMATICS_H__
 
-#include <Eigen/Dense>
 #include <math.h>
-
-/* Custom types */
-
-typedef Eigen::Matrix<double, 6, 1> JointStateVector;
-typedef Eigen::Matrix<double, 3, 1> GripperStateVector;
-typedef Eigen::Matrix<double, 3, 1> Coordinates;
-typedef Eigen::Matrix<double, 3, 3> RotationMatrix;
-typedef Eigen::Matrix<double, 4, 4> HomoTrMatrix;
+#include "kinematics_types.h"
 
 /* UR5 DH parameters */
 

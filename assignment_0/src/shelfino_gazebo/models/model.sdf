@@ -207,8 +207,8 @@
     
     <gazebo>
     <plugin name="shelfino_controller" filename="libgazebo_ros_diff_drive.so">
-      <commandTopic>cmd_vel</commandTopic>
-      <odometryTopic>odom</odometryTopic>
+      <commandTopic>/shelfino/velocity/command</commandTopic>
+      <odometryTopic>/shelfino/odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <odometrySource>world</odometrySource>
       <publishOdomTF>true</publishOdomTF>
@@ -255,7 +255,7 @@
         </noise>
       </ray>
       <plugin name="gazebo_ros_lds_lfcd_controller" filename="libgazebo_ros_laser.so">
-        <topicName>scan</topicName>
+        <topicName>/shelfino/scan</topicName>
         <frameName>base_laser</frameName>
       </plugin>
     </sensor>

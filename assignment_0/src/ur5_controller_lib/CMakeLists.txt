@@ -8,7 +8,7 @@ find_package(catkin REQUIRED COMPONENTS
   roscpp
   rospy
   std_msgs
-  ur5_kinematics_lib
+  kinematics_lib
 )
 
 find_package(Eigen3 3.3 REQUIRED)

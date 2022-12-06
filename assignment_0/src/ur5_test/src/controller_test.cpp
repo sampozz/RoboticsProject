@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "ur5_controller_lib/ur5_controller.h"
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 #include <iostream>
 
 int main(int argc, char **argv)

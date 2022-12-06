@@ -1,4 +1,4 @@
-#include "ur5_kinematics_lib/ur5_kinematics.h"
+#include "kinematics_lib/ur5_kinematics.h"
 #include <iostream>
 
 double *ur5_motion_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n)
