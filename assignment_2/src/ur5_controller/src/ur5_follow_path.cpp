@@ -3,17 +3,6 @@
 
 using namespace std;
 
-void printpath(double *p, int n)
-{
-
-    for (int i = 0; i < n; i++) {
-        for (int j = 0; j < 6;j++) {
-            std::cout << p[i*6+j] << " "; 
-        }
-        std::cout<<std::endl;
-    }
-}
-
 int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints);
 
 bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n)
@@ -55,6 +44,9 @@ bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
         return false;
     }
 
+    // Filter configuration
+    init_filters();
+
     // Movement loop
     int i = -1;
     while (++i < n)
@@ -65,9 +57,6 @@ bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
 
         if (intermediate_joints.norm() == 0)
             continue;
-
-        // Filter configuration
-        init_filters();
 
         // Movement loop (between two intermediate points)
         while (ros::ok() && compute_error(current_joints, intermediate_joints) > joints_error)
