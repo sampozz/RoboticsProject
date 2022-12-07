@@ -1,8 +1,21 @@
 <?xml version='1.0'?>
 <sdf version="1.4">
+  <physics type="ode">
+    <ode>
+      <solver>
+        <type>world</type>
+      </solver>
+      <constraints>
+        <contact_max_correcting_vel>0.1</contact_max_correcting_vel>
+        <contact_surface_layer>0.0001</contact_surface_layer>
+      </constraints>
+    </ode>
+    <max_step_size>0.001</max_step_size>
+  </physics>
+  <gravity>0.0 0.0 -9.81</gravity>
   <model name="lego">
-    <pose>1 1 0 0 0 0</pose>
-    <static>true</static>
+    <pose>0.5 0.7 0.87 0 0 0</pose>
+    <static>false</static>
     <link name="link">
       <inertial>
         <mass>1.0</mass>
@@ -18,12 +31,12 @@
       </inertial>
       <collision name="collision">
         <geometry>
-          <mesh><uri>/home/sam/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
+          <mesh><uri>/home/enea/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
-          <mesh><uri>/home/sam/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
+          <mesh><uri>/home/enea/robotics_group_v/locosim/models/lego/lego.stl</uri></mesh>
         </geometry>
       </visual>
     </link>
