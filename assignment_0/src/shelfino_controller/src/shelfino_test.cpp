@@ -10,11 +10,13 @@ int main(int argc, char **argv)
     // ROS Node initialization
     ros::init(argc, argv, "shelfino_test");
     
-    ShelfinoController controller(0.1, 0.1, 1000.);
+    ShelfinoController controller(0.2, 0.2, 1000.);
 
     Coordinates dest;
-    dest << 5, 5, 0;
+    dest << 4, 4, 0;
+    controller.shelfino_move_to(dest, 0);
 
+    dest << 0, 0, 0;
     controller.shelfino_move_to(dest, 0);
 
     return 0;
