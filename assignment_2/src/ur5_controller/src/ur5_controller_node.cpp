@@ -12,7 +12,7 @@ bool move_to(ur5_controller::MoveTo::Request &req, ur5_controller::MoveTo::Respo
     pos << req.pos.x, req.pos.y, req.pos.z;
     euler_to_rot(req.rot.roll, req.rot.pitch, req.rot.yaw, rot);
 
-    res.status = controller_ptr->ur5_follow_path(pos, rot, 20);
+    res.status = controller_ptr->ur5_follow_path(pos, rot, 50);
 
     return true;
 }
@@ -32,7 +32,7 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "ur5_controller_node");
     ros::NodeHandle controller_node;
 
-    UR5Controller controller(1000.0, 0.005, 10.0);
+    UR5Controller controller(1000.0, 0.05, 10.0);
     controller_ptr = &controller;
 
     ros::ServiceServer move_service = controller_node.advertiseService("move_to", move_to);
