@@ -89,7 +89,7 @@ bool UR5Controller::validate_path(double *path, int n)
         ur5_direct(intermediate_testing_joints, testing_position, testing_rotation);
 
         // Check position constraints
-        if (testing_position(2) > 0.71)
+        if (testing_position(2) > 0.74)
             return false;
     }
     return true;
