@@ -3,9 +3,14 @@
 
 using namespace std;
 
+static JointStateVector lin_filter;
+static double v_ref;
+
 int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints);
 
-bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n)
+/* Public functions */
+
+bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
 {
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
@@ -75,6 +80,8 @@ bool UR5Controller::ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n
     return true;
 }
 
+/* Private functions */
+
 bool UR5Controller::validate_path(double *path, int n)
 {
     // Compute direct kinematics on every configuration inside the path
@@ -112,4 +119,39 @@ int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &in
         list[i++] = it.second;
     }
     return list;
+}
+
+void UR5Controller::init_filters()
+{
+    ros::spinOnce();
+    lin_filter = current_joints;
+    v_ref = 0.0;
+}
+
+JointStateVector UR5Controller::linear_filter(const JointStateVector &final_pos)
+{
+    double v_des = 0.6;
+    v_ref += 0.005 * (v_des - v_ref);
+    lin_filter += 1.0 / loop_frequency * v_ref * (final_pos - lin_filter) / (final_pos - lin_filter).norm();
+    return lin_filter;
+}
+
+double norm_angle(double angle)
+{
+    if (angle > 0)
+        angle = fmod(angle, 2 * M_PI);
+    else
+        angle = 2 * M_PI - fmod(-angle, 2 * M_PI);
+    return angle;
+}
+
+double UR5Controller::compute_error(JointStateVector &desired_joints, JointStateVector &current_joints)
+{
+    JointStateVector current_normed, desired_normed;
+    for (int i = 0; i < 6; i++)
+    {
+        current_normed(i) = norm_angle(current_joints(i));
+        desired_normed(i) = norm_angle(desired_joints(i));
+    }
+    return (current_normed - desired_normed).norm();
 }

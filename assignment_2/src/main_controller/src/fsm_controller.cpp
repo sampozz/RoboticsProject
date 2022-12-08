@@ -41,8 +41,8 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "fsm_controller");
     ros::NodeHandle fsm_node;
 
-    ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("move_to");
-    ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("set_gripper");
+    ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("ur5/move_to");
+    ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("ur5/set_gripper");
     gazebo_link_attacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/attach");
     gazebo_link_detacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/detach");
 

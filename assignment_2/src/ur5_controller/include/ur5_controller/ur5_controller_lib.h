@@ -51,23 +51,9 @@ private:
     JointStateVector linear_filter(const JointStateVector &final_pos);
 
     /**
-     * Compute joint values by following consecutive approximations.
-     * The velocity of the end effector gradually diminishes when reaching the final position.
-     * Use this function iteratively to send joint states to the robot and avoid steps
-     */
-    JointStateVector second_order_filter(const JointStateVector &final_pos);
-
-    /**
      * Init values of linear and so filters 
      */
     void init_filters();
-
-    /**
-     * Check if the desired state vector is equal to the current vector by comparing
-     * the normalized values of the angles in the range [0, 2 * pi].
-     * If check is succesful, replace values in the current_joints vector
-     */
-    void adjust_desired_joints(JointStateVector &current_joints, JointStateVector &desired_joints);
 
     /**
      * Compute difference between the two vector, by normalizing the angles.
@@ -91,19 +77,6 @@ public:
     UR5Controller(double loop_frequency, double joints_error, double settling_time);
 
     /**
-     * Move end effector to desired position (pos) and rotation (rot)
-     * @param pos Final cartesian position of the end effector
-     * @param rot Final rotation of the end effector
-     * @param select_filter false => linear filter, true => second order filter
-     * This function follows the procedure:
-     * 1. read the /ur5/joint_states topic and get the initial configuration
-     * 2. compute inverse kinematics to get desired joint values
-     * 3. compute a filter for a smooth transition
-     * 4. publish joints values to topic at each iteration
-     */
-    void ur5_move_to(Coordinates &pos, RotationMatrix &rot, bool select_filter);
-
-    /**
      * Move end effector to desired position (pos) and rotation (rot) by following a path computed by the kinematics libray
      * @param pos Final cartesian position of the end effector
      * @param rot Final rotation of the end effector
@@ -116,7 +89,7 @@ public:
      * 4. Compute direct kinematics on every configuration inside the path and check position constraints
      * 5. If the path is acceptable, follow it 
      */
-    bool ur5_follow_path(Coordinates &pos, RotationMatrix &rot, int n);
+    bool ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n);
 
     /**
      *  Open and close the gripper at the selected diameter

@@ -64,7 +64,7 @@ add_executable(ur5_controller_node src/ur5_controller_node.cpp)
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/ur5_controller_lib.cpp
-  src/ur5_follow_path.cpp
+  src/ur5_movement_lib.cpp
 )
 
 ## Specify libraries to link a library or executable target against
