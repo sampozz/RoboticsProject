@@ -12,6 +12,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     this->angular_velocity = angular_velocity;
     this->current_rotation = 0;
     this->odometry_rotation = 0;
+    this->current_position << 2, 2, 0;
 
     // Publisher initialization
     velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1000);

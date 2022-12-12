@@ -39,6 +39,11 @@ include_directories(
   ${EIGEN3_INCLUDE_DIR}
 )
 
+## Declare a C++ library
+add_library(${PROJECT_NAME}
+  src/states.cpp
+)
+
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
@@ -49,7 +54,9 @@ add_executable(fsm src/fsm_controller.cpp)
 # target_link_libraries(${PROJECT_NAME}_node
 #   ${catkin_LIBRARIES}
 # )
+target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(fsm ${catkin_LIBRARIES})
+target_link_libraries(fsm main_controller ${catkin_LIBRARIES})
 
 #############
 ## Install ##

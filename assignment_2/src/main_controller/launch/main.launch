@@ -2,14 +2,16 @@
 
 <launch>
 
-    <!-- World creation -->
+    <!-- World generation -->
+    <!-- <arg name="port" default="$(optenv HUSKY_PORT /dev/prolific)" /> -->
     <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-file $(env HOME)/robotics_group_v/locosim/models/lego/lego.sdf -model lego -sdf"/>
-    
-    <!-- Python script -->
-    <!-- <node pkg="ur5_controller" type="sin_movement.py" name="sin_movement_py" /> -->
+
+    <!-- Spawn Shelfino -->
+    <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />
 
     <!-- C++ code -->
     <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" />
+    <node pkg="shelfino_controller" type="shelfino_controller_node" name="shelfino_controller_node" />
     <node pkg="main_controller" type="fsm" name="fsm" />
 
 </launch>

@@ -6,6 +6,7 @@ ShelfinoController *controller_ptr = nullptr;
 
 bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::MoveTo::Response &res)
 {
+    ROS_ERROR("REC");
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
     
