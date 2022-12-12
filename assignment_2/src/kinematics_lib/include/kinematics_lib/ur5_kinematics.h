@@ -37,6 +37,13 @@ void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th);
 void ur5_inverse_complete(Coordinates &pe, RotationMatrix &re, Eigen::Matrix<double, 8, 6> &th);
 
 /**
+ * Compute the jacobian matrix of the ur5 for the given configuration
+ * @param th: input - joints configuration
+ * @param jac: output - Jacobian matrix
+*/
+void ur5_jacobian(JointStateVector &th, Eigen::Matrix<double, 6, 6> &jac);
+
+/**
  * Compute rotation matrix from euler angles.
  * @param rot: output - rotation matrix
  */

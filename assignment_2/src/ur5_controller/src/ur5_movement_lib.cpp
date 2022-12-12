@@ -20,7 +20,8 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
     // Compute complete inverse kinematics to find all the possibile final configurations
     Eigen::Matrix<double, 8, 6> ik_result;
     ur5_inverse_complete(pos, rot, ik_result);
-    int *indexes = sort_ik_result(ik_result, initial_joints);
+    // int *indexes = sort_ik_result(ik_result, initial_joints);
+    int indexes[8] = {0,1,2,3,4,5,6,7}; 
 
     double *path;
     bool is_valid = false;
@@ -83,7 +84,7 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
 /* Private functions */
 
 bool UR5Controller::validate_path(double *path, int n)
-{
+{cout << endl;
     // Compute direct kinematics on every configuration inside the path
     for (int j = 0; j < n; j++)
     {
@@ -95,8 +96,18 @@ bool UR5Controller::validate_path(double *path, int n)
             path[j * 6 + 3], path[j * 6 + 4], path[j * 6 + 5];
         ur5_direct(intermediate_testing_joints, testing_position, testing_rotation);
 
+        if (intermediate_testing_joints.norm() == 0)
+            continue;
+
         // Check position constraints
         if (testing_position(2) > 0.74)
+            return false;
+
+        Eigen::Matrix<double, 6, 6> jac;
+        ur5_jacobian(intermediate_testing_joints, jac);
+        
+        // Check singularity
+        if (abs(jac.determinant()) < 0.00001)
             return false;
     }
     return true;

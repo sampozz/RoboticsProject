@@ -18,7 +18,7 @@ void init()
     unload_pos.y = 0.1;
     unload_pos.z = 0.6;
 
-    current_state = STATE_UR5_HOME;
+    current_state = STATE_UR5_LOAD;
 }
 
 void ur5_homing()
@@ -63,7 +63,7 @@ void ur5_unload()
     ur5_gripper_srv.request.diameter = 100;
     ur5_gripper_client.call(ur5_gripper_srv);
 
-    current_state = STATE_SHELFINO_TEST;
+    current_state = STATE_END;
 }
 
 void shelfino_test()
