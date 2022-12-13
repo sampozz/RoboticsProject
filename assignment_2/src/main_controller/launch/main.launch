@@ -4,7 +4,7 @@
 
     <!-- World generation -->
     <!-- <arg name="port" default="$(optenv HUSKY_PORT /dev/prolific)" /> -->
-    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-file $(env HOME)/robotics_group_v/locosim/models/lego/lego.sdf -model lego -sdf"/>
+    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model X1-Y1-Z2 -sdf"/>
 
     <!-- Spawn Shelfino -->
     <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />
