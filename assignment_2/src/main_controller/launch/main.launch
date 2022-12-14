@@ -3,8 +3,12 @@
 <launch>
 
     <!-- World generation -->
-    <!-- <arg name="port" default="$(optenv HUSKY_PORT /dev/prolific)" /> -->
-    <node name="spawn_gazebo_model" pkg="gazebo_ros" type="spawn_model" args="-file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model X1-Y1-Z2 -sdf"/>
+    <rosparam command="load" file="$(find main_controller)/launch/areas.yaml" />
+
+    <node name="spawn_block_0" pkg="gazebo_ros" type="spawn_model" args="-x 1 -y 2 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model 0 -sdf"/>
+    <node name="spawn_block_1" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 2 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model 1 -sdf"/>
+    <node name="spawn_block_2" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 1 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model 2 -sdf"/>
+    <node name="spawn_block_3" pkg="gazebo_ros" type="spawn_model" args="-x 1 -y 1 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y1-Z2/X1-Y1-Z2.sdf -model 3 -sdf"/>
 
     <!-- Spawn Shelfino -->
     <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />

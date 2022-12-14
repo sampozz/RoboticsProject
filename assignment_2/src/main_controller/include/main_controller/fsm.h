@@ -5,6 +5,7 @@
 #include "ur5_controller/SetGripper.h"
 #include "shelfino_controller/MoveTo.h"
 #include "gazebo_ros_link_attacher/Attach.h"
+#include <vector>
 
 /* FSM */
 
@@ -42,6 +43,8 @@ ros::ServiceClient ur5_gripper_client;
 ros::ServiceClient shelfino_move_client;
 ros::ServiceClient gazebo_link_attacher;
 ros::ServiceClient gazebo_link_detacher;
+
+std::vector<std::vector<double>> areas;
 
 
 /* States functions */

@@ -40,4 +40,5 @@ robot_params['ur5'] = {
     'spawn_z': 1.75
 }
 
+verbose = True
 plotting = True

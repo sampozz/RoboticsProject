@@ -15,19 +15,32 @@ StateMachine_t fsm[] = {
     {STATE_SHELFINO_TEST, shelfino_test},
 };
 
+void get_world_params(ros::NodeHandle& n)
+{
+    for (int i = 0; i < 4; i++) 
+        areas.push_back({});
+
+    n.getParam("area0", areas[0]);
+    n.getParam("area1", areas[1]);
+    n.getParam("area2", areas[2]);
+    n.getParam("area3", areas[3]);
+}
+
 int main(int argc, char **argv)
 {
     // ROS Node initialization
     ros::init(argc, argv, "fsm_controller");
     ros::NodeHandle fsm_node;
 
-    ROS_ERROR("Starting node...");
-
+    // Setup services
     ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("ur5/move_to");
     ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("ur5/set_gripper");
     shelfino_move_client = fsm_node.serviceClient<shelfino_controller::MoveTo>("shelfino/move_to");
     gazebo_link_attacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/attach");
     gazebo_link_detacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/detach");
+
+    // Get world params
+    get_world_params(fsm_node);
 
     // Initial state
     current_state = STATE_INIT;
