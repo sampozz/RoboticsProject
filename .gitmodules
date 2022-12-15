@@ -1,0 +1,6 @@
+[submodule "assignment_2/src/detection_msgs"]
+	path = assignment_2/src/detection_msgs
+	url = https://github.com/mats-robotics/detection_msgs.git
+[submodule "assignment_2/src/yolov5_ros"]
+	path = assignment_2/src/yolov5_ros
+	url = https://github.com/mats-robotics/yolov5_ros.git

@@ -2,6 +2,8 @@ build/
 devel/
 install/
 .vscode/
+logs/
+.catkin_tools/
 
 models/
 locosim/models/
