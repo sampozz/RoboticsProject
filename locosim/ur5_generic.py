@@ -38,9 +38,12 @@ import tf
 from rospy import Time
 import time
 from base_controllers.components.controller_manager import ControllerManager
+from sensor_msgs import point_cloud2
+from sensor_msgs.msg import PointCloud2
+
 
 class Ur5Generic(BaseControllerFixed):
-    
+
     def __init__(self, robot_name="ur5"):
         super().__init__(robot_name=robot_name)
         self.real_robot = conf.robot_params[self.robot_name]['real_robot']
@@ -70,25 +73,27 @@ class Ur5Generic(BaseControllerFixed):
         print("Initialized ur5 generic  controller---------------------------------------------------------------")
 
     def startRealRobot(self):
-        os.system("killall rosmaster rviz gzserver gzclient")
+        os.system("killall rviz gzserver gzclient")
         print(colored('------------------------------------------------ROBOT IS REAL!', 'blue'))
 
-        uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
-        roslaunch.configure_logging(uuid)
-        launch_file = rospkg.RosPack().get_path('ur_robot_driver') + '/launch/ur5e_bringup.launch'
-        cli_args = [launch_file,
-                    'headless_mode:=true',
-                    'robot_ip:=192.168.0.100',
-                    'kinematics_config:=/home/laboratorio/my_robot_calibration_1.yaml']
-
-        roslaunch_args = cli_args[1:]
-        roslaunch_file = [(roslaunch.rlutil.resolve_launch_arguments(cli_args)[0], roslaunch_args)]
-        parent = roslaunch.parent.ROSLaunchParent(uuid, roslaunch_file)
+        # uuid = roslaunch.rlutil.get_or_generate_uuid(None, False)
+        # roslaunch.configure_logging(uuid)
+        # launch_file = rospkg.RosPack().get_path('ur_robot_driver') + '/launch/ur5e_bringup.launch'
+        # cli_args = [launch_file,
+        #             'headless_mode:=true',
+        #             'robot_ip:=192.168.0.100',
+        #             'kinematics_config:=/home/laboratorio/my_robot_calibration_1.yaml']
+        #
+        # roslaunch_args = cli_args[1:]
+        # roslaunch_file = [(roslaunch.rlutil.resolve_launch_arguments(cli_args)[0], roslaunch_args)]
+        # parent = roslaunch.parent.ROSLaunchParent(uuid, roslaunch_file)
 
         if (not rosgraph.is_master_online()) or (
                 "/" + self.robot_name + "/ur_hardware_interface" not in rosnode.get_node_names()):
-            print(colored('Launching the ur driver!', 'blue'))
-            parent.start()
+            print(colored('No ur driver found!', 'blue'))
+            sys.exit()
+            #print(colored('Launching the ur driver!', 'blue'))
+            #parent.start()
 
         # run rviz
         package = 'rviz'
@@ -135,6 +140,7 @@ class Ur5Generic(BaseControllerFixed):
         # store in the param server to be used from other planners
         self.utils = Utils()
         self.utils.putIntoGlobalParamServer("gripper_sim", self.gripper)
+        self.sub_pointcloud = ros.Subscriber("/ur5/zed_node/point_cloud/cloud_registered", PointCloud2,   callback=self.receive_pointcloud, queue_size=1)
 
     def _receive_gripper_cmd(self, msg):
         diameter = int(msg.data)
@@ -182,6 +188,10 @@ class Ur5Generic(BaseControllerFixed):
         # this is expressed in the base frame
         self.x_ee = self.robot.framePlacement(self.q, self.robot.model.getFrameId(frame_name)).translation
         self.w_R_tool0 = self.robot.framePlacement(self.q, self.robot.model.getFrameId(frame_name)).rotation
+        # camera frame
+        self.x_c= self.robot.framePlacement(self.q, self.robot.model.getFrameId("zed2_left_camera_optical_frame")).translation
+        self.w_R_c = self.robot.framePlacement(self.q, self.robot.model.getFrameId("zed2_left_camera_optical_frame")).rotation
+
         # compute jacobian of the end effector in the base or world frame (they are aligned so in terms of velocity they are the same)
         self.J6 = self.robot.frameJacobian(self.q, self.robot.model.getFrameId(frame_name), False, pin.ReferenceFrame.LOCAL_WORLD_ALIGNED)                    
         # take first 3 rows of J6 cause we have a point contact            
@@ -253,6 +263,15 @@ class Ur5Generic(BaseControllerFixed):
                     p.controller_manager.gm.move_gripper(100)
                 break
 
+    def receive_pointcloud(self, msg):
+        #in the zed2_left_camera_optical_frame
+        points_list = []
+        for data in point_cloud2.read_points(msg, field_names=['x','y','z'], skip_nans=False, uvs=[(640, 360)]):
+            points_list.append([data[0], data[1], data[2]])
+        #print("Data Optical frame: ", points_list)
+        pointW = self.w_R_c.dot(points_list[0]) + self.x_c + self.base_offset
+        #print("Data World frame: ", pointW)
+
 def talker(p):
     p.start()
     if p.real_robot:
@@ -282,7 +301,11 @@ def talker(p):
 
     # homing procedure
     if p.homing_flag:
-        p.homing_procedure(conf.robot_params[p.robot_name]['dt'], 0.6, conf.robot_params[p.robot_name]['q_0'], rate)
+        if p.real_robot:
+            v_des = 0.2
+        else:
+            v_des = 0.6
+        p.homing_procedure(conf.robot_params[p.robot_name]['dt'], v_des, conf.robot_params[p.robot_name]['q_0'], rate)
 
     gripper_on = 0
 
@@ -338,6 +361,3 @@ if __name__ == '__main__':
         p.deregister_node()
         if   conf.plotting:
             p.plotStuff()
-
-    
-        
