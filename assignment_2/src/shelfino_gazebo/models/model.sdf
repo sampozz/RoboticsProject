@@ -184,7 +184,7 @@
     <link name="base_laser">
       <visual>
         <geometry>
-          <mesh filename="/home/sam/robotics_group_v/assignment_0/src/shelfino_gazebo_ros1/models/hokuyo.dae" />
+          <mesh filename="/home/sam/robotics_group_v/assignment_0/src/shelfino_gazebo/models/hokuyo.dae" />
         </geometry>
         <material name="black"/>
       </visual>

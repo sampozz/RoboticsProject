@@ -34,10 +34,16 @@ private:
 
     void send_velocity(double linear_vel, double angular_vel);
 
+    void send_velocity(double linear_vel, double angular_vel, int n);
+
 public:
     ShelfinoController(double linear_velocity, double angular_velocity, double loop_frequency);
 
     void shelfino_move_to(Coordinates &pos, double yaw);
+
+    void shelfino_rotate(double angle);
+
+    void shelfino_move_forward(double distance);
 };
 
 #endif

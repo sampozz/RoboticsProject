@@ -9,6 +9,8 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   ur5_controller
+  shelfino_controller
+  gazebo_msgs
 )
 
 find_package(Eigen3 REQUIRED)

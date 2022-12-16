@@ -2,15 +2,16 @@
 #include "kinematics_lib/kinematics_types.h"
 #include <iostream>
 
-const double kp = 1;
-const double kth = 1;
+const double kp = 0.5;
+const double kth = 0.5;
 
 double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordinates &final_position)
 {
     double dx = final_position(0) - initial_pos(0);
     double dy = final_position(1) - initial_pos(1);
     double alpha = norm_angle(atan2(dy, dx));
-    double angle = norm_angle(initial_rot - alpha);
+    // double angle = norm_angle(initial_rot - alpha);
+    double angle = norm_angle(alpha - initial_rot);
 
     // correggi il segno in base alla rotazione iniziale
     if (angle > M_PI)
