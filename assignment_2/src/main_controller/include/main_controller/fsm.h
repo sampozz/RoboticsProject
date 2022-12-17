@@ -9,6 +9,7 @@
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 #include <vector>
+#include <map>
 
 /* FSM */
 
@@ -51,6 +52,8 @@ ros::ServiceClient ur5_move_client, ur5_gripper_client, shelfino_move_client,
     shelfino_rotate_client, shelfino_forward_client, gazebo_model_state, gazebo_link_attacher, gazebo_link_detacher;
 
 std::vector<std::vector<double>> areas;
+std::vector<double> unload_position_y;
+std::map<int, int> class_to_basket_map;
 int current_area;
 int current_block_class;
 int current_block_distance;

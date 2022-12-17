@@ -1,4 +1,5 @@
 #include "ros/ros.h"
+#include <ros/console.h>
 #include "main_controller/fsm.h"
 #include "ur5_controller/MoveTo.h"
 #include "ur5_controller/SetGripper.h"
@@ -62,7 +63,7 @@ int main(int argc, char **argv)
     {
         if (current_state < STATE_END)
         {
-            cout << "Executing state function " << current_state << endl;
+            ROS_INFO("Executing state function %d", current_state);
             (*fsm[current_state].state_function)();
 
             ros::spinOnce();

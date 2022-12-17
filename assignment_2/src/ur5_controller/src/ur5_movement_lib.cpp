@@ -15,7 +15,8 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
     JointStateVector initial_joints = current_joints;
-    std::cout << "Initial joints values: " << initial_joints.transpose() << std::endl;
+    ROS_INFO("Moving UR5: initial joints values: %.2f %.2f %.2f %.2f %.2f %.2f", initial_joints(0), initial_joints(1), initial_joints(2),
+        initial_joints(3), initial_joints(4), initial_joints(5)); 
 
     // Compute complete inverse kinematics to find all the possibile final configurations
     Eigen::Matrix<double, 8, 6> ik_result;
@@ -45,7 +46,7 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
 
     if (!is_valid)
     {
-        std::cout << "Could not find a valid path" << std::endl;
+        ROS_WARN("UR5 could not find a valid path!");
         return false;
     }
 
@@ -76,7 +77,8 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
             ros::spinOnce();
         }
     }
-    std::cout << "Final joints values: " << current_joints.transpose() << std::endl;
+    ROS_INFO("Moving UR5: final joints values: %.2f %.2f %.2f %.2f %.2f %.2f", current_joints(0), current_joints(1), current_joints(2),
+        current_joints(3), current_joints(4), current_joints(5)); 
     return true;
 }
 
@@ -104,7 +106,6 @@ bool UR5Controller::validate_path(double *path, int n)
 
         Eigen::Matrix<double, 6, 6> jac;
         ur5_jacobian(intermediate_testing_joints, jac);
-        // cout << intermediate_testing_joints.transpose() << "==== det: " << jac.determinant() << endl;
         
         // Check singularity
         if (abs(jac.determinant()) < 0.00001)

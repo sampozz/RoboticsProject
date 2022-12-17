@@ -5,27 +5,37 @@
 
 void init()
 {
+    // Global FSM variables
     current_area = 0;
     current_block_class = 0;
     current_block_distance = 0;
-    // Initial and waiting position
+    
+    // Initial and park position
     ur5_home_pos.x = 0.1;
     ur5_home_pos.y = -0.2;
     ur5_home_pos.z = 0.4;
     ur5_default_rot.roll = M_PI / 2;
+    
     shelfino_home_pos.x = 0.5;
     shelfino_home_pos.y = 1.2;
-    // Where to find a megablock from mobile robot
+    
+    // Where to load the megablock
     ur5_load_pos.x = 0.0;
     ur5_load_pos.y = -0.35;
     ur5_load_pos.z = 0.73;
+    
+    // This is for gazebo
     block_load_pos.x = 0.5;
     block_load_pos.y = 0.7;
     block_load_pos.z = 0.87;
-    // Basket test
-    ur5_unload_pos.x = 0.45;
-    ur5_unload_pos.y = 0.1;
-    ur5_unload_pos.z = 0.6;
+    
+    // Where to find baskets
+    ur5_unload_pos.x = 0.42;
+    ur5_unload_pos.z = 0.55;
+    unload_position_y.push_back(0.12);
+    unload_position_y.push_back(-0.03);
+    unload_position_y.push_back(-0.18);
+    unload_position_y.push_back(-0.33);
 
     // Move ur5 to home position
     ur5_move_srv.request.pos = ur5_home_pos;
@@ -37,6 +47,8 @@ void init()
 
 void shelfino_next_area()
 {
+    ROS_INFO("Proceeding to area %d", current_area);
+    
     // Move shelfino to the center of the current area
     shelfino_move_srv.request.pos.x = areas[current_area][0];
     shelfino_move_srv.request.pos.y = areas[current_area][1];
@@ -57,6 +69,7 @@ void shelfino_search_block()
     // if distance > area radius, wrong block
     // if response is valid:
     if (++a == b) {
+        ROS_INFO("Block identified!");
         b = rand() % 10;
         a = 0;
         current_block_distance = 1;
@@ -72,7 +85,16 @@ void shelfino_check_block()
 
     // Make service call to python classification node
     // if response == true:
-    current_block_class = rand() % 4;
+    current_block_class = rand() % 11;
+    ROS_INFO("Block classified: %d", current_block_class);
+
+    // Choose the right basket based on the block class
+    if (class_to_basket_map.find(current_block_class) == class_to_basket_map.end())
+    {
+        // Use an empy basket
+        class_to_basket_map.insert(std::pair<int, int>(current_block_class, class_to_basket_map.size()));
+        // Else, an object of the same class has already been classified: put it in the same basket
+    }
     
     // gazebo move block to ur5 load position
     model_state_srv.request.model_state.model_name = std::to_string(current_area);
@@ -113,6 +135,7 @@ void ur5_unload()
     ur5_move_client.call(ur5_move_srv);
     // Move ur5 to unload position
     ur5_move_srv.request.pos = ur5_unload_pos;
+    ur5_move_srv.request.pos.y = unload_position_y[class_to_basket_map[current_block_class]];
     ur5_move_srv.request.rot = ur5_default_rot;
     ur5_move_client.call(ur5_move_srv);
     // Open gripper

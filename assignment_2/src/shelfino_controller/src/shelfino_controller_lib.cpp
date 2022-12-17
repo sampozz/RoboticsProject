@@ -15,15 +15,15 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     this->current_position << 0.5, 1.2, 0;
 
     // Publisher initialization
-    velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1000);
+    velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1);
 
     // Subscriber initialization
-    odometry_sub = node.subscribe("/shelfino/odom", 1, &ShelfinoController::odometry_callback, this);
+    odometry_sub = node.subscribe("/shelfino/odom", 100, &ShelfinoController::odometry_callback, this);
 }
 
 void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
 {
-    std::cout << "Initial position: " << current_position.transpose() << ", initial rotation: " << current_rotation << std::endl; 
+    ROS_INFO("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     // Compute the first rotation to make shelfino look towards the destination point
     double first_rot = shelfino_trajectory(current_position, current_rotation, pos);
     ros::spinOnce(); // Update values from odometry
@@ -79,8 +79,7 @@ void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
 
     if (yaw == 0) {
         current_position = pos;
-        std::cout << "Final position: " << current_position.transpose() << ", final rotation: " << current_rotation << std::endl;
-        std::cout << "Odometry position: " << odometry_position.transpose() << ", odometry rotation: " << odometry_rotation << std::endl;
+        ROS_INFO("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
         return; 
     }
 
