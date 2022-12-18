@@ -25,9 +25,9 @@ void init()
     ur5_load_pos.z = 0.73;
     
     // This is for gazebo
-    block_load_pos.x = 0.5;
-    block_load_pos.y = 0.7;
-    block_load_pos.z = 0.87;
+    block_load_pos.position.x = 0.5;
+    block_load_pos.position.y = 0.7;
+    block_load_pos.position.z = 0.87;
     
     // Where to find baskets
     ur5_unload_pos.x = 0.42;
@@ -98,9 +98,7 @@ void shelfino_check_block()
     
     // gazebo move block to ur5 load position
     model_state_srv.request.model_state.model_name = std::to_string(current_area);
-    model_state_srv.request.model_state.pose.position.x = block_load_pos.x;
-    model_state_srv.request.model_state.pose.position.y = block_load_pos.y;
-    model_state_srv.request.model_state.pose.position.z = block_load_pos.z;
+    model_state_srv.request.model_state.pose = block_load_pos;
     gazebo_model_state.call(model_state_srv);
 
     current_state = STATE_UR5_LOAD;

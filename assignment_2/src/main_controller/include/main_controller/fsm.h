@@ -35,9 +35,10 @@ State_t current_state;
 
 /* Global variables */
 
-ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos, block_load_pos;
+ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
 ur5_controller::EulerRotation ur5_default_rot;
 shelfino_controller::Coordinates shelfino_home_pos;
+geometry_msgs::Pose block_load_pos;
 
 ur5_controller::MoveTo ur5_move_srv;
 ur5_controller::SetGripper ur5_gripper_srv;

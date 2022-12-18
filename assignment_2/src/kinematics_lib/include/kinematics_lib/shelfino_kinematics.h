@@ -5,25 +5,41 @@
 
 /**
  * Compute euler angles from quaternion
+ * @param qx Quaternion value x
+ * @param qy Quaternion value y
+ * @param qz Quaternion value z
+ * @param qw Quaternion value w
  * @return yaw
  */
 double quaternion_to_yaw(double qx, double qy, double qz, double qw);
 
 /**
- * Compute distance and required rotation to move shelfino from an initial to a final point
- * @param initial_pos input
- * @param initial_rot input
- * @param final_pos input
- * @param distance output: distance from the initial to final point
- * @param angle output: rotation angle to look towards the final point
+ * Compute the required rotation to move shelfino from an initial to a final point
+ * @param initial_pos The initial position of Shelfino
+ * @param initial_rot The initial rotation of Shelfino
+ * @param final_pos The desired position of Shelfino
+ * @return angle: rotation angle to look towards the final point
  */
 double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordinates &final_position);
 
 /**
- * Return the angle between 0 and 2pi
+ * Return the angle mapped between 0 and 2pi
+ * @param angle The angle to be normalized
+ * @return The normalized angle between 0 and 2pi
  */
 double norm_angle(double angle);
 
+/**
+ * Compute the Lyapunov control algorithm to make Shelfino follow the desired trajectory
+ * @param initial_pos The initial position
+ * @param initial_rot The initial rotation
+ * @param desired_pos The desired position
+ * @param desired_rot The desired rotation
+ * @param desired_linvel The linear velocity
+ * @param desired_angvel The angular velocity
+ * @param linear_vel - output: The computed linear velocity
+ * @param angular_vel - output: The computed angular velocity 
+ */
 void line_control(Coordinates &initial_pos, double initial_rot, Coordinates &desired_pos, double desired_rot, double desired_linvel, double desired_angvel, double &linear_vel, double &angular_vel);
 
 #endif
