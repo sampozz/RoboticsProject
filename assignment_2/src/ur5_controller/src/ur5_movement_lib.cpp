@@ -1,5 +1,6 @@
 #include "ur5_controller/ur5_controller_lib.h"
 #include <map>
+#include <Eigen/SVD>
 
 using namespace std;
 
@@ -107,8 +108,13 @@ bool UR5Controller::validate_path(double *path, int n)
         Eigen::Matrix<double, 6, 6> jac;
         ur5_jacobian(intermediate_testing_joints, jac);
         
-        // Check singularity
+        // Check singularity with jacobian determinant
         if (abs(jac.determinant()) < 0.00001)
+            return false;
+
+        // Check singulaity with jacobian singular values
+        Eigen::JacobiSVD<Eigen::MatrixXd> svd(jac, Eigen::ComputeThinU | Eigen::ComputeThinV);
+        if (abs(svd.singularValues()(5)) < 0.00001)
             return false;
     }
     return true;
