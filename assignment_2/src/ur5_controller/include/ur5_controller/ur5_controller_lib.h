@@ -29,41 +29,54 @@ private:
 
     /**
      * Callback function, listen to /ur5/joint_states topic and update current_pos
+     * @param msg The data received from the topic
      */
     void joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg);
 
     /**
      * Convert the JointStateVector desired_pos to a Float64MultiArray,
      * then send the array to ros topic defined by the joint_state_pub publisher
+     * @param desired_joints The desired configuration to be sent to the topic 
      */
-    void send_joint_state(JointStateVector &desired_pos);
+    void send_joint_state(JointStateVector &desired_joints);
 
     /**
-     * Send selected diameter to /ur5/gripper_controller/command
+     * Send desired diameter to /ur5/gripper_controller/command to open/close the gripper
+     * @param diameter The value of the gripper aperture
      */
     void send_gripper_state(int diameter);
 
     /**
      * Compute joint values by following consecutive approximations.
-     * The velocity of the end effector reamins constant.
-     *  Use this function iteratively to send joint states to the robot and avoid steps
+     * The velocity of the end effector remains constant.
+     * Use this function iteratively to send joint states to the robot and avoid steps.
+     * Use init_filters function before starting to use this filter.
+     * @param final_joints The desired joints configuration
+     * @return The filtered configuration
      */
-    JointStateVector linear_filter(const JointStateVector &final_pos);
+    JointStateVector linear_filter(const JointStateVector &final_joints);
 
     /**
-     * Init values of linear and so filters 
+     * Init values of the linear filter 
      */
-    void init_filters();
+    void init_filters(void);
 
     /**
-     * Compute difference between the two vector, by normalizing the angles.
+     * Compute difference between the two vectors, by normalizing the angles first.
      * Eg. -PI/2 will be equal to 3*PI/2
+     * @param first_vector The first joints configuration
+     * @param second_vecotr The second joints configuration
+     * @return The norm of the difference between first and second vectors
      */
-    double compute_error(JointStateVector &current_joints, JointStateVector &desired_joints);
+    double compute_error(JointStateVector &first_vector, JointStateVector &second_vector);
 
     /**
-     * For every joint configuration, compute direct kinematics and check if the posititon collides with the workbanch
-     * @return true if path is valid
+     * For every joint configuration: 
+     * 1. Compute direct kinematics and check if the posititon collides with the workbanch
+     * 2. Compute jacobian, its determinant and the minimum singular value to avoid singularities
+     * @param path Pointer to the vector of n * 6 elements, it represents the n configurations of the joints during the trajectory
+     * @param n The number of configurations of the joints during the trajectory
+     * @return true if path is valid, false if some constraints are not met
      */
     bool validate_path(double *path, int n);
 
@@ -86,18 +99,20 @@ public:
      * 1. Read the /ur5/joint_states topic and get the initial configuration 
      * 2. Compute complete inverse kinematics to find all the possibile final configurations
      * 3. Compute the path of for every ik solution
-     * 4. Compute direct kinematics on every configuration inside the path and check position constraints
+     * 4. Compute direct kinematics on every configuration inside the path and check position and singularity constraints
      * 5. If the path is acceptable, follow it 
      */
     bool ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n);
 
     /**
-     *  Open and close the gripper at the selected diameter
+     * Open and close the gripper at the selected diameter
+     * @param diameter The aperture of the gripper
      */
     void ur5_set_gripper(int diameter);
 
     /**
-     * Save current joint state vector in the parameter joints.
+     * Save current joint state vector in the parameter joints
+     * @param joints - output: reference to a vector in which to save the current configuration
      */
     void ur5_get_joint_states(JointStateVector &joints);
 };

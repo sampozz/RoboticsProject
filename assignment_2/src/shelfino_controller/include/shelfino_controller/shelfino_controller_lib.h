@@ -70,13 +70,20 @@ public:
     void shelfino_move_to(Coordinates &pos, double yaw);
 
     /**
-     * Rotates shelfino of the desired angle
+     * Rotate shelfino of the desired angle
      * @param angle The desired rotation
      */
     void shelfino_rotate(double angle);
 
+    /**
+     * Move shelfino forwards of the desired distance using lyapunov control
+     * @param distance The distance that shelfino should travel
+    */
     void shelfino_move_forward(double distance);
 
+    /**
+     * Reset the odometry values by setting the current position as origin
+     */
     void reset_odometry(void);
 };
 

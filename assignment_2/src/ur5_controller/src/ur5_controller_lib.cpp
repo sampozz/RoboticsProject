@@ -51,14 +51,14 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
     }
 }
 
-void UR5Controller::send_joint_state(JointStateVector &desired_pos)
+void UR5Controller::send_joint_state(JointStateVector &desired_joints)
 {
     std_msgs::Float64MultiArray joint_state_msg_array;
     joint_state_msg_array.data.resize(8);
 
     // Create message object
     for (int i = 0; i < 6; i++)
-        joint_state_msg_array.data[i] = desired_pos[i];
+        joint_state_msg_array.data[i] = desired_joints[i];
 
     // Add the state of the gripper (remember to resize data array)
     for (int i = 0; i < 2; i++)

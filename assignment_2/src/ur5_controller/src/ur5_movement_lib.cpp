@@ -139,18 +139,18 @@ int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &in
     return list;
 }
 
-void UR5Controller::init_filters()
+void UR5Controller::init_filters(void)
 {
     ros::spinOnce();
     lin_filter = current_joints;
     v_ref = 0.0;
 }
 
-JointStateVector UR5Controller::linear_filter(const JointStateVector &final_pos)
+JointStateVector UR5Controller::linear_filter(const JointStateVector &final_joints)
 {
     double v_des = 0.6;
     v_ref += 0.005 * (v_des - v_ref);
-    lin_filter += 1.0 / loop_frequency * v_ref * (final_pos - lin_filter) / (final_pos - lin_filter).norm();
+    lin_filter += 1.0 / loop_frequency * v_ref * (final_joints - lin_filter) / (final_joints - lin_filter).norm();
     return lin_filter;
 }
 
@@ -163,13 +163,13 @@ double norm_angle(double angle)
     return angle;
 }
 
-double UR5Controller::compute_error(JointStateVector &desired_joints, JointStateVector &current_joints)
+double UR5Controller::compute_error(JointStateVector &first_vector, JointStateVector &second_vector)
 {
     JointStateVector current_normed, desired_normed;
     for (int i = 0; i < 6; i++)
     {
-        current_normed(i) = norm_angle(current_joints(i));
-        desired_normed(i) = norm_angle(desired_joints(i));
+        current_normed(i) = norm_angle(second_vector(i));
+        desired_normed(i) = norm_angle(first_vector(i));
     }
     return (current_normed - desired_normed).norm();
 }
