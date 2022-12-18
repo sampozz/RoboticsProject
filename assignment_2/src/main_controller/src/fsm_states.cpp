@@ -12,7 +12,7 @@ void init()
     
     // Initial and park position
     ur5_home_pos.x = 0.1;
-    ur5_home_pos.y = -0.2;
+    ur5_home_pos.y = -0.3;
     ur5_home_pos.z = 0.4;
     ur5_default_rot.roll = M_PI / 2;
     

@@ -152,7 +152,9 @@ void ShelfinoController::shelfino_move_forward(double distance)
     // Stop rotation
     send_velocity(0, 0, 10);
     ros::spinOnce();
-    current_position << odometry_position;
+
+    current_position(0) = (current_position(0) + distance * cos(current_rotation) + odometry_position(0)) / 2;
+    current_position(1) = (current_position(1) + distance * sin(current_rotation) + odometry_position(1)) / 2;
 }
 
 void ShelfinoController::reset_odometry(void)
