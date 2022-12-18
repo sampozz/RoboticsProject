@@ -24,8 +24,8 @@ private:
 
     Coordinates current_position;
     double current_rotation;
-    Coordinates odometry_position;
-    double odometry_rotation;
+    Coordinates odometry_position, odometry_position_0;
+    double odometry_rotation, odometry_rotation_0;
 
     /**
      * Callback function, listen to /shelfino/odom topic and update odometry position and rotation
@@ -44,6 +44,8 @@ public:
     void shelfino_rotate(double angle);
 
     void shelfino_move_forward(double distance);
+
+    void reset_odometry(void);
 };
 
 #endif

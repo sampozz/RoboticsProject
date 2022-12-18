@@ -12,7 +12,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     this->angular_velocity = angular_velocity;
     this->current_rotation = 0;
     this->odometry_rotation = 0;
-    this->current_position << 0.5, 1.2, 0;
+    this->current_position << 0, 0, 0;
 
     // Publisher initialization
     velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1);
@@ -155,6 +155,13 @@ void ShelfinoController::shelfino_move_forward(double distance)
     current_position << odometry_position;
 }
 
+void ShelfinoController::reset_odometry(void)
+{
+    ros::spinOnce();
+    odometry_position_0 = odometry_position;
+    odometry_rotation_0 = odometry_rotation;
+}
+
 
 /* Private functions */
 
@@ -162,10 +169,12 @@ void ShelfinoController::odometry_callback(const nav_msgs::Odometry::ConstPtr &m
 {
     geometry_msgs::Point p = msg->pose.pose.position;
     odometry_position << p.x, p.y, 0;
+    odometry_position -= odometry_position_0;
 
     geometry_msgs::Quaternion q = msg->pose.pose.orientation;
     // We are interested on the rotation about z axis (yaw) only
     odometry_rotation = quaternion_to_yaw(q.x, q.y, q.z, q.w);
+    odometry_rotation -= odometry_rotation_0;
 }
 
 void ShelfinoController::send_velocity(double linear_vel, double angular_vel)

@@ -69,7 +69,8 @@ add_library(${PROJECT_NAME}
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/ur5_controller_node.cpp)
 add_executable(shelfino_controller_node src/shelfino_controller_node.cpp)
-add_executable(shelfino_test src/shelfino_test.cpp)
+# add_executable(shelfino_test src/shelfino_test.cpp)
+add_executable(shelfino_stop src/shelfino_stop.cpp)
 
 ## Specify libraries to link a library or executable target against
 # target_link_libraries(${PROJECT_NAME}_node
@@ -78,7 +79,8 @@ add_executable(shelfino_test src/shelfino_test.cpp)
 target_link_libraries(${PROJECT_NAME} ${catkin_LIBRARIES})
 target_link_libraries(shelfino_controller_node shelfino_controller ${catkin_LIBRARIES})
 target_link_libraries(shelfino_controller_node ${catkin_LIBRARIES})
-target_link_libraries(shelfino_test ${catkin_LIBRARIES})
+# target_link_libraries(shelfino_test ${catkin_LIBRARIES})
+target_link_libraries(shelfino_stop ${catkin_LIBRARIES})
 
 #############
 ## Install ##

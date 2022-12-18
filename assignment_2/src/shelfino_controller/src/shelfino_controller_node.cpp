@@ -34,6 +34,8 @@ int main(int argc, char **argv)
     ros::NodeHandle controller_node;
 
     ShelfinoController controller(0.3, 0.3, 1000.0);
+    ros::Duration(2.0).sleep();
+    controller.reset_odometry();
     controller_ptr = &controller;
 
     ros::ServiceServer move_service = controller_node.advertiseService("shelfino/move_to", move_to);
