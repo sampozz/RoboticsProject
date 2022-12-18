@@ -1,3 +1,12 @@
+/** 
+* @file ur5_controller_lib.h 
+* @brief Header file for the UR5 Controller class and library
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __UR5_CONTROLLER_H__
 #define __UR5_CONTROLLER_H__
 
@@ -5,6 +14,10 @@
 #include "ros/ros.h"
 #include <sensor_msgs/JointState.h>
 
+/**
+ * @brief The UR5 Controller class implements the high level functions for the movement and control of UR5
+ * @class UR5Controller
+ */
 class UR5Controller
 {
 private:

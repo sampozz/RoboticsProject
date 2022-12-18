@@ -1,3 +1,12 @@
+/** 
+* @file kinematics_types.h 
+* @brief Header file for custom types defined to deal with algebraic computations
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __KINEMATICS_TYPES_H__
 #define __KINEMATICS_TYPES_H__
 

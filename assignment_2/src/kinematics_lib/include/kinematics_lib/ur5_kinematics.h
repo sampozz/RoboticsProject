@@ -1,3 +1,12 @@
+/** 
+* @file ur5_kinematics.h 
+* @brief Header file for the kinematics function related to UR5 control
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __UR5_KINEMATICS_H__
 #define __UR5_KINEMATICS_H__
 

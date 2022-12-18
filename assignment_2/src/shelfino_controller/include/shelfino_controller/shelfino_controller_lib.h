@@ -1,3 +1,12 @@
+/** 
+* @file shelfino_controller_lib.h 
+* @brief Header file for the Shelfino Controller class and library
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __SHELFINO_CONTROLLER_H__
 #define __SHELFINO_CONTROLLER_H__
 
@@ -9,6 +18,10 @@
 #include <Eigen/Dense>
 #include <math.h>
 
+/**
+ * @brief The Shelfino Controller class implements the high level functions for the movement and control of Shelfino
+ * @class ShelfinoController
+ */
 class ShelfinoController
 {
 private:
@@ -50,8 +63,8 @@ private:
 
 public:
     /**
-     * Constructor
-     * Create the shelfino controller, assigne initial values and initialize publishers and subscribers
+     * Constructor.
+     * Create the shelfino controller, assign initial values and initialize publishers and subscribers
      * @param linear_velocity The linear velocity value for Shelfino (which is constant) 
      * @param angular_velocity The angular velocity value for Shelfino (which is constant) 
      * @param loop_frequency The default frequency used to compute trajectories and send messages to topics

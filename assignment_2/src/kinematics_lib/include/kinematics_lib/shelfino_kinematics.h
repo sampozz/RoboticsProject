@@ -1,3 +1,12 @@
+/** 
+* @file shelfino_kinematics.h 
+* @brief Header file for the kinematics functions related to Shelfino control
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __SHELFINO_KINEMATICS_H__
 #define __SHELFINO_KINEMATICS_H__
 

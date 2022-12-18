@@ -1,8 +1,11 @@
-/*
- * Desc: Gazebo link attacher plugin.
- * Author: Sammy Pfeiffer (sam.pfeiffer@pal-robotics.com)
- * Date: 05/04/2016
- */
+/** 
+* @file gazebo_ros_link_attacher.h 
+* @brief Gazebo link attacher plugin.
+*
+* @author Sammy Pfeiffer (sam.pfeiffer@pal-robotics.com)
+*
+* @date 05/04/2016
+*/
 
 #ifndef GAZEBO_ROS_LINK_ATTACHER_HH
 #define GAZEBO_ROS_LINK_ATTACHER_HH

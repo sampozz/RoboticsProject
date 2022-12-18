@@ -1,3 +1,12 @@
+/** 
+* @file fsm.h 
+* @brief Header file for the finite state machine which implements the main actions 
+*
+* @author Samuele Pozzani
+*
+* @date 18/12/2022
+*/
+
 #ifndef __FSM_H__
 #define __FSM_H__
 
