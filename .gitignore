@@ -4,6 +4,3 @@ install/
 .vscode/
 
 docs/
-models/
-locosim/models/
-*.sdf

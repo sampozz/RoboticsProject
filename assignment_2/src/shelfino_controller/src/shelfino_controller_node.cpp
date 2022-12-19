@@ -10,7 +10,7 @@ bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::Mov
 {
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
-    
+    std::cout << "Received" << std::endl;
     controller_ptr->shelfino_move_to(pos, req.rot);
     return true;
 }
@@ -33,8 +33,8 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "shelfino_controller_node");
     ros::NodeHandle controller_node;
 
-    ShelfinoController controller(0.3, 0.3, 1000.0);
-    ros::Duration(2.0).sleep();
+    ShelfinoController controller(0.1, 0.1, 20.0);
+    
     controller.reset_odometry();
     controller_ptr = &controller;
 
