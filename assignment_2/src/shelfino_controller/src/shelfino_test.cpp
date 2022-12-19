@@ -22,9 +22,9 @@ int main(int argc, char **argv)
     ros::ServiceClient shelfino_forward_client = fsm_node.serviceClient<shelfino_controller::MoveForward>("shelfino/move_forward");
 
     vector<vector<double>> areas;
-    areas.push_back({1, 1, 3});
-    areas.push_back({1, 2, 3});
-    areas.push_back({2, 2, 3});
+    areas.push_back({3, 2, 3});
+    areas.push_back({1, 5, 3});
+    areas.push_back({3, 4, 3});
     
     for (int current_area = 0; current_area < 3; current_area++)
     {
@@ -33,6 +33,6 @@ int main(int argc, char **argv)
         shelfino_move_srv.request.pos.y = areas[current_area][1];
         shelfino_move_client.call(shelfino_move_srv);
         // Wait a bit, just to avoid shit
-        ros::Duration(5.0).sleep();
+        ros::Duration(2.0).sleep();
     }
 }

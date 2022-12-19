@@ -1,6 +1,6 @@
 #include "shelfino_controller/shelfino_controller_lib.h"
 #include "kinematics_lib/shelfino_kinematics.h"
-#include <unistd.h>
+
 using namespace std;
 
 /* Public functions */
@@ -15,10 +15,10 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     this->current_position << 0, 0, 0;
 
     // Publisher initialization
-    velocity_pub = node.advertise<geometry_msgs::Twist>("/cmd_vel", 100);
+    velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1);
 
     // Subscriber initialization
-    odometry_sub = node.subscribe("/shelfino2/odom", 100, &ShelfinoController::odometry_callback, this);
+    odometry_sub = node.subscribe("/shelfino/odom", 100, &ShelfinoController::odometry_callback, this);
 }
 
 void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
