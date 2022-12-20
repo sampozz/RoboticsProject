@@ -22,9 +22,9 @@ int main(int argc, char **argv)
     ros::ServiceClient shelfino_forward_client = fsm_node.serviceClient<shelfino_controller::MoveForward>("shelfino/move_forward");
 
     vector<vector<double>> areas;
-    areas.push_back({3, 2, 3});
-    areas.push_back({1, 5, 3});
-    areas.push_back({3, 4, 3});
+    areas.push_back({2.5, 1.8, 3}); // 3,3
+    areas.push_back({4.5, 1.8, 3}); // 5,3
+    areas.push_back({4.5, 3.8, 3}); // 5,5
     
     for (int current_area = 0; current_area < 3; current_area++)
     {

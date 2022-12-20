@@ -10,12 +10,7 @@ double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordin
     double dx = final_position(0) - initial_pos(0);
     double dy = final_position(1) - initial_pos(1);
     double alpha = norm_angle(atan2(dy, dx));
-    // double angle = norm_angle(initial_rot - alpha);
     double angle = norm_angle(alpha - initial_rot);
-
-    // correggi il segno in base alla rotazione iniziale
-    if (angle > M_PI)
-        angle = -(2 * M_PI - angle);
 
     return angle;
 }
@@ -32,6 +27,8 @@ double sinc(double t)
 
 void line_control(Coordinates &initial_pos, double initial_rot, Coordinates &desired_pos, double desired_rot, double desired_linvel, double desired_angvel, double &linear_vel, double &angular_vel)
 {
+    initial_rot = norm_angle(initial_rot);
+    desired_rot = norm_angle(desired_rot);
     double error_x = initial_pos(0) - desired_pos(0);
     double error_y = initial_pos(1) - desired_pos(1);
     double error_rot = initial_rot - desired_rot;

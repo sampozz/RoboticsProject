@@ -32,9 +32,9 @@ double quaternion_to_yaw(double qx, double qy, double qz, double qw);
 double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordinates &final_position);
 
 /**
- * Return the angle mapped between 0 and 2pi
+ * Return the angle mapped between -pi and pi
  * @param angle The angle to be normalized
- * @return The normalized angle between 0 and 2pi
+ * @return The normalized angle between -pi and pi
  */
 double norm_angle(double angle);
 

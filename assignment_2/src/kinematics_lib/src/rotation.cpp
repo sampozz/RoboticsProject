@@ -34,11 +34,8 @@ double quaternion_to_yaw(double qx, double qy, double qz, double qw)
 
 double norm_angle(double angle)
 {
-    if (angle == 0)
-        return 0;
-    if (angle > 0)
-        angle = fmod(angle, 2 * M_PI);
-    else
-        angle = 2 * M_PI - fmod(-angle, 2 * M_PI);
-    return angle;
+    angle = fmod(angle + M_PI, 2 * M_PI);
+    if (angle < 0)
+        angle += 2 * M_PI;
+    return angle - M_PI;
 }

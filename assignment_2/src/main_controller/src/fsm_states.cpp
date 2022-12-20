@@ -18,6 +18,7 @@ void init()
     
     shelfino_home_pos.x = 0.5;
     shelfino_home_pos.y = 1.2;
+    shelfino_move_srv.request.rot = 0;
     
     // Where to load the megablock
     ur5_load_pos.x = 0.0;
@@ -101,7 +102,8 @@ void shelfino_check_block()
     model_state_srv.request.model_state.pose = block_load_pos;
     gazebo_model_state.call(model_state_srv);
 
-    current_state = STATE_UR5_LOAD;
+    current_area++;
+    current_state = STATE_SHELFINO_NEXT_AREA;
 }
 
 void ur5_load()

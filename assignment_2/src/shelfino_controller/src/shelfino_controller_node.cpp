@@ -23,7 +23,7 @@ bool rotate(shelfino_controller::Rotate::Request &req, shelfino_controller::Rota
 
 bool move_forward(shelfino_controller::MoveForward::Request &req, shelfino_controller::MoveForward::Response &res)
 {    
-    controller_ptr->shelfino_move_forward(req.distance);
+    controller_ptr->shelfino_move_forward(req.distance, false);
     return true;
 }
 

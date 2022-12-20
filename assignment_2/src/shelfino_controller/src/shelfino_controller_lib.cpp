@@ -31,9 +31,10 @@ void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
     
     // Move forward and reach desired position
     double distance = sqrt(pow(pos(0) - current_position(0), 2) + pow(pos(1) - current_position(1), 2));
-    shelfino_move_forward(distance);
+    shelfino_move_forward(distance, true);
 
     if (yaw == 0) {
+        current_position = pos;
         ROS_INFO("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
         return; 
     }
@@ -65,10 +66,10 @@ void ShelfinoController::shelfino_rotate(double angle)
     send_velocity(0, 0, 10);
     ros::Duration(1.0).sleep();
     ros::spinOnce();
-    current_rotation = ((current_rotation + angle) + odometry_rotation) / 2;
+    current_rotation = current_rotation + angle;
 }
 
-void ShelfinoController::shelfino_move_forward(double distance)
+void ShelfinoController::shelfino_move_forward(double distance, bool control)
 {
     double movement_duration = abs(distance / linear_velocity);
     Coordinates des_pos;
@@ -77,13 +78,21 @@ void ShelfinoController::shelfino_move_forward(double distance)
 
     while (ros::ok())
     {
-        // Compute Lyapunov line control
-        des_pos << current_position(0) + (linear_velocity * cos(current_rotation) * elapsed_time), 
-            current_position(1) + (linear_velocity * sin(current_rotation) * elapsed_time), 0;
-        line_control(odometry_position, odometry_rotation, des_pos, current_rotation, linear_velocity, 0.0, linear_res, angular_res);
+        if (control)
+        {
+            // Compute Lyapunov line control
+            des_pos << current_position(0) + (linear_velocity * cos(current_rotation) * elapsed_time), 
+                current_position(1) + (linear_velocity * sin(current_rotation) * elapsed_time), 0;
+            line_control(odometry_position, odometry_rotation, des_pos, current_rotation, linear_velocity, 0.0, linear_res, angular_res);
 
-        // Publish to topic
-        send_velocity(linear_res, angular_res);
+            // Publish to topic
+            send_velocity(linear_res, angular_res);
+        }
+        else
+        {
+            // Publish to topic
+            send_velocity(linear_velocity, 0);
+        }
 
         if (elapsed_time > movement_duration)
             break;
@@ -96,8 +105,8 @@ void ShelfinoController::shelfino_move_forward(double distance)
     send_velocity(0, 0, 10);
     ros::Duration(1.0).sleep();
     ros::spinOnce();
-    current_position(0) = (current_position(0) + distance * cos(current_rotation) + odometry_position(0)) / 2;
-    current_position(1) = (current_position(1) + distance * sin(current_rotation) + odometry_position(1)) / 2;
+    current_position(0) = current_position(0) + distance * cos(current_rotation);
+    current_position(1) = current_position(1) + distance * sin(current_rotation);
 }
 
 void ShelfinoController::reset_odometry(void)

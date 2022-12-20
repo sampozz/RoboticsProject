@@ -91,8 +91,9 @@ public:
     /**
      * Move shelfino forwards of the desired distance using lyapunov control
      * @param distance The distance that shelfino should travel
+     * @param control Use Lyapunov control if True
     */
-    void shelfino_move_forward(double distance);
+    void shelfino_move_forward(double distance, bool control);
 
     /**
      * Reset the odometry values by setting the current position as origin
