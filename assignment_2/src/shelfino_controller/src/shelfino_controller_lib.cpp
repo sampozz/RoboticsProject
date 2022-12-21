@@ -84,6 +84,7 @@ double ShelfinoController::shelfino_rotate(double angle)
 
 Coordinates ShelfinoController::shelfino_move_forward(double distance, bool control)
 {
+    ROS_INFO("Moving Shelfino forward: initial position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
     double movement_duration = abs(distance / linear_velocity);
     Coordinates des_pos;
     double elapsed_time = 0;
@@ -120,6 +121,7 @@ Coordinates ShelfinoController::shelfino_move_forward(double distance, bool cont
     ros::spinOnce();
     current_position(0) = current_position(0) + distance * cos(current_rotation);
     current_position(1) = current_position(1) + distance * sin(current_rotation);
+    ROS_INFO("Moving Shelfino forward: final position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
 
     return current_position;
 }
@@ -129,6 +131,9 @@ void ShelfinoController::reset_odometry(void)
     ros::spinOnce();
     odometry_position_0 = odometry_position;
     odometry_rotation_0 = odometry_rotation;
+
+    if (abs(odometry_position_0(0) > 100) || abs(odometry_position_0(1)) > 100)
+        ROS_WARN("Shelfino odometry broken");
 }
 
 

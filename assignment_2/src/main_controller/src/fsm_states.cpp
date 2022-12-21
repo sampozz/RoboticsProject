@@ -56,11 +56,14 @@ void shelfino_rotate_towards_next_area()
 
     // service call to block detection node
     // if not block detected 
-    current_state = STATE_SHELFINO_NEXT_AREA;
-
+    if (rand() % 2)
+        current_state = STATE_SHELFINO_NEXT_AREA;
     // else: block detected
-    // current_state = STATE_SHELFINO_CHECK_BLOCK;
-    
+    else 
+    {
+        current_block_distance = 1;
+        current_state = STATE_SHELFINO_CHECK_BLOCK;    
+    }
 }
 
 void shelfino_next_area()
