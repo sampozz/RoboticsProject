@@ -5,6 +5,7 @@
 #include "ur5_controller/SetGripper.h"
 #include "shelfino_controller/MoveTo.h"
 #include "shelfino_controller/Rotate.h"
+#include "shelfino_controller/PointTo.h"
 #include "shelfino_controller/MoveForward.h"
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
@@ -13,6 +14,7 @@ using namespace std;
 
 StateMachine_t fsm[] = {
     {STATE_INIT, init},
+    {STATE_SHELFINO_ROTATE_AREA, shelfino_rotate_towards_next_area},
     {STATE_SHELFINO_NEXT_AREA, shelfino_next_area},
     {STATE_SHELFINO_SEARCH_BLOCK, shelfino_search_block},
     {STATE_SHELFINO_CHECK_BLOCK, shelfino_check_block},
@@ -43,6 +45,7 @@ int main(int argc, char **argv)
     ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("ur5/set_gripper");
     shelfino_move_client = fsm_node.serviceClient<shelfino_controller::MoveTo>("shelfino/move_to");
     shelfino_rotate_client = fsm_node.serviceClient<shelfino_controller::Rotate>("shelfino/rotate");
+    shelfino_point_client = fsm_node.serviceClient<shelfino_controller::PointTo>("shelfino/point_to");
     shelfino_forward_client = fsm_node.serviceClient<shelfino_controller::MoveForward>("shelfino/move_forward");
 
     // Gazebo services

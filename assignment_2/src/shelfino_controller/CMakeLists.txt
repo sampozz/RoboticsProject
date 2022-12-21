@@ -19,6 +19,7 @@ add_compile_options(-std=c++11)
 
 add_service_files(
   FILES
+  PointTo.srv
   MoveTo.srv
   Rotate.srv
   MoveForward.srv

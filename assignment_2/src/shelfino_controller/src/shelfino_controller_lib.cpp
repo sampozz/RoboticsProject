@@ -15,10 +15,10 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     this->current_position << 0, 0, 0;
 
     // Publisher initialization
-    velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1);
+    velocity_pub = node.advertise<geometry_msgs::Twist>("/cmd_vel", 1);
 
     // Subscriber initialization
-    odometry_sub = node.subscribe("/shelfino/odom", 100, &ShelfinoController::odometry_callback, this);
+    odometry_sub = node.subscribe("/shelfino2/odom", 100, &ShelfinoController::odometry_callback, this);
 }
 
 void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
@@ -46,7 +46,18 @@ void ShelfinoController::shelfino_move_to(Coordinates &pos, double yaw)
     shelfino_rotate(final_rot);
 }
 
-void ShelfinoController::shelfino_rotate(double angle)
+double ShelfinoController::shelfino_point_to(Coordinates &pos)
+{
+    ROS_INFO("Rotating Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
+    
+    // Compute the first rotation to make shelfino look towards the destination point
+    double rot = shelfino_trajectory(current_position, current_rotation, pos);
+    shelfino_rotate(rot);
+
+    return rot;
+}
+
+double ShelfinoController::shelfino_rotate(double angle)
 {
     double movement_duration = abs(angle / angular_velocity);
     double elapsed_time = 0;
@@ -66,10 +77,12 @@ void ShelfinoController::shelfino_rotate(double angle)
     send_velocity(0, 0, 10);
     ros::Duration(1.0).sleep();
     ros::spinOnce();
+    
     current_rotation = current_rotation + angle;
+    return current_rotation;
 }
 
-void ShelfinoController::shelfino_move_forward(double distance, bool control)
+Coordinates ShelfinoController::shelfino_move_forward(double distance, bool control)
 {
     double movement_duration = abs(distance / linear_velocity);
     Coordinates des_pos;
@@ -107,6 +120,8 @@ void ShelfinoController::shelfino_move_forward(double distance, bool control)
     ros::spinOnce();
     current_position(0) = current_position(0) + distance * cos(current_rotation);
     current_position(1) = current_position(1) + distance * sin(current_rotation);
+
+    return current_position;
 }
 
 void ShelfinoController::reset_odometry(void)

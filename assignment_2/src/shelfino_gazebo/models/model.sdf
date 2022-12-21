@@ -207,8 +207,8 @@
     
     <gazebo>
     <plugin name="shelfino_controller" filename="libgazebo_ros_diff_drive.so">
-      <commandTopic>/shelfino/velocity/command</commandTopic>
-      <odometryTopic>/shelfino/odom</odometryTopic>
+      <commandTopic>/cmd_vel</commandTopic>
+      <odometryTopic>/shelfino2/odom</odometryTopic>
       <odometryFrame>odom</odometryFrame>
       <odometrySource>world</odometrySource>
       <publishOdomTF>true</publishOdomTF>

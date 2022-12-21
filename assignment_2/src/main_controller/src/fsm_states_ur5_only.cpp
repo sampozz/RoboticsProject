@@ -18,8 +18,6 @@ void init()
     
     shelfino_home_pos.x = 0.5;
     shelfino_home_pos.y = 1.2;
-    shelfino_current_pos.x = 0;
-    shelfino_current_pos.y = 0;
     shelfino_move_srv.request.rot = 0;
     
     // Where to load the megablock
@@ -45,35 +43,17 @@ void init()
     ur5_move_srv.request.rot = ur5_default_rot;
     ur5_move_client.call(ur5_move_srv);
 
-    current_state = STATE_SHELFINO_ROTATE_AREA;
-}
-
-void shelfino_rotate_towards_next_area()
-{
-    shelfino_point_srv.request.pos.x = areas[current_area][0];
-    shelfino_point_srv.request.pos.y = areas[current_area][1];
-    shelfino_point_client.call(shelfino_point_srv);
-
-    // service call to block detection node
-    // if not block detected 
-    current_state = STATE_SHELFINO_NEXT_AREA;
-
-    // else: block detected
-    // current_state = STATE_SHELFINO_CHECK_BLOCK;
-    
+    current_state = STATE_UR5_LOAD;
 }
 
 void shelfino_next_area()
 {
-    ROS_INFO("Proceeding to area %d", (int)areas[current_area][3]);
+    ROS_INFO("Proceeding to area %d", current_area);
     
     // Move shelfino to the center of the current area
-    shelfino_forward_srv.request.distance = sqrt(pow(shelfino_current_pos.x - areas[current_area][0], 2) + 
-        pow(shelfino_current_pos.y - areas[current_area][1], 2));
-    shelfino_forward_client.call(shelfino_forward_srv);
-
-    shelfino_current_pos.x = shelfino_forward_srv.response.pos.x;
-    shelfino_current_pos.y = shelfino_forward_srv.response.pos.y;
+    shelfino_move_srv.request.pos.x = areas[current_area][0];
+    shelfino_move_srv.request.pos.y = areas[current_area][1];
+    shelfino_move_client.call(shelfino_move_srv);
 
     current_state = STATE_SHELFINO_SEARCH_BLOCK;
 }
@@ -104,9 +84,6 @@ void shelfino_check_block()
     shelfino_forward_srv.request.distance = current_block_distance;
     shelfino_forward_client.call(shelfino_forward_srv); 
 
-    shelfino_current_pos.x = shelfino_forward_srv.response.pos.x;
-    shelfino_current_pos.y = shelfino_forward_srv.response.pos.y;
-
     // Make service call to python classification node
     // if response == true:
     current_block_class = rand() % 11;
@@ -119,26 +96,13 @@ void shelfino_check_block()
         class_to_basket_map.insert(std::pair<int, int>(current_block_class, class_to_basket_map.size()));
         // Else, an object of the same class has already been classified: put it in the same basket
     }
-
-    // Check in which area shelfino is
-    for (int i = 0; i < 4; i++)
-    {
-        double dist = sqrt(pow(shelfino_current_pos.x - areas[i][0], 2) + 
-            pow(shelfino_current_pos.y - areas[i][1], 2));
-        
-        if (dist < areas[i][2])
-        {
-            current_area = i;
-            break;
-        }
-    }
     
     // gazebo move block to ur5 load position
-    model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area][3]);
+    model_state_srv.request.model_state.model_name = std::to_string(current_area);
     model_state_srv.request.model_state.pose = block_load_pos;
     gazebo_model_state.call(model_state_srv);
 
-    current_state = STATE_UR5_LOAD;
+    current_state = STATE_SHELFINO_NEXT_AREA;
 }
 
 void ur5_load()
@@ -178,21 +142,17 @@ void ur5_unload()
     ur5_gripper_srv.request.diameter = 100;
     ur5_gripper_client.call(ur5_gripper_srv);
 
-    ROS_INFO("Completed area %d, %ld remaining", (int)areas[current_area][3], areas.size() - 1);
-    areas.erase(areas.begin() + current_area);
-    current_area = 0;
-
-    if (areas.size() == 0)
+    if (++current_area == 4)
         current_state = STATE_END;
     else
-        current_state = STATE_SHELFINO_ROTATE_AREA;
+        current_state = STATE_UR5_LOAD;
 }
 
 void attach()
 {
     link_attacher_srv.request.model_name_1 = "ur5";
     link_attacher_srv.request.link_name_1 = "hand_1_link";
-    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area][3]);
+    link_attacher_srv.request.model_name_2 = std::to_string(current_area);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_attacher.call(link_attacher_srv);
 }
@@ -201,7 +161,7 @@ void detach()
 {
     link_attacher_srv.request.model_name_1 = "ur5";
     link_attacher_srv.request.link_name_1 = "hand_1_link";
-    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area][3]);
+    link_attacher_srv.request.model_name_2 = std::to_string(current_area);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_detacher.call(link_attacher_srv);
 }
