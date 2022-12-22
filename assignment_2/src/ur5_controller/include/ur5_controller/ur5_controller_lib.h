@@ -37,6 +37,9 @@ private:
 
     JointStateVector current_joints;
     GripperStateVector current_gripper;
+    bool is_real_robot = false;
+    bool using_soft_gripper = false;
+    bool is_simulating_gripper = false;
 
     int gripper_diameter;
 

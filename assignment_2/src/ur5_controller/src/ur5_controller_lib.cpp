@@ -10,6 +10,11 @@ UR5Controller::UR5Controller(double loop_frequency, double joints_error, double 
     this->joints_error = joints_error;
     this->settling_time = settling_time;
 
+    // Set params from ros param server
+    node.getParam("/real_robot", is_real_robot);
+    node.getParam("/soft_gripper", using_soft_gripper);
+    node.getParam("/gripper_sim", is_simulating_gripper);
+
     // Publisher initialization
     joint_state_pub = node.advertise<std_msgs::Float64MultiArray>("/ur5/joint_group_pos_controller/command", 1000);
     gripper_state_pub = node.advertise<std_msgs::Int32>("/ur5/gripper_controller/command", 1);
@@ -34,16 +39,23 @@ void UR5Controller::ur5_get_joint_states(JointStateVector &joints)
 
 void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr &msg)
 {
+    int n; // number of joints    
+    if (is_real_robot || !is_simulating_gripper)
+        n = 6;
+    else
+        n = using_soft_gripper ? 8 : 9;
+
     // Get joints values from topic
-    for (int i = 0; i < 8; i++)
+    for (int i = 0; i < n; i++)
     {
         for (int j = 0; j < 6; j++)
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
                 current_joints(j) = msg->position[i];
         }
+        
         // Gripper
-        for (int j = 6; j < 8; j++)
+        for (int j = 6; j < n; j++)
         {
             if (joint_names[j].compare(msg->name[i]) == 0)
                 current_gripper(j - 6) = msg->position[i];
@@ -54,15 +66,24 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
 void UR5Controller::send_joint_state(JointStateVector &desired_joints)
 {
     std_msgs::Float64MultiArray joint_state_msg_array;
-    joint_state_msg_array.data.resize(8);
+    if (is_real_robot || !is_simulating_gripper)
+    {
+        // Cannot send gripper joints values to real robot
+        joint_state_msg_array.data.resize(6);
+    }
+    else 
+    {
+        int n = using_soft_gripper ? 2 : 3; // number of fingers
 
-    // Create message object
+        joint_state_msg_array.data.resize(6 + n);
+        // Add the state of the gripper 
+        for (int i = 0; i < n; i++)
+            joint_state_msg_array.data[6 + i] = current_gripper(i);
+    }
+
+    // Add state of the joints
     for (int i = 0; i < 6; i++)
         joint_state_msg_array.data[i] = desired_joints[i];
-
-    // Add the state of the gripper (remember to resize data array)
-    for (int i = 0; i < 2; i++)
-        joint_state_msg_array.data[i + 6] = current_gripper(i);
 
     // Publish desired joint states message
     joint_state_pub.publish(joint_state_msg_array);

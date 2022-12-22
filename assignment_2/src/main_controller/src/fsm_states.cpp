@@ -61,6 +61,7 @@ void shelfino_rotate_towards_next_area()
     // else: block detected
     else 
     {
+        ROS_INFO("Block identified!");
         current_block_distance = 1;
         current_state = STATE_SHELFINO_CHECK_BLOCK;    
     }
