@@ -17,13 +17,13 @@ bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::Mov
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
     
-    controller_ptr->shelfino_move_to(pos, req.rot);
+    controller_ptr->move_to(pos, req.rot);
     return true;
 }
 
 bool rotate(shelfino_controller::Rotate::Request &req, shelfino_controller::Rotate::Response &res)
 {    
-    double rot = controller_ptr->shelfino_rotate(req.angle);
+    double rot = controller_ptr->rotate(req.angle);
     res.rot = rot;
     return true;
 }
@@ -33,14 +33,14 @@ bool point_to(shelfino_controller::PointTo::Request &req, shelfino_controller::P
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
 
-    double angle = controller_ptr->shelfino_point_to(pos);
+    double angle = controller_ptr->point_to(pos);
     res.rot = angle;
     return true;
 }
 
 bool move_forward(shelfino_controller::MoveForward::Request &req, shelfino_controller::MoveForward::Response &res)
 {    
-    Coordinates new_position = controller_ptr->shelfino_move_forward(req.distance, true);
+    Coordinates new_position = controller_ptr->move_forward(req.distance, true);
     res.pos.x = new_position(0);
     res.pos.y = new_position(1);
     return true;
@@ -63,6 +63,8 @@ int main(int argc, char **argv)
     // Initialize controller
     ShelfinoController controller(0.3, 0.3, 1000.0);
     ros::Duration(2.0).sleep(); // do not remove this sleep (necessary to reset odometry)
+    // Reset odometry: shelfino thinks it is in position (0,0,0) after this node starts running
+    // otherwise lyapunov control (and the movement functions generally) will have problems
     controller.reset_odometry();
     controller_ptr = &controller;
 

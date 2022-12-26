@@ -29,7 +29,7 @@ double quaternion_to_yaw(double qx, double qy, double qz, double qw);
  * @param final_pos The desired position of Shelfino
  * @return angle: rotation angle to look towards the final point
  */
-double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordinates &final_position);
+double shelfino_trajectory_rotation(Coordinates &initial_pos, double initial_rot, Coordinates &final_position);
 
 /**
  * Return the angle mapped between -pi and pi

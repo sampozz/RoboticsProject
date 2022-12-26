@@ -6,7 +6,7 @@
 void init()
 {
     // Global FSM variables
-    current_area = 0;
+    current_area_index = 0;
     current_block_class = 0;
     current_block_distance = 0;
     
@@ -50,8 +50,8 @@ void init()
 
 void shelfino_rotate_towards_next_area()
 {
-    shelfino_point_srv.request.pos.x = areas[current_area][0];
-    shelfino_point_srv.request.pos.y = areas[current_area][1];
+    shelfino_point_srv.request.pos.x = areas[current_area_index][0];
+    shelfino_point_srv.request.pos.y = areas[current_area_index][1];
     shelfino_point_client.call(shelfino_point_srv);
 
     // service call to block detection node
@@ -69,11 +69,11 @@ void shelfino_rotate_towards_next_area()
 
 void shelfino_next_area()
 {
-    ROS_INFO("Proceeding to area %d", (int)areas[current_area][3]);
+    ROS_INFO("Proceeding to area %d", (int)areas[current_area_index][3]);
     
     // Move shelfino to the center of the current area
-    shelfino_forward_srv.request.distance = sqrt(pow(shelfino_current_pos.x - areas[current_area][0], 2) + 
-        pow(shelfino_current_pos.y - areas[current_area][1], 2));
+    shelfino_forward_srv.request.distance = sqrt(pow(shelfino_current_pos.x - areas[current_area_index][0], 2) + 
+        pow(shelfino_current_pos.y - areas[current_area_index][1], 2));
     shelfino_forward_client.call(shelfino_forward_srv);
 
     shelfino_current_pos.x = shelfino_forward_srv.response.pos.x;
@@ -132,13 +132,13 @@ void shelfino_check_block()
         
         if (dist < areas[i][2])
         {
-            current_area = i;
+            current_area_index = i;
             break;
         }
     }
     
     // gazebo move block to ur5 load position
-    model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area][3]);
+    model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area_index][3]);
     model_state_srv.request.model_state.pose = block_load_pos;
     gazebo_model_state.call(model_state_srv);
 
@@ -182,9 +182,9 @@ void ur5_unload()
     ur5_gripper_srv.request.diameter = 100;
     ur5_gripper_client.call(ur5_gripper_srv);
 
-    ROS_INFO("Completed area %d, %ld remaining", (int)areas[current_area][3], areas.size() - 1);
-    areas.erase(areas.begin() + current_area);
-    current_area = 0;
+    ROS_INFO("Completed area %d, %ld remaining", (int)areas[current_area_index][3], areas.size() - 1);
+    areas.erase(areas.begin() + current_area_index);
+    current_area_index = 0;
 
     if (areas.size() == 0)
         current_state = STATE_END;
@@ -196,7 +196,7 @@ void attach()
 {
     link_attacher_srv.request.model_name_1 = "ur5";
     link_attacher_srv.request.link_name_1 = "hand_1_link";
-    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area][3]);
+    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area_index][3]);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_attacher.call(link_attacher_srv);
 }
@@ -205,7 +205,7 @@ void detach()
 {
     link_attacher_srv.request.model_name_1 = "ur5";
     link_attacher_srv.request.link_name_1 = "hand_1_link";
-    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area][3]);
+    link_attacher_srv.request.model_name_2 = std::to_string((int)areas[current_area_index][3]);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_detacher.call(link_attacher_srv);
 }

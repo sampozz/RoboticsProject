@@ -1,7 +1,7 @@
 #include "kinematics_lib/ur5_kinematics.h"
 #include <iostream>
 
-double *ur5_motion_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n)
+double *ur5_trajectory_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n)
 {
     Eigen::Matrix<double, 6, 4> coeff;
     for (int i = 0; i < 6; i++)

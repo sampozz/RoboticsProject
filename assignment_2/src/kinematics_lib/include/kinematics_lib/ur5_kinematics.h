@@ -67,6 +67,6 @@ void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot);
  * @param n Number of configurations to compute in between the path
  * @return Pointer to a vector of n * 6 elements, representing the computed configurations 
  */
-double *ur5_motion_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n);
+double *ur5_trajectory_plan(JointStateVector &initial_joints, JointStateVector &final_joints, int n);
 
 #endif

@@ -23,13 +23,13 @@ UR5Controller::UR5Controller(double loop_frequency, double joints_error, double 
     joint_state_sub = node.subscribe("/ur5/joint_states", 1, &UR5Controller::joint_state_callback, this);
 }
 
-void UR5Controller::ur5_set_gripper(int diameter)
+void UR5Controller::set_gripper(int diameter)
 {
     gripper_diameter = diameter;
     send_gripper_state(diameter);
 }
 
-void UR5Controller::ur5_get_joint_states(JointStateVector &joints)
+void UR5Controller::get_joint_states(JointStateVector &joints)
 {
     ros::spinOnce();
     joints = current_joints;

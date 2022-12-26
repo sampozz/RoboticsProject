@@ -118,19 +118,19 @@ public:
      * 4. Compute direct kinematics on every configuration inside the path and check position and singularity constraints
      * 5. If the path is acceptable, follow it 
      */
-    bool ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n);
+    bool move_to(Coordinates &pos, RotationMatrix &rot, int n);
 
     /**
      * Open and close the gripper at the selected diameter
      * @param diameter The aperture of the gripper
      */
-    void ur5_set_gripper(int diameter);
+    void set_gripper(int diameter);
 
     /**
      * Save current joint state vector in the parameter joints
      * @param joints - output: reference to a vector in which to save the current configuration
      */
-    void ur5_get_joint_states(JointStateVector &joints);
+    void get_joint_states(JointStateVector &joints);
 };
 
 #endif

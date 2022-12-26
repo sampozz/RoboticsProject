@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+
+<launch>
+
+    <!-- Set log level -->
+    <env name="ROSCONSOLE_CONFIG_FILE" value="$(find main_controller)/launch/rosconsole.conf"/>
+
+    <!-- World generation -->
+    <rosparam command="load" file="$(find main_controller)/launch/areas.yaml" />
+
+    <!-- Python code (perception) -->
+
+    <!-- C++ code (controllers) -->
+    <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" output="screen" />
+    <node pkg="shelfino_controller" type="shelfino_controller_node" name="shelfino_controller_node" output="screen" />
+    <node pkg="main_controller" type="fsm" name="fsm" output="screen" />
+
+</launch>

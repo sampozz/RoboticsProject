@@ -68,9 +68,9 @@ std::vector<std::vector<double>> areas;
 std::vector<double> unload_pos_y;
 std::map<int, int> class_to_basket_map;
 
-int current_area;
+int current_area_index; // Index of the current area in the areas array (different to area number)
 int current_block_class;
-int current_block_distance;
+double current_block_distance;
 
 
 /* States functions */

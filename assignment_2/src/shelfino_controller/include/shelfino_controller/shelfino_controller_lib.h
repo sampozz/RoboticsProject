@@ -80,21 +80,21 @@ public:
      * @param pos The desired final position
      * @param yaw The desired final rotation
      */
-    void shelfino_move_to(Coordinates &pos, double yaw);
+    void move_to(Coordinates &pos, double yaw);
 
     /**
      * Rotate Shelfino from its current rotation to look towards the desired position
      * @param pos The desired final position
      * @return The final rotation
      */
-    double shelfino_point_to(Coordinates &pos);
+    double point_to(Coordinates &pos);
 
     /**
      * Rotate shelfino of the desired angle
      * @param angle The desired rotation
      * @return The final rotation of shelfino
      */
-    double shelfino_rotate(double angle);
+    double rotate(double angle);
 
     /**
      * Move shelfino forwards of the desired distance using lyapunov control
@@ -102,7 +102,7 @@ public:
      * @param control Use Lyapunov control if True
      * @return Final position of Shelfino
     */
-    Coordinates shelfino_move_forward(double distance, bool control);
+    Coordinates move_forward(double distance, bool control);
 
     /**
      * Reset the odometry values by setting the current position as origin

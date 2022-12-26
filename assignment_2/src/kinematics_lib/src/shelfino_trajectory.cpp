@@ -5,7 +5,7 @@
 const double kp = 0.5;
 const double kth = 0.5;
 
-double shelfino_trajectory(Coordinates &initial_pos, double initial_rot, Coordinates &final_position)
+double shelfino_trajectory_rotation(Coordinates &initial_pos, double initial_rot, Coordinates &final_position)
 {
     double dx = final_position(0) - initial_pos(0);
     double dy = final_position(1) - initial_pos(1);

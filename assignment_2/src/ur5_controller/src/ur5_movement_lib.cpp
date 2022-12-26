@@ -11,7 +11,7 @@ int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &in
 
 /* Public functions */
 
-bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
+bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
 {
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
@@ -35,7 +35,7 @@ bool UR5Controller::ur5_move_to(Coordinates &pos, RotationMatrix &rot, int n)
         final_testing_joints << ik_result(index, 0), ik_result(index, 1), ik_result(index, 2),
             ik_result(index, 3), ik_result(index, 4), ik_result(index, 5);
 
-        path = ur5_motion_plan(initial_joints, final_testing_joints, n);
+        path = ur5_trajectory_plan(initial_joints, final_testing_joints, n);
 
         if (validate_path(path, n))
         {

@@ -12,7 +12,7 @@ bool move_to(ur5_controller::MoveTo::Request &req, ur5_controller::MoveTo::Respo
     pos << req.pos.x, req.pos.y, req.pos.z;
     euler_to_rot(req.rot.roll, req.rot.pitch, req.rot.yaw, rot);
 
-    res.status = controller_ptr->ur5_move_to(pos, rot, 50);
+    res.status = controller_ptr->move_to(pos, rot, 50);
 
     return true;
 }
@@ -20,7 +20,7 @@ bool move_to(ur5_controller::MoveTo::Request &req, ur5_controller::MoveTo::Respo
 
 bool set_gripper(ur5_controller::SetGripper::Request &req, ur5_controller::SetGripper::Response &res)
 {
-    controller_ptr->ur5_set_gripper(req.diameter);
+    controller_ptr->set_gripper(req.diameter);
 
     return true;
 }
