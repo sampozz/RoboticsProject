@@ -1,0 +1,3 @@
+[submodule "assignment_2/src/yolov5_ros"]
+	path = assignment_2/src/yolov5_ros
+	url = https://github.com/mats-robotics/yolov5_ros.git
