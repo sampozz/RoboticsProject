@@ -132,6 +132,7 @@ class Yolov5Detector:
         det = pred[0].cpu().numpy()
 
         bounding_boxes = BoundingBoxes()
+        bounding_boxes.n = 0
         bounding_boxes.header = data.header
         bounding_boxes.image_header = data.header
         
@@ -164,6 +165,7 @@ class Yolov5Detector:
                 ### POPULATE THE DETECTION MESSAGE HERE
 
             # Stream results
+            bounding_boxes.n = len(bounding_boxes.bounding_boxes)
             im0 = annotator.result()
 
         # Publish prediction

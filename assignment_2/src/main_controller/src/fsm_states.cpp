@@ -54,16 +54,17 @@ void shelfino_rotate_towards_next_area()
     shelfino_point_srv.request.pos.y = areas[current_area_index][1];
     shelfino_point_client.call(shelfino_point_srv);
 
-    // service call to block detection node
-    // if not block detected 
-    if (rand() % 2)
-        current_state = STATE_SHELFINO_NEXT_AREA;
-    // else: block detected
-    else 
+    // Service call to block detection node
+    detection_client.call(detection_srv);
+    if (detection_srv.response.status == 1)
     {
         ROS_INFO("Block identified!");
         current_block_distance = 1;
-        current_state = STATE_SHELFINO_CHECK_BLOCK;    
+        current_state = STATE_SHELFINO_CHECK_BLOCK;   
+    }
+    else 
+    {
+        current_state = STATE_SHELFINO_NEXT_AREA;
     }
 }
 
@@ -82,7 +83,6 @@ void shelfino_next_area()
     current_state = STATE_SHELFINO_SEARCH_BLOCK;
 }
 
-int a = 0, b = rand() % 10;
 void shelfino_search_block()
 {
     // Rotate shelfino on its position
@@ -93,10 +93,10 @@ void shelfino_search_block()
     // call returns distance to block
     // if distance > area radius, wrong block
     // if response is valid:
-    if (++a == b) {
+    detection_client.call(detection_srv);
+    if (detection_srv.response.status == 1)
+    {
         ROS_INFO("Block identified!");
-        b = rand() % 10;
-        a = 0;
         current_block_distance = 1;
         current_state = STATE_SHELFINO_CHECK_BLOCK;
     }

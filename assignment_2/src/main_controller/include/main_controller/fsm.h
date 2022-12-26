@@ -16,6 +16,7 @@
 #include "shelfino_controller/Rotate.h"
 #include "shelfino_controller/PointTo.h"
 #include "shelfino_controller/MoveForward.h"
+#include "yolov5_ros/Classify.h"
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 #include <vector>
@@ -58,10 +59,12 @@ shelfino_controller::Rotate shelfino_rotate_srv;
 shelfino_controller::PointTo shelfino_point_srv;
 shelfino_controller::MoveForward shelfino_forward_srv;
 
+yolov5_ros::Classify detection_srv;
+
 gazebo_msgs::SetModelState model_state_srv;
 gazebo_ros_link_attacher::Attach link_attacher_srv;
 
-ros::ServiceClient ur5_move_client, ur5_gripper_client, shelfino_move_client, shelfino_point_client, 
+ros::ServiceClient ur5_move_client, ur5_gripper_client, shelfino_move_client, shelfino_point_client, detection_client,
     shelfino_rotate_client, shelfino_forward_client, gazebo_model_state, gazebo_link_attacher, gazebo_link_detacher;
 
 std::vector<std::vector<double>> areas;

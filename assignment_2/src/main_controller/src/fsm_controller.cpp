@@ -7,6 +7,7 @@
 #include "shelfino_controller/Rotate.h"
 #include "shelfino_controller/PointTo.h"
 #include "shelfino_controller/MoveForward.h"
+#include "yolov5_ros/Detect.h"
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 
@@ -47,6 +48,9 @@ int main(int argc, char **argv)
     shelfino_rotate_client = fsm_node.serviceClient<shelfino_controller::Rotate>("shelfino/rotate");
     shelfino_point_client = fsm_node.serviceClient<shelfino_controller::PointTo>("shelfino/point_to");
     shelfino_forward_client = fsm_node.serviceClient<shelfino_controller::MoveForward>("shelfino/move_forward");
+
+    // Vision services
+    detection_client = fsm_node.serviceClient<yolov5_ros::Detect>("vision/detect");
 
     // Gazebo services
     gazebo_model_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
