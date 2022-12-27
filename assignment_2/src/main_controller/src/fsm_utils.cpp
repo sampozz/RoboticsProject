@@ -19,7 +19,7 @@ extern shelfino_controller::Coordinates shelfino_current_pos;
 
 void shelfino_forward(double distance, bool control)
 {
-    shelfino_forward_srv.request.distance = distance;
+    shelfino_forward_srv.request.distance = distance - 0.15;
     shelfino_forward_srv.request.control = control;
 
     shelfino_forward_client.call(shelfino_forward_srv);

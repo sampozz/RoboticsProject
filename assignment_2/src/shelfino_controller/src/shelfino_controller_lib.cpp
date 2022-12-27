@@ -19,6 +19,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
 
     // Subscriber initialization
     odometry_sub = node.subscribe("/shelfino2/odom", 100, &ShelfinoController::odometry_callback, this);
+    detection_sub = node.subscribe("/yolov5/detections", 10, &ShelfinoController::detection_callback, this);
 }
 
 void ShelfinoController::move_to(Coordinates &pos, double yaw)
@@ -90,6 +91,8 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
     double elapsed_time = 0;
     double linear_res = 0, angular_res = 0; // Output of the Lyapunov control
 
+    block_detected = false;
+
     while (ros::ok())
     {
         if (control)
@@ -108,7 +111,7 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
             send_velocity(linear_velocity, 0);
         }
 
-        if (elapsed_time > movement_duration)
+        if (elapsed_time > movement_duration || block_detected && control)
             break;
 
         loop_rate.sleep();
@@ -119,8 +122,8 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
     send_velocity(0, 0, 10);
     ros::Duration(1.0).sleep();
     ros::spinOnce();
-    current_position(0) = current_position(0) + distance * cos(current_rotation);
-    current_position(1) = current_position(1) + distance * sin(current_rotation);
+    current_position(0) = current_position(0) + elapsed_time * linear_velocity * cos(current_rotation);
+    current_position(1) = current_position(1) + elapsed_time * linear_velocity * sin(current_rotation);
     ROS_DEBUG("Moving Shelfino forward: final position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
 
     return current_position;
@@ -149,6 +152,15 @@ void ShelfinoController::odometry_callback(const nav_msgs::Odometry::ConstPtr &m
     // We are interested in the rotation about z axis (yaw) only
     odometry_rotation = quaternion_to_yaw(q.x, q.y, q.z, q.w);
     odometry_rotation -= odometry_rotation_0;
+}
+
+void ShelfinoController::detection_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg) 
+{
+    if (msg->n > 0)
+    {
+        // Block detected
+        block_detected = true;
+    }
 }
 
 void ShelfinoController::send_velocity(double linear_vel, double angular_vel)

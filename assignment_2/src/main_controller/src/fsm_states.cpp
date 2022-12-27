@@ -79,7 +79,7 @@ void shelfino_rotate_towards_next_area()
     {
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 5.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
     else 
@@ -103,9 +103,7 @@ void shelfino_next_area()
 
 void shelfino_search_block()
 {
-    // Rotate shelfino on its position
-    shelfino_rotate(M_PI / 10.0);
-
+    ros::Duration(0.5).sleep();
     // Make service call to python detection node
     // call returns distance to block
     // if distance > area radius, wrong block
@@ -116,14 +114,18 @@ void shelfino_search_block()
     {
         current_block_distance = detection_srv.response.box.distance;
         // angle = (half display width - (box.xmax + box.xmin) / 2) / 320 * (pi/4)
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 5.0);
         if (current_block_distance <= radius)
         {
             ROS_INFO("Block identified!");
             current_block_class = detection_srv.response.box.class_n;
             current_state = STATE_SHELFINO_CHECK_BLOCK;
+            return;
         }
     }
+
+    // Rotate shelfino on its position
+    shelfino_rotate(M_PI / 10.0);
 }
 
 void shelfino_check_block()

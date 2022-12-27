@@ -15,6 +15,7 @@
 #include "nav_msgs/Odometry.h"
 #include "kinematics_lib/kinematics_types.h"
 #include "kinematics_lib/shelfino_kinematics.h"
+#include "yolov5_ros/BoundingBoxes.h"
 #include <Eigen/Dense>
 #include <math.h>
 
@@ -34,17 +35,26 @@ private:
 
     ros::Publisher velocity_pub;
     ros::Subscriber odometry_sub;
+    ros::Subscriber detection_sub;
 
     Coordinates current_position;
     double current_rotation;
     Coordinates odometry_position, odometry_position_0;
     double odometry_rotation, odometry_rotation_0;
 
+    bool block_detected;
+
     /**
      * Callback function, listen to /shelfino/odom topic and update odometry position and rotation
      * @param msg The message received on the topic
      */
     void odometry_callback(const nav_msgs::Odometry::ConstPtr &msg);
+
+    /**
+     * Callback function, listen to /yolov5/detections topic and check for detected block
+     * @param msg The message received on the topic
+     */
+    void detection_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg);
 
     /**
      * Send velocity values to /shelfino/velocity/command topic
@@ -97,9 +107,10 @@ public:
     double rotate(double angle);
 
     /**
-     * Move shelfino forwards of the desired distance using lyapunov control
+     * Move shelfino forwards of the desired distance using lyapunov control.
+     * Shelfino breaks if a block is detected during motion, only if control is enabled.
      * @param distance The distance that shelfino should travel
-     * @param control Use Lyapunov control if True
+     * @param control Use Lyapunov control if True. Break if block detected.
      * @return Final position of Shelfino
     */
     Coordinates move_forward(double distance, bool control);
