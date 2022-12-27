@@ -4,6 +4,7 @@
 #include "yolov5_ros/BoundingBox.h"
 
 bool block_detected = false;
+double detection_timestamp = 0;
 yolov5_ros::BoundingBox block;
 
 void yolo_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg)
@@ -13,13 +14,14 @@ void yolo_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg)
     {
         // Block detected
         block_detected = true;
+        detection_timestamp = ros::Time::now().toSec();
         block = msg->bounding_boxes[0];
     }
 }
 
 bool detect(yolov5_ros::Detect::Request &req, yolov5_ros::Detect::Response &res)
 {
-    if (block_detected)
+    if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {
         res.box = block;
         res.status = 1;

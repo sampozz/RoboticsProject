@@ -78,6 +78,7 @@ int main(int argc, char **argv)
         }
         else
         {
+            ROS_INFO("Mission completed!");
             break;
         }
     }

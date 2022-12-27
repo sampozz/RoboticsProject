@@ -4,11 +4,16 @@ shelfino_controller::MoveTo shelfino_move_srv;
 shelfino_controller::Rotate shelfino_rotate_srv;
 shelfino_controller::PointTo shelfino_point_srv;
 shelfino_controller::MoveForward shelfino_forward_srv;
+
+ur5_controller::MoveTo ur5_move_srv;
+ur5_controller::SetGripper ur5_gripper_srv;
+
 gazebo_ros_link_attacher::Attach link_attacher_srv;
 
 ros::ServiceClient shelfino_move_client, shelfino_point_client,
     shelfino_rotate_client, shelfino_forward_client, 
-    gazebo_link_attacher, gazebo_link_detacher;
+    gazebo_link_attacher, gazebo_link_detacher,
+    ur5_move_client, ur5_gripper_client;
 
 extern shelfino_controller::Coordinates shelfino_current_pos;
 
@@ -36,6 +41,18 @@ void shelfino_point_to(double x, double y)
     shelfino_point_client.call(shelfino_point_srv);
 }
 
+void ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot)
+{
+    ur5_move_srv.request.pos = pos;
+    ur5_move_srv.request.rot = rot;
+    ur5_move_client.call(ur5_move_srv);
+}
+
+void ur5_grip(double diameter)
+{
+    ur5_gripper_srv.request.diameter = diameter;
+    ur5_gripper_client.call(ur5_gripper_srv);
+}
 
 void attach(int model)
 {

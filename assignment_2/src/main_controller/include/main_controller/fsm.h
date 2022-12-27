@@ -58,6 +58,8 @@ void ur5_unload();
 void shelfino_forward(double distance, bool control);
 void shelfino_rotate(double angle);
 void shelfino_point_to(double x, double y);
+void ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot);
+void ur5_grip(double diameter);
 
 void attach(int model);
 void detach(int model);

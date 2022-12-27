@@ -9,15 +9,11 @@ ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
 ur5_controller::EulerRotation ur5_default_rot;
 shelfino_controller::Coordinates shelfino_home_pos, shelfino_current_pos;
 geometry_msgs::Pose block_load_pos;
-
-ur5_controller::MoveTo ur5_move_srv;
-ur5_controller::SetGripper ur5_gripper_srv;
 yolov5_ros::Detect detection_srv;
 
 gazebo_msgs::SetModelState model_state_srv;
 
-ros::ServiceClient ur5_move_client, ur5_gripper_client, 
-    detection_client, gazebo_model_state;
+ros::ServiceClient detection_client, gazebo_model_state;
 
 std::vector<std::vector<double>> areas;
 std::vector<double> unload_pos_y;
@@ -65,9 +61,7 @@ void init()
     unload_pos_y.push_back(-0.33);
 
     // Move ur5 to home position
-    ur5_move_srv.request.pos = ur5_home_pos;
-    ur5_move_srv.request.rot = ur5_default_rot;
-    ur5_move_client.call(ur5_move_srv);
+    ur5_move(ur5_home_pos, ur5_default_rot);
 
     current_state = STATE_SHELFINO_ROTATE_AREA;
 }
@@ -78,8 +72,7 @@ void shelfino_rotate_towards_next_area()
 
     // Service call to block detection node
     detection_client.call(detection_srv);
-    // if (detection_srv.response.status == 1)
-    if (0)
+    if (detection_srv.response.status == 1)
     {
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance;
@@ -119,8 +112,7 @@ void shelfino_search_block()
     if (detection_srv.response.status == 1)
     {
         current_block_distance = detection_srv.response.box.distance;
-        ROS_INFO("%f",current_block_distance);
-        // angle = (half display width - (box.xmax + box.xmin) / 2) / (pi/4)
+        // angle = (half display width - (box.xmax + box.xmin) / 2) / 320 * (pi/4)
         current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
         if (current_block_distance <= radius)
         {
@@ -136,7 +128,7 @@ void shelfino_check_block()
     shelfino_rotate(current_block_angle);
 
     // Move shelfino forward to detected block
-    shelfino_forward(current_block_distance - 0.4, false);
+    shelfino_forward(current_block_distance - 0.5, false);
 
     // TODO: Make service call to python classification node
     // if response == true:
@@ -176,19 +168,14 @@ void shelfino_check_block()
 void ur5_load()
 {
     // Move ur5 to home position
-    ur5_move_srv.request.pos = ur5_home_pos;
-    ur5_move_srv.request.rot = ur5_default_rot;
-    ur5_move_client.call(ur5_move_srv);
+    ur5_move(ur5_home_pos, ur5_default_rot);
     // Open gripper
-    ur5_gripper_srv.request.diameter = 100;
-    ur5_gripper_client.call(ur5_gripper_srv);
+    ur5_grip(100);
     // Move ur5 to load position
-    ur5_move_srv.request.pos = ur5_load_pos;
-    ur5_move_srv.request.rot = ur5_default_rot;
-    ur5_move_client.call(ur5_move_srv);
+    ur5_move(ur5_load_pos, ur5_default_rot);
     // Grab
-    ur5_gripper_srv.request.diameter = 31;
-    ur5_gripper_client.call(ur5_gripper_srv);
+    // TODO: close the gripper based on block class
+    ur5_grip(31);
     attach((int)areas[current_area_index][3]);
 
     current_state = STATE_UR5_UNLOAD;
@@ -197,18 +184,14 @@ void ur5_load()
 void ur5_unload()
 {
     // Move ur5 to home position
-    ur5_move_srv.request.pos = ur5_home_pos;
-    ur5_move_srv.request.rot = ur5_default_rot;
-    ur5_move_client.call(ur5_move_srv);
+    ur5_move(ur5_home_pos, ur5_default_rot);
     // Move ur5 to unload position
-    ur5_move_srv.request.pos = ur5_unload_pos;
-    ur5_move_srv.request.pos.y = unload_pos_y[class_to_basket_map[current_block_class]];
-    ur5_move_srv.request.rot = ur5_default_rot;
-    ur5_move_client.call(ur5_move_srv);
+    ur5_unload_pos.y = unload_pos_y[class_to_basket_map[current_block_class]];
+    ur5_move(ur5_unload_pos, ur5_default_rot);
+
     // Open gripper
     detach((int)areas[current_area_index][3]);
-    ur5_gripper_srv.request.diameter = 100;
-    ur5_gripper_client.call(ur5_gripper_srv);
+    ur5_grip(100);
 
     ROS_INFO("Completed area %d, %ld remaining", (int)areas[current_area_index][3], areas.size() - 1);
     areas.erase(areas.begin() + current_area_index);
