@@ -159,6 +159,7 @@ class Yolov5Detector:
                 c = int(cls)
                 # Fill in bounding box message
                 bounding_box.Class = self.names[c]
+                bounding_box.class_n = c;
                 bounding_box.probability = conf 
                 bounding_box.xmin = int(xyxy[0])
                 bounding_box.ymin = int(xyxy[1])

@@ -23,12 +23,13 @@ int current_area_index; // Index of the current area in the areas array (differe
 int current_block_class;
 double current_block_distance;
 double current_block_angle; // If the block is not centered in front of shelfino
+int class_to_width[] = {};
 
 void init()
 {
     // Global FSM variables
     current_area_index = 0;
-    current_block_class = 0;
+    current_block_class = -1;
     current_block_distance = 0;
     
     // Initial and park position
@@ -51,6 +52,8 @@ void init()
     block_load_pos.position.x = 0.5;
     block_load_pos.position.y = 0.7;
     block_load_pos.position.z = 0.87;
+    block_load_pos.orientation.w = 0.706;
+    block_load_pos.orientation.z = 0.706;
     
     // Where to find baskets
     ur5_unload_pos.x = 0.42;
@@ -117,6 +120,7 @@ void shelfino_search_block()
         if (current_block_distance <= radius)
         {
             ROS_INFO("Block identified!");
+            current_block_class = detection_srv.response.box.class_n;
             current_state = STATE_SHELFINO_CHECK_BLOCK;
         }
     }
@@ -132,7 +136,12 @@ void shelfino_check_block()
 
     // TODO: Make service call to python classification node
     // if response == true:
-    current_block_class = rand() % 11;
+    detection_client.call(detection_srv);
+    if (detection_srv.response.status == 1)
+    {
+        current_block_class = detection_srv.response.box.class_n;
+    }
+    
     ROS_INFO("Block classified: %d", current_block_class);
 
     // Choose the right basket based on the block class
