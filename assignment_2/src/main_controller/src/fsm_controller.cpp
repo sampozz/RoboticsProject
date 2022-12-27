@@ -1,17 +1,15 @@
-#include "ros/ros.h"
-#include <ros/console.h>
 #include "main_controller/fsm.h"
-#include "ur5_controller/MoveTo.h"
-#include "ur5_controller/SetGripper.h"
-#include "shelfino_controller/MoveTo.h"
-#include "shelfino_controller/Rotate.h"
-#include "shelfino_controller/PointTo.h"
-#include "shelfino_controller/MoveForward.h"
-#include "yolov5_ros/Detect.h"
-#include "gazebo_msgs/SetModelState.h"
-#include "gazebo_ros_link_attacher/Attach.h"
+#include <ros/console.h>
 
 using namespace std;
+
+extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
+    shelfino_rotate_client, shelfino_forward_client, 
+    gazebo_link_attacher, gazebo_link_detacher,
+    ur5_move_client, ur5_gripper_client,
+    detection_client, gazebo_model_state;
+
+extern std::vector<std::vector<double>> areas;
 
 StateMachine_t fsm[] = {
     {STATE_INIT, init},
@@ -22,6 +20,8 @@ StateMachine_t fsm[] = {
     {STATE_UR5_LOAD, ur5_load},
     {STATE_UR5_UNLOAD, ur5_unload},
 };
+
+State_t current_state;
 
 void get_world_params(ros::NodeHandle& n)
 {
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     {
         if (current_state < STATE_END)
         {
-            ROS_INFO("Executing state function %d", current_state);
+            ROS_DEBUG("Executing state function %d", current_state);
             (*fsm[current_state].state_function)();
 
             ros::spinOnce();

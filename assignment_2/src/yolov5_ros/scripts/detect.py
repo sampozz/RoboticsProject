@@ -76,16 +76,22 @@ class Yolov5Detector:
         
         # Initialize subscriber to Image/CompressedImage topic
         input_image_type, input_image_topic, _ = get_topic_type(rospy.get_param("~input_image_topic"), blocking = True)
+        input_depth_type, input_depth_topic, _ = get_topic_type(rospy.get_param("~input_depth_topic"), blocking = True)
         self.compressed_input = input_image_type == "sensor_msgs/CompressedImage"
 
         if self.compressed_input:
             self.image_sub = rospy.Subscriber(
-                input_image_topic, CompressedImage, self.callback, queue_size=1
+                input_image_topic, CompressedImage, self.color_callback, queue_size=1
             )
         else:
             self.image_sub = rospy.Subscriber(
-                input_image_topic, Image, self.callback, queue_size=1
+                input_image_topic, Image, self.color_callback, queue_size=1
             )
+        
+        # Initialize subscriber to depth camera
+        self.depth_sub = rospy.Subscriber(
+            input_depth_topic, Image, self.depth_callback, queue_size=1
+        )
 
         # Initialize prediction publisher
         self.pred_pub = rospy.Publisher(
@@ -101,7 +107,13 @@ class Yolov5Detector:
         # Initialize CV_Bridge
         self.bridge = CvBridge()
 
-    def callback(self, data):
+
+    def depth_callback(self, data):
+        """ Save depth image, it has to be used only if block is identified """
+        self.depth_image = self.bridge.imgmsg_to_cv2(data, "32FC1")
+
+
+    def color_callback(self, data):
         """adapted from yolov5/detect.py"""
         # print(data.header)
         if self.compressed_input:
@@ -161,8 +173,13 @@ class Yolov5Detector:
                     label = f"{self.names[c]} {conf:.2f}"
                     annotator.box_label(xyxy, label, color=colors(c, True))       
 
-                
                 ### POPULATE THE DETECTION MESSAGE HERE
+                # Compute distance from depth image
+                depth_sum = 0
+                for i in range(bounding_box.xmin, bounding_box.xmax):
+                    for j in range(bounding_box.ymin, bounding_box.ymax):
+                        depth_sum += self.depth_image[j][i]
+                bounding_box.distance = depth_sum / ((bounding_box.xmax - bounding_box.xmin) * (bounding_box.ymax - bounding_box.ymin))
 
             # Stream results
             bounding_boxes.n = len(bounding_boxes.bounding_boxes)

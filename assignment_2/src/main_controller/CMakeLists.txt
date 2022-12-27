@@ -43,6 +43,7 @@ include_directories(
 
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
+  src/fsm_utils.cpp
   src/fsm_states.cpp
 )
 

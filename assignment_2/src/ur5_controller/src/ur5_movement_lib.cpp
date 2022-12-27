@@ -16,7 +16,7 @@ bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
     JointStateVector initial_joints = current_joints;
-    ROS_INFO("Moving UR5: initial joints values: %.2f %.2f %.2f %.2f %.2f %.2f", initial_joints(0), initial_joints(1), initial_joints(2),
+    ROS_DEBUG("Moving UR5: initial joints values: %.2f %.2f %.2f %.2f %.2f %.2f", initial_joints(0), initial_joints(1), initial_joints(2),
         initial_joints(3), initial_joints(4), initial_joints(5)); 
 
     // Compute complete inverse kinematics to find all the possibile final configurations
@@ -78,7 +78,7 @@ bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
             ros::spinOnce();
         }
     }
-    ROS_INFO("Moving UR5: final joints values: %.2f %.2f %.2f %.2f %.2f %.2f", current_joints(0), current_joints(1), current_joints(2),
+    ROS_DEBUG("Moving UR5: final joints values: %.2f %.2f %.2f %.2f %.2f %.2f", current_joints(0), current_joints(1), current_joints(2),
         current_joints(3), current_joints(4), current_joints(5)); 
     return true;
 }

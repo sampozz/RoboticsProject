@@ -1,6 +1,6 @@
 <launch>
     <!-- Detection configuration -->
-    <arg name="weights"               default="$(find yolov5_ros)/scripts/yolov5/megablocks.pt"/>
+    <arg name="weights"               default="$(find yolov5_ros)/scripts/yolov5/best.pt"/>
     <arg name="data"                  default="$(find yolov5_ros)/scripts/yolov5/data/megablocks.yaml"/>
     <arg name="confidence_threshold"  default="0.75"/>
     <arg name="iou_threshold"         default="0.45"/>
@@ -20,6 +20,7 @@
 
     <!-- ROS topics -->
     <arg name="input_image_topic"       default="/camera_ir/color/image_raw"/>
+    <arg name="input_depth_topic"       default="/camera_ir/depth/image_raw"/>
     <arg name="output_topic"            default="/yolov5/detections"/>
 
     <!-- Optional topic (publishing annotated image) -->
@@ -43,6 +44,7 @@
         <param name="inference_size_w"      value="$(arg inference_size_w)"/>
 
         <param name="input_image_topic"     value="$(arg input_image_topic)"/>
+        <param name="input_depth_topic"     value="$(arg input_depth_topic)"/>
         <param name="output_topic"          value="$(arg output_topic)"/>
 
         <param name="view_image"            value="$(arg view_image)"/>

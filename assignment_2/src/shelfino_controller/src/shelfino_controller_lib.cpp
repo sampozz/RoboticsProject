@@ -23,7 +23,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
 
 void ShelfinoController::move_to(Coordinates &pos, double yaw)
 {
-    ROS_INFO("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
+    ROS_DEBUG("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     
     // Compute the first rotation to make shelfino look towards the destination point
     double first_rot = shelfino_trajectory_rotation(current_position, current_rotation, pos);
@@ -35,7 +35,7 @@ void ShelfinoController::move_to(Coordinates &pos, double yaw)
 
     if (yaw == 0) {
         current_position = pos;
-        ROS_INFO("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
+        ROS_DEBUG("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
         return; 
     }
 
@@ -48,7 +48,7 @@ void ShelfinoController::move_to(Coordinates &pos, double yaw)
 
 double ShelfinoController::point_to(Coordinates &pos)
 {
-    ROS_INFO("Rotating Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
+    ROS_DEBUG("Rotating Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     
     // Compute the first rotation to make shelfino look towards the destination point
     double rot = shelfino_trajectory_rotation(current_position, current_rotation, pos);
@@ -84,7 +84,7 @@ double ShelfinoController::rotate(double angle)
 
 Coordinates ShelfinoController::move_forward(double distance, bool control)
 {
-    ROS_INFO("Moving Shelfino forward: initial position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
+    ROS_DEBUG("Moving Shelfino forward: initial position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
     double movement_duration = abs(distance / linear_velocity);
     Coordinates des_pos;
     double elapsed_time = 0;
@@ -121,7 +121,7 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
     ros::spinOnce();
     current_position(0) = current_position(0) + distance * cos(current_rotation);
     current_position(1) = current_position(1) + distance * sin(current_rotation);
-    ROS_INFO("Moving Shelfino forward: final position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
+    ROS_DEBUG("Moving Shelfino forward: final position: %.2f %.2f %.2f", current_position(0), current_position(1), current_position(2)); 
 
     return current_position;
 }

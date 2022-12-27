@@ -8,15 +8,13 @@ yolov5_ros::BoundingBox block;
 
 void yolo_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg)
 {
+    // TODO: if n > 1 return nearest
     if (msg->n > 0)
     {
         // Block detected
         block_detected = true;
         block = msg->bounding_boxes[0];
-
-        // Compute distance
     }
-
 }
 
 bool detect(yolov5_ros::Detect::Request &req, yolov5_ros::Detect::Response &res)

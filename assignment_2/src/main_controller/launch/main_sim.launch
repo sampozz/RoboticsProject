@@ -8,7 +8,7 @@
     <!-- World generation -->
     <rosparam command="load" file="$(find main_controller)/launch/areas.yaml" />
 
-    <node name="spawn_block_0" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 1.5 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 0 -sdf"/>
+    <node name="spawn_block_0" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 3 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 0 -sdf"/>
     <node name="spawn_block_1" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 5 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 1 -sdf"/>
     <node name="spawn_block_2" pkg="gazebo_ros" type="spawn_model" args="-x 7 -y 6 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y4-Z2/X1-Y4-Z2.sdf -model 2 -sdf"/>
     <node name="spawn_block_3" pkg="gazebo_ros" type="spawn_model" args="-x 8 -y 1 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X2-Y2-Z2/X2-Y2-Z2.sdf -model 3 -sdf"/>
@@ -21,7 +21,11 @@
     <!-- Spawn Shelfino -->
     <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />
 
-    <!-- Python code (perception) -->
+    <!-- YOLO Python -->
+    <include file="$(find yolov5_ros)/launch/yolov5.launch" />
+
+    <!-- C++ code (perception) -->
+    <node pkg="yolov5_ros" type="vision_node" name="vision_node" output="screen" />
 
     <!-- C++ code (controllers) -->
     <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" output="screen" />

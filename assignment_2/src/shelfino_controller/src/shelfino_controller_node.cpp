@@ -40,7 +40,7 @@ bool point_to(shelfino_controller::PointTo::Request &req, shelfino_controller::P
 
 bool move_forward(shelfino_controller::MoveForward::Request &req, shelfino_controller::MoveForward::Response &res)
 {    
-    Coordinates new_position = controller_ptr->move_forward(req.distance, true);
+    Coordinates new_position = controller_ptr->move_forward(req.distance, req.control);
     res.pos.x = new_position(0);
     res.pos.y = new_position(1);
     return true;
