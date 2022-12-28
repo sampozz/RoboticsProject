@@ -17,7 +17,7 @@
 #include "shelfino_controller/Rotate.h"
 #include "shelfino_controller/PointTo.h"
 #include "shelfino_controller/MoveForward.h"
-#include "yolov5_ros/Detect.h"
+#include "robotic_vision/Detect.h"
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 #include <vector>

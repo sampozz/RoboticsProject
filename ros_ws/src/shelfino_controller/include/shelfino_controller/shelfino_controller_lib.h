@@ -15,7 +15,7 @@
 #include "nav_msgs/Odometry.h"
 #include "kinematics_lib/kinematics_types.h"
 #include "kinematics_lib/shelfino_kinematics.h"
-#include "yolov5_ros/BoundingBoxes.h"
+#include "robotic_vision/BoundingBoxes.h"
 #include <Eigen/Dense>
 #include <math.h>
 
@@ -54,7 +54,7 @@ private:
      * Callback function, listen to /yolov5/detections topic and check for detected block
      * @param msg The message received on the topic
      */
-    void detection_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg);
+    void detection_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg);
 
     /**
      * Send velocity values to /shelfino/velocity/command topic

@@ -22,10 +22,10 @@
     <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />
 
     <!-- YOLO Python -->
-    <include file="$(find yolov5_ros)/launch/yolov5.launch" />
+    <include file="$(find robotic_vision)/launch/yolov5.launch" />
 
     <!-- C++ code (perception) -->
-    <node pkg="yolov5_ros" type="vision_node" name="vision_node" output="screen" />
+    <node pkg="robotic_vision" type="vision_node" name="vision_node" output="screen" />
 
     <!-- C++ code (controllers) -->
     <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" output="screen" />

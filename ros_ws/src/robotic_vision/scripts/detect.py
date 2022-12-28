@@ -12,7 +12,7 @@ import sys
 from rostopic import get_topic_type
 
 from sensor_msgs.msg import Image, CompressedImage
-from yolov5_ros.msg import BoundingBox, BoundingBoxes
+from robotic_vision.msg import BoundingBox, BoundingBoxes
 
 
 # add yolov5 submodule to path

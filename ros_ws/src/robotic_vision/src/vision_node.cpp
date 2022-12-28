@@ -1,13 +1,13 @@
 #include "ros/ros.h"
-#include "yolov5_ros/Detect.h"
-#include "yolov5_ros/BoundingBoxes.h"
-#include "yolov5_ros/BoundingBox.h"
+#include "robotic_vision/Detect.h"
+#include "robotic_vision/BoundingBoxes.h"
+#include "robotic_vision/BoundingBox.h"
 
 bool block_detected = false;
 double detection_timestamp = 0;
-yolov5_ros::BoundingBox block;
+robotic_vision::BoundingBox block;
 
-void yolo_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg)
+void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
 {
     // TODO: if n > 1 return nearest
     if (msg->n > 0)
@@ -19,7 +19,7 @@ void yolo_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg)
     }
 }
 
-bool detect(yolov5_ros::Detect::Request &req, yolov5_ros::Detect::Response &res)
+bool detect(robotic_vision::Detect::Request &req, robotic_vision::Detect::Response &res)
 {
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {

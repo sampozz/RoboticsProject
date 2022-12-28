@@ -14,7 +14,7 @@ ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
 ur5_controller::EulerRotation ur5_default_rot;
 shelfino_controller::Coordinates shelfino_home_pos, shelfino_current_pos;
 geometry_msgs::Pose block_load_pos;
-yolov5_ros::Detect detection_srv;
+robotic_vision::Detect detection_srv;
 
 gazebo_msgs::SetModelState model_state_srv;
 

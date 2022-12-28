@@ -158,7 +158,7 @@ void ShelfinoController::odometry_callback(const nav_msgs::Odometry::ConstPtr &m
     odometry_rotation -= odometry_rotation_0;
 }
 
-void ShelfinoController::detection_callback(const yolov5_ros::BoundingBoxes::ConstPtr &msg) 
+void ShelfinoController::detection_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg) 
 {
     if (msg->n > 0)
     {
