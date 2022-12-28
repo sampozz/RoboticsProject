@@ -10,7 +10,7 @@
 
     <node name="spawn_block_0" pkg="gazebo_ros" type="spawn_model" args="-x 2 -y 3 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 0 -sdf"/>
     <node name="spawn_block_1" pkg="gazebo_ros" type="spawn_model" args="-x 3 -y 5 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y3-Z2-FILLET/X1-Y3-Z2-FILLET.sdf -model 1 -sdf"/>
-    <node name="spawn_block_2" pkg="gazebo_ros" type="spawn_model" args="-x 7 -y 6 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 2 -sdf"/>
+    <node name="spawn_block_2" pkg="gazebo_ros" type="spawn_model" args="-x 7 -y 5.5 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2/X1-Y2-Z2.sdf -model 2 -sdf"/>
     <node name="spawn_block_3" pkg="gazebo_ros" type="spawn_model" args="-x 8 -y 1 -z 0.2 -file $(env HOME)/robotics_group_v/locosim/models/X1-Y2-Z2-CHAMFER/X1-Y2-Z2-CHAMFER.sdf -model 3 -sdf"/>
 
     <node name="spawn_basket_0" pkg="gazebo_ros" type="spawn_model" args="-x 0.85 -y 0.30 -z 0.86 -file $(env HOME)/robotics_group_v/locosim/models/basket/basket.sdf -model basket_0 -sdf"/>

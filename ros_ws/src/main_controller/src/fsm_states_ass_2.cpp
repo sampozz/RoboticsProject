@@ -1,7 +1,12 @@
 #include "main_controller/fsm.h"
 #include <string> 
 
+/* Extern variables */
+
 extern State_t current_state;
+extern std::vector<std::vector<double>> areas;
+extern ros::ServiceClient detection_client;
+extern ros::ServiceClient gazebo_model_state;
 
 /* Global variables */
 
@@ -13,9 +18,6 @@ yolov5_ros::Detect detection_srv;
 
 gazebo_msgs::SetModelState model_state_srv;
 
-ros::ServiceClient detection_client, gazebo_model_state;
-
-std::vector<std::vector<double>> areas;
 std::vector<double> unload_pos_y;
 std::map<int, int> class_to_basket_map;
 
@@ -23,7 +25,6 @@ int current_area_index; // Index of the current area in the areas array (differe
 int current_block_class;
 double current_block_distance;
 double current_block_angle; // If the block is not centered in front of shelfino
-int class_to_width[] = {};
 
 void ass_2::init(void)
 {
@@ -112,20 +113,12 @@ void ass_2::shelfino_search_block(void)
     // if response is valid:
     if (detection_srv.response.status == 1)
     {
+        ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance;
-        // angle = (half display width - (box.xmax + box.xmin) / 2) / 320 * (pi/4)
+        current_block_class = detection_srv.response.box.class_n;
         current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 5.0);
-        if (current_block_distance <= radius + 0.2)
-        {
-            ROS_INFO("Block identified!");
-            current_block_class = detection_srv.response.box.class_n;
-            current_state = STATE_SHELFINO_CHECK_BLOCK;
-            return;
-        }
-        else
-        {
-            ROS_INFO("Block identified outside the area, proceeding here...");
-        }
+        current_state = STATE_SHELFINO_CHECK_BLOCK;
+        return;
     }
 
     // Rotate shelfino on its position
