@@ -112,7 +112,11 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
         }
 
         if (elapsed_time > movement_duration || block_detected && control)
+        {
+            if (block_detected && control)
+                ROS_DEBUG("Detected block during movement, breaking.");
             break;
+        }
 
         loop_rate.sleep();
         ros::spinOnce();
