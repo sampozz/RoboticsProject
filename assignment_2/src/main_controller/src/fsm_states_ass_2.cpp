@@ -25,7 +25,7 @@ double current_block_distance;
 double current_block_angle; // If the block is not centered in front of shelfino
 int class_to_width[] = {};
 
-void init()
+void ass_2::init(void)
 {
     // Global FSM variables
     current_area_index = 0;
@@ -69,7 +69,7 @@ void init()
     current_state = STATE_SHELFINO_ROTATE_AREA;
 }
 
-void shelfino_rotate_towards_next_area()
+void ass_2::shelfino_rotate_towards_next_area(void)
 {
     shelfino_point_to(areas[current_area_index][0], areas[current_area_index][1]);
 
@@ -88,7 +88,7 @@ void shelfino_rotate_towards_next_area()
     }
 }
 
-void shelfino_next_area()
+void ass_2::shelfino_next_area(void)
 {
     ROS_INFO("Proceeding to area %d", (int)areas[current_area_index][3]);
     
@@ -101,7 +101,7 @@ void shelfino_next_area()
     current_state = STATE_SHELFINO_SEARCH_BLOCK;
 }
 
-void shelfino_search_block()
+void ass_2::shelfino_search_block(void)
 {
     // Make service call to python detection node
     // call returns distance to block
@@ -132,7 +132,7 @@ void shelfino_search_block()
     shelfino_rotate(M_PI / 10.0);
 }
 
-void shelfino_check_block()
+void ass_2::shelfino_check_block(void)
 {
     // Rotate shelfino if block is not centered in front of him
     shelfino_rotate(current_block_angle);
@@ -180,7 +180,7 @@ void shelfino_check_block()
     current_state = STATE_UR5_LOAD;
 }
 
-void ur5_load()
+void ass_2::ur5_load(void)
 {
     // Move ur5 to home position
     ur5_move(ur5_home_pos, ur5_default_rot);
@@ -196,7 +196,7 @@ void ur5_load()
     current_state = STATE_UR5_UNLOAD;
 }
 
-void ur5_unload()
+void ass_2::ur5_unload(void)
 {
     // Move ur5 to home position
     ur5_move(ur5_home_pos, ur5_default_rot);

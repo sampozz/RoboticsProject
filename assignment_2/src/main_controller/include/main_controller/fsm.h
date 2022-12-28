@@ -43,15 +43,28 @@ typedef struct
     void (*state_function)(void);
 } StateMachine_t;
 
-/* States functions */
+/* States functions for Assignment 2 */
 
-void init();
-void shelfino_rotate_towards_next_area();
-void shelfino_next_area();
-void shelfino_search_block();
-void shelfino_check_block();
-void ur5_load();
-void ur5_unload();
+namespace ass_1
+{
+
+}
+
+namespace ass_2 
+{
+    void init(void);
+    void shelfino_rotate_towards_next_area(void);
+    void shelfino_next_area(void);
+    void shelfino_search_block(void);
+    void shelfino_check_block(void);
+    void ur5_load(void);
+    void ur5_unload(void);
+}
+
+namespace ass_3
+{
+    
+}
 
 /* Utils */
 

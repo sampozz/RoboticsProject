@@ -3,6 +3,8 @@
 
 using namespace std;
 
+/* Extern variables */
+
 extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
     shelfino_rotate_client, shelfino_forward_client, 
     gazebo_link_attacher, gazebo_link_detacher,
@@ -11,15 +13,23 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
 
 extern std::vector<std::vector<double>> areas;
 
-StateMachine_t fsm[] = {
-    {STATE_INIT, init},
-    {STATE_SHELFINO_ROTATE_AREA, shelfino_rotate_towards_next_area},
-    {STATE_SHELFINO_NEXT_AREA, shelfino_next_area},
-    {STATE_SHELFINO_SEARCH_BLOCK, shelfino_search_block},
-    {STATE_SHELFINO_CHECK_BLOCK, shelfino_check_block},
-    {STATE_UR5_LOAD, ur5_load},
-    {STATE_UR5_UNLOAD, ur5_unload},
+/* FSM Functions arrays for the three assignemnts */
+
+StateMachine_t fsm_ass_1[] = {};
+
+StateMachine_t fsm_ass_2[] = {
+    {STATE_INIT, ass_2::init},
+    {STATE_SHELFINO_ROTATE_AREA, ass_2::shelfino_rotate_towards_next_area},
+    {STATE_SHELFINO_NEXT_AREA, ass_2::shelfino_next_area},
+    {STATE_SHELFINO_SEARCH_BLOCK, ass_2::shelfino_search_block},
+    {STATE_SHELFINO_CHECK_BLOCK, ass_2::shelfino_check_block},
+    {STATE_UR5_LOAD, ass_2::ur5_load},
+    {STATE_UR5_UNLOAD, ass_2::ur5_unload},
 };
+
+StateMachine_t fsm_ass_3[] = {};
+
+/* Global variables */
 
 State_t current_state;
 
@@ -36,6 +46,23 @@ void get_world_params(ros::NodeHandle& n)
 
 int main(int argc, char **argv)
 {
+    // Arguments validation
+    if (argc < 2)
+    {
+        ROS_ERROR("Assignment number not provided. Exiting...");
+        return 1;
+    }
+    
+    int assignment_number = std::stoi(argv[1]);
+
+    if (assignment_number < 1 || assignment_number > 3)
+    {
+        ROS_ERROR("Assignment number is wrong. Exiting...");
+        return 1;
+    }
+
+    ROS_INFO("Executing assignment %d", assignment_number);
+
     // ROS Node initialization
     ros::init(argc, argv, "fsm_controller");
     ros::NodeHandle fsm_node;
@@ -71,7 +98,13 @@ int main(int argc, char **argv)
         if (current_state < STATE_END)
         {
             ROS_DEBUG("Executing state function %d", current_state);
-            (*fsm[current_state].state_function)();
+
+            if (assignment_number == 1)
+                (*fsm_ass_1[current_state].state_function)();      
+            else if (assignment_number == 2)
+                (*fsm_ass_2[current_state].state_function)();      
+            else
+                (*fsm_ass_3[current_state].state_function)();      
 
             ros::spinOnce();
             loop_rate.sleep();

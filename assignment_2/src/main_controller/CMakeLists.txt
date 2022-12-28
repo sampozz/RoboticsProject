@@ -44,7 +44,9 @@ include_directories(
 ## Declare a C++ library
 add_library(${PROJECT_NAME}
   src/fsm_utils.cpp
-  src/fsm_states.cpp
+  src/fsm_states_ass_1.cpp
+  src/fsm_states_ass_2.cpp
+  src/fsm_states_ass_3.cpp
 )
 
 ## Declare a C++ executable
