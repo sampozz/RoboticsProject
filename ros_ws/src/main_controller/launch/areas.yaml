@@ -1,0 +1,24 @@
+# Center (x, y), radius and index of the four areas
+area0:
+  - 2.5
+  - 0.8
+  - 1.5
+  - 0
+
+area1:
+  - 2.5
+  - 3.8
+  - 1.5
+  - 1
+
+area2:
+  - 6.5
+  - 3.8
+  - 1.5
+  - 2
+
+area3:
+  - 6.5
+  - 0.8
+  - 1.5
+  - 3
