@@ -56,7 +56,7 @@ void ass_1::shelfino_rotate_towards_next_area(void)
     {
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance - 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
     else 
@@ -90,7 +90,7 @@ void ass_1::shelfino_search_block(void)
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance - 0.50;
         current_block_class = detection_srv.response.box.class_n;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;
         return;
     }

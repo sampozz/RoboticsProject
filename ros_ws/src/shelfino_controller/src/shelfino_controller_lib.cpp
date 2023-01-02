@@ -86,7 +86,7 @@ double ShelfinoController::rotate(double angle)
     }
     // Stop rotation
     send_velocity(0, 0, 10);
-    ros::Duration(1.0).sleep();
+    ros::Duration(0.5).sleep();
     ros::spinOnce();
     
     if (angle > 0)
@@ -137,7 +137,7 @@ Coordinates ShelfinoController::move_forward(double distance, bool control)
     }
     // Stop movement
     send_velocity(0, 0, 10);
-    ros::Duration(1.0).sleep();
+    ros::Duration(0.5).sleep();
     ros::spinOnce();
     current_position(0) = current_position(0) + elapsed_time * linear_velocity * cos(current_rotation);
     current_position(1) = current_position(1) + elapsed_time * linear_velocity * sin(current_rotation);

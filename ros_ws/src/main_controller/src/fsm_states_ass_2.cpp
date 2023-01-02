@@ -6,7 +6,8 @@
 extern State_t current_state;
 extern std::vector<std::vector<double>> areas;
 extern ros::ServiceClient detection_client;
-extern ros::ServiceClient gazebo_model_state;
+extern ros::ServiceClient gazebo_model_state;	
+extern ros::ServiceClient vision_stop_client;
 
 extern shelfino_controller::Coordinates shelfino_current_pos;
 extern double shelfino_current_rot;
@@ -18,6 +19,7 @@ namespace ass_2 {
     ur5_controller::EulerRotation ur5_default_rot;
     geometry_msgs::Pose block_load_pos;
     robotic_vision::Detect detection_srv;
+    robotic_vision::Stop vision_stop_srv;
 
     gazebo_msgs::SetModelState model_state_srv;
 
@@ -75,6 +77,7 @@ void ass_2::init(void)
 
 void ass_2::shelfino_rotate_towards_next_area(void)
 {
+    ROS_DEBUG("Rotating towards area %d", (int)areas[current_area_index][3]);
     shelfino_point_to(areas[current_area_index][0], areas[current_area_index][1]);
 
     // Service call to block detection node
@@ -83,7 +86,7 @@ void ass_2::shelfino_rotate_towards_next_area(void)
     {
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance - 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
     else 
@@ -109,9 +112,6 @@ void ass_2::shelfino_search_block(void)
 {
     // Make service call to python detection node
     // call returns distance to block
-    // if distance > area radius, wrong block
-    ros::Duration(0.5).sleep();
-    double radius = areas[current_area_index][2];
     detection_client.call(detection_srv);
     // if response is valid:
     if (detection_srv.response.status == 1)
@@ -119,13 +119,13 @@ void ass_2::shelfino_search_block(void)
         ROS_INFO("Block identified!");
         current_block_distance = detection_srv.response.box.distance - 0.50;
         current_block_class = detection_srv.response.box.class_n;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 4.0);
+        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;
         return;
     }
-
-    // Rotate shelfino on its position
-    shelfino_rotate(M_PI / 10.0);
+	
+    // Rotate shelfino on its position	
+    shelfino_rotate(2 * M_PI);
 }
 
 void ass_2::shelfino_check_block(void)
@@ -150,6 +150,7 @@ void ass_2::shelfino_check_block(void)
     }
     
     ROS_INFO("Block classified: %d", current_block_class);
+    vision_stop_client.call(vision_stop_srv);
 
     // Choose the right basket based on the block class
     if (class_to_basket_map.find(current_block_class) == class_to_basket_map.end())
@@ -161,6 +162,7 @@ void ass_2::shelfino_check_block(void)
 
     // Check in which area shelfino is
     // TODO: block position should be used instead of shelfino position
+    bool area_found = false;
     for (int i = 0; i < areas.size(); i++)
     {
         double dist = sqrt(pow(shelfino_current_pos.x - areas[i][0], 2) + 
@@ -169,8 +171,15 @@ void ass_2::shelfino_check_block(void)
         if (dist < areas[i][2] + 0.2)
         {
             current_area_index = i;
+            area_found = true;
             break;
         }
+    }
+
+    if (!area_found){	
+        ROS_INFO("Could not find the area associated to the detected block.");	
+        current_state = STATE_SHELFINO_ROTATE_AREA;	
+        return;	
     }
     
     // gazebo move block to ur5 load position
