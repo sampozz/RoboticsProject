@@ -47,7 +47,11 @@ typedef struct
 
 namespace ass_1
 {
-
+    void init(void);
+    void shelfino_rotate_towards_next_area(void);
+    void shelfino_next_area(void);
+    void shelfino_search_block(void);
+    void shelfino_check_block(void);
 }
 
 namespace ass_2 

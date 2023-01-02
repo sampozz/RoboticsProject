@@ -44,6 +44,7 @@ double ShelfinoController::move_to(Coordinates &pos, double yaw)
     // Rotate shelfino to match final rotation yaw
     double final_rot = norm_angle(yaw - current_rotation);
     rotate(final_rot);
+    ROS_DEBUG("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     return current_rotation;
 }
 

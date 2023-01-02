@@ -15,7 +15,13 @@ extern std::vector<std::vector<double>> areas;
 
 /* FSM Functions arrays for the three assignemnts */
 
-StateMachine_t fsm_ass_1[] = {};
+StateMachine_t fsm_ass_1[] = {
+    {STATE_INIT, ass_1::init},
+    {STATE_SHELFINO_ROTATE_AREA, ass_1::shelfino_rotate_towards_next_area},
+    {STATE_SHELFINO_NEXT_AREA, ass_1::shelfino_next_area},
+    {STATE_SHELFINO_SEARCH_BLOCK, ass_1::shelfino_search_block},
+    {STATE_SHELFINO_CHECK_BLOCK, ass_1::shelfino_check_block},
+};
 
 StateMachine_t fsm_ass_2[] = {
     {STATE_INIT, ass_2::init},
@@ -92,8 +98,10 @@ int main(int argc, char **argv)
     // Initial state
     current_state = STATE_INIT;
 
-    // Wait a bit, just to avoid shit
-    ros::Duration(0.5).sleep();
+    // Wait for other ROS nodes
+    ur5_move_client.waitForExistence();
+    shelfino_rotate_client.waitForExistence();
+    detection_client.waitForExistence();
 
     while (ros::ok())
     {

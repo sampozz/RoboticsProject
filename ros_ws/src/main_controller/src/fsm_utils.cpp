@@ -15,8 +15,8 @@ ros::ServiceClient shelfino_move_client, shelfino_point_client,
     gazebo_link_attacher, gazebo_link_detacher,
     ur5_move_client, ur5_gripper_client;
 
-extern shelfino_controller::Coordinates shelfino_current_pos;
-extern double shelfino_current_rot;
+shelfino_controller::Coordinates shelfino_current_pos;
+double shelfino_current_rot;
 
 void shelfino_move_to(double x, double y, double yaw)
 {

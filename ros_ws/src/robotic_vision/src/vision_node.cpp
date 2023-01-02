@@ -7,6 +7,8 @@ bool block_detected = false;
 double detection_timestamp = 0;
 robotic_vision::BoundingBox block;
 
+double camera_angle = 1.07;
+
 void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
 {
     // TODO: if n > 1 return nearest
@@ -23,6 +25,9 @@ bool detect(robotic_vision::Detect::Request &req, robotic_vision::Detect::Respon
 {
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {
+        // Adjust distance based on camera position
+        block.distance = block.distance * sin(camera_angle);
+
         res.box = block;
         res.status = 1;
     }
