@@ -9,7 +9,8 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
     shelfino_rotate_client, shelfino_forward_client, 
     gazebo_link_attacher, gazebo_link_detacher,
     ur5_move_client, ur5_gripper_client,
-    detection_client, gazebo_model_state;
+    detection_client, gazebo_model_state,
+    vision_stop_client;
 
 extern std::vector<std::vector<double>> areas;
 
@@ -86,6 +87,7 @@ int main(int argc, char **argv)
 
     // Vision services
     detection_client = fsm_node.serviceClient<robotic_vision::Detect>("vision/detect");
+    vision_stop_client = fsm_node.serviceClient<robotic_vision::Stop>("vision/stop");
 
     // Gazebo services
     gazebo_model_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");

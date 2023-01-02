@@ -25,18 +25,19 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
 double ShelfinoController::move_to(Coordinates &pos, double yaw)
 {
     ROS_DEBUG("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
-    
+    disable_vision = true;
+
     // Compute the first rotation to make shelfino look towards the destination point
     double first_rot = shelfino_trajectory_rotation(current_position, current_rotation, pos);
     rotate(first_rot);
     
     // Move forward and reach desired position
     double distance = sqrt(pow(pos(0) - current_position(0), 2) + pow(pos(1) - current_position(1), 2));
-    disable_vision = true;
+    
     move_forward(distance, true);
-    disable_vision = false;
 
     if (yaw == 0) {
+        disable_vision = false;
         ROS_DEBUG("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
         return current_rotation; 
     }
@@ -44,7 +45,9 @@ double ShelfinoController::move_to(Coordinates &pos, double yaw)
     // Rotate shelfino to match final rotation yaw
     double final_rot = norm_angle(yaw - current_rotation);
     rotate(final_rot);
+    
     ROS_DEBUG("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
+    disable_vision = false;
     return current_rotation;
 }
 
@@ -63,13 +66,19 @@ double ShelfinoController::rotate(double angle)
 {
     double movement_duration = abs(angle / angular_velocity);
     double elapsed_time = 0;
+    block_detected = false;
+    
     while (ros::ok())
     {
         // Select rotation direction and publish to topic
         angle > 0 ? send_velocity(0, angular_velocity) : send_velocity(0, -angular_velocity);
      
-        if (elapsed_time > movement_duration)
+        if (elapsed_time > movement_duration || block_detected)
+        {
+            if (block_detected)
+                ROS_DEBUG("Detected block during rotation, breaking.");
             break;
+        }
 
         loop_rate.sleep();
         ros::spinOnce();
@@ -80,7 +89,10 @@ double ShelfinoController::rotate(double angle)
     ros::Duration(1.0).sleep();
     ros::spinOnce();
     
-    current_rotation = current_rotation + angle;
+    if (angle > 0)
+        current_rotation = current_rotation + angular_velocity * elapsed_time;
+    else 
+        current_rotation = current_rotation - angular_velocity * elapsed_time;
     return current_rotation;
 }
 
@@ -164,7 +176,8 @@ void ShelfinoController::detection_callback(const robotic_vision::BoundingBoxes:
     if (msg->n > 0 && !disable_vision)
     {
         // Block detected
-        block_detected = true;
+        if (!msg->bounding_boxes[0].is_blacklisted)
+            block_detected = true;
     }
 }
 

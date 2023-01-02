@@ -1,5 +1,6 @@
 #include "ros/ros.h"
 #include "robotic_vision/Detect.h"
+#include "robotic_vision/Stop.h"
 #include "robotic_vision/BoundingBoxes.h"
 #include "robotic_vision/BoundingBox.h"
 
@@ -15,13 +16,17 @@ void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
     if (msg->n > 0)
     {
         // Block detected
-        block_detected = true;
-        detection_timestamp = ros::Time::now().toSec();
         block = msg->bounding_boxes[0];
+        detection_timestamp = ros::Time::now().toSec();
+        
+        if (!block.is_blacklisted)
+            block_detected = true;
+        else
+            ROS_DEBUG("Detected block is blacklisted");
     }
 }
 
-bool detect(robotic_vision::Detect::Request &req, robotic_vision::Detect::Response &res)
+bool detect_srv(robotic_vision::Detect::Request &req, robotic_vision::Detect::Response &res)
 {
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {
@@ -44,7 +49,7 @@ int main(int argc, char **argv)
 
     ros::Subscriber yolo_detection_sub = vision_node.subscribe("/yolov5/detections", 10, yolo_callback);
 
-    ros::ServiceServer detection_service = vision_node.advertiseService("vision/detect", detect);
+    ros::ServiceServer detection_service = vision_node.advertiseService("vision/detect", detect_srv);
     ros::spin();
 
     return 0;

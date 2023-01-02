@@ -13,6 +13,8 @@ from rostopic import get_topic_type
 
 from sensor_msgs.msg import Image, CompressedImage
 from robotic_vision.msg import BoundingBox, BoundingBoxes
+from nav_msgs.msg import Odometry
+from robotic_vision.srv import Stop, StopResponse
 
 
 # add yolov5 submodule to path
@@ -93,6 +95,16 @@ class Yolov5Detector:
             input_depth_topic, Image, self.depth_callback, queue_size=1
         )
 
+        # Initialize subscriber to schelfino odometry
+        self.odom_position = [0, 0]
+        self.blacklist = []
+        self.odometry_sub = rospy.Subscriber(
+            "/shelfino2/odom", Odometry, self.odometry_callback, queue_size=100
+        )
+
+        # Initialize service for blacklisting blocks
+        self.blacklist_srv = rospy.Service('vision/stop', Stop, self.blacklist_service)
+
         # Initialize prediction publisher
         self.pred_pub = rospy.Publisher(
             rospy.get_param("~output_topic"), BoundingBoxes, queue_size=10
@@ -106,6 +118,16 @@ class Yolov5Detector:
         
         # Initialize CV_Bridge
         self.bridge = CvBridge()
+
+
+    def odometry_callback(self, data):
+        self.odom_position[0] = data.pose.pose.position.x 
+        self.odom_position[1] = data.pose.pose.position.y 
+
+    
+    def blacklist_service(self, req):
+        self.blacklist.append((self.odom_position[0], self.odom_position[1]))
+        return StopResponse()
 
 
     def depth_callback(self, data):
@@ -159,7 +181,7 @@ class Yolov5Detector:
                 c = int(cls)
                 # Fill in bounding box message
                 bounding_box.Class = self.names[c]
-                bounding_box.class_n = c;
+                bounding_box.class_n = c
                 bounding_box.probability = conf 
                 bounding_box.xmin = int(xyxy[0])
                 bounding_box.ymin = int(xyxy[1])
@@ -181,6 +203,12 @@ class Yolov5Detector:
                     for j in range(bounding_box.ymin, bounding_box.ymax):
                         depth_sum += self.depth_image[j][i]
                 bounding_box.distance = depth_sum / ((bounding_box.xmax - bounding_box.xmin) * (bounding_box.ymax - bounding_box.ymin))
+
+                # Check if block is blacklisted
+                bounding_box.is_blacklisted = False
+                for tuple in self.blacklist:
+                    if abs(self.odom_position[0] - tuple[0]) < 0.15 and abs(self.odom_position[1] - tuple[1]) < 0.15:
+                        bounding_box.is_blacklisted = True
 
             # Stream results
             bounding_boxes.n = len(bounding_boxes.bounding_boxes)
@@ -216,5 +244,5 @@ if __name__ == "__main__":
     
     rospy.init_node("yolov5", anonymous=True)
     detector = Yolov5Detector()
-    
+
     rospy.spin()

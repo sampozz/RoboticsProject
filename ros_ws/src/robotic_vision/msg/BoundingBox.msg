@@ -25,6 +25,7 @@
 
 string Class
 int64 class_n
+int64 is_blacklisted
 float64 probability
 float64 distance
 int64 xmin
