@@ -22,7 +22,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     detection_sub = node.subscribe("/yolov5/detections", 10, &ShelfinoController::detection_callback, this);
 }
 
-void ShelfinoController::move_to(Coordinates &pos, double yaw)
+double ShelfinoController::move_to(Coordinates &pos, double yaw)
 {
     ROS_DEBUG("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     
@@ -32,19 +32,19 @@ void ShelfinoController::move_to(Coordinates &pos, double yaw)
     
     // Move forward and reach desired position
     double distance = sqrt(pow(pos(0) - current_position(0), 2) + pow(pos(1) - current_position(1), 2));
+    disable_vision = true;
     move_forward(distance, true);
+    disable_vision = false;
 
     if (yaw == 0) {
-        current_position = pos;
         ROS_DEBUG("Moving Shelfino: final position: %.2f %.2f %.2f, final rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
-        return; 
+        return current_rotation; 
     }
 
     // Rotate shelfino to match final rotation yaw
-    double final_rot = norm_angle(first_rot - yaw);
-    if (final_rot > M_PI)
-        final_rot = -(2 * M_PI - final_rot);
+    double final_rot = norm_angle(yaw - current_rotation);
     rotate(final_rot);
+    return current_rotation;
 }
 
 double ShelfinoController::point_to(Coordinates &pos)
@@ -55,7 +55,7 @@ double ShelfinoController::point_to(Coordinates &pos)
     double rot = shelfino_trajectory_rotation(current_position, current_rotation, pos);
     rotate(rot);
 
-    return rot;
+    return current_rotation;
 }
 
 double ShelfinoController::rotate(double angle)
@@ -160,7 +160,7 @@ void ShelfinoController::odometry_callback(const nav_msgs::Odometry::ConstPtr &m
 
 void ShelfinoController::detection_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg) 
 {
-    if (msg->n > 0)
+    if (msg->n > 0 && !disable_vision)
     {
         // Block detected
         block_detected = true;

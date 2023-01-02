@@ -25,6 +25,7 @@ int current_area_index; // Index of the current area in the areas array (differe
 int current_block_class;
 double current_block_distance;
 double current_block_angle; // If the block is not centered in front of shelfino
+double shelfino_current_rot;
 
 void ass_2::init(void)
 {
@@ -43,6 +44,7 @@ void ass_2::init(void)
     shelfino_home_pos.y = 1.2;
     shelfino_current_pos.x = 0;
     shelfino_current_pos.y = 0;
+    shelfino_current_rot = 0;
     
     // Where to load the megablock
     ur5_load_pos.x = 0.0;
@@ -79,7 +81,7 @@ void ass_2::shelfino_rotate_towards_next_area(void)
     if (detection_srv.response.status == 1)
     {
         ROS_INFO("Block identified!");
-        current_block_distance = detection_srv.response.box.distance;
+        current_block_distance = detection_srv.response.box.distance - 0.65;
         current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 5.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
@@ -114,7 +116,7 @@ void ass_2::shelfino_search_block(void)
     if (detection_srv.response.status == 1)
     {
         ROS_INFO("Block identified!");
-        current_block_distance = detection_srv.response.box.distance;
+        current_block_distance = detection_srv.response.box.distance - 0.65;
         current_block_class = detection_srv.response.box.class_n;
         current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 5.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;
@@ -127,14 +129,19 @@ void ass_2::shelfino_search_block(void)
 
 void ass_2::shelfino_check_block(void)
 {
-    // Rotate shelfino if block is not centered in front of him
-    shelfino_rotate(current_block_angle);
+    // // Rotate shelfino if block is not centered in front of him
+    // shelfino_rotate(current_block_angle);
 
-    // Move shelfino forward to detected block
-    shelfino_forward(current_block_distance - 0.5, false);
+    // // Move shelfino forward to detected block
+    // shelfino_forward(current_block_distance - 0.5, false);
 
-    // TODO: Make service call to python classification node
-    // if response == true:
+    shelfino_move_to(
+        shelfino_current_pos.x + current_block_distance * cos(current_block_angle + shelfino_current_rot),
+        shelfino_current_pos.y + current_block_distance * sin(current_block_angle + shelfino_current_rot),
+        0
+    );
+
+    ros::Duration(1.0).sleep();
     detection_client.call(detection_srv);
     if (detection_srv.response.status == 1)
     {

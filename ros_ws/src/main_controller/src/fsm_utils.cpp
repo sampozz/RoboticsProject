@@ -16,6 +16,20 @@ ros::ServiceClient shelfino_move_client, shelfino_point_client,
     ur5_move_client, ur5_gripper_client;
 
 extern shelfino_controller::Coordinates shelfino_current_pos;
+extern double shelfino_current_rot;
+
+void shelfino_move_to(double x, double y, double yaw)
+{
+    shelfino_move_srv.request.pos.x = x;
+    shelfino_move_srv.request.pos.y = y;
+    shelfino_move_srv.request.rot = yaw;
+
+    shelfino_move_client.call(shelfino_move_srv);
+
+    shelfino_current_pos.x = x;
+    shelfino_current_pos.y = y;
+    shelfino_current_rot = shelfino_move_srv.response.rot;
+}
 
 void shelfino_forward(double distance, bool control)
 {
@@ -32,6 +46,7 @@ void shelfino_rotate(double angle)
 {
     shelfino_rotate_srv.request.angle = angle;
     shelfino_rotate_client.call(shelfino_rotate_srv);
+    shelfino_current_rot = shelfino_rotate_srv.response.rot;
 }
 
 void shelfino_point_to(double x, double y)
@@ -39,6 +54,7 @@ void shelfino_point_to(double x, double y)
     shelfino_point_srv.request.pos.x = x;
     shelfino_point_srv.request.pos.y = y;
     shelfino_point_client.call(shelfino_point_srv);
+    shelfino_current_rot = shelfino_point_srv.response.rot;
 }
 
 void ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot)

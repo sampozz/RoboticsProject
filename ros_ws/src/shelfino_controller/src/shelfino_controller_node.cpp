@@ -17,14 +17,15 @@ bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::Mov
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
     
-    controller_ptr->move_to(pos, req.rot);
+    double angle = controller_ptr->move_to(pos, req.rot);
+    res.rot = angle;
     return true;
 }
 
 bool rotate(shelfino_controller::Rotate::Request &req, shelfino_controller::Rotate::Response &res)
 {    
-    double rot = controller_ptr->rotate(req.angle);
-    res.rot = rot;
+    double angle = controller_ptr->rotate(req.angle);
+    res.rot = angle;
     return true;
 }
 

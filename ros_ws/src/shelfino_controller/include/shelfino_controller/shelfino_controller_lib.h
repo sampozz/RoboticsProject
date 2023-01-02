@@ -43,6 +43,7 @@ private:
     double odometry_rotation, odometry_rotation_0;
 
     bool block_detected;
+    bool disable_vision;
 
     /**
      * Callback function, listen to /shelfino/odom topic and update odometry position and rotation
@@ -89,8 +90,9 @@ public:
      * 3. If yaw != 0, rotate to reach the desired final rotation
      * @param pos The desired final position
      * @param yaw The desired final rotation
+     * @return Final rotation of shelfino
      */
-    void move_to(Coordinates &pos, double yaw);
+    double move_to(Coordinates &pos, double yaw);
 
     /**
      * Rotate Shelfino from its current rotation to look towards the desired position

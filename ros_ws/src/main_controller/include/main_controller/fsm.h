@@ -68,6 +68,7 @@ namespace ass_3
 
 /* Utils */
 
+void shelfino_move_to(double x, double y, double yaw);
 void shelfino_forward(double distance, bool control);
 void shelfino_rotate(double angle);
 void shelfino_point_to(double x, double y);

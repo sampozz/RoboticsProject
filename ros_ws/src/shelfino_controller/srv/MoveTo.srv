@@ -1,4 +1,5 @@
 Coordinates pos
 float64 rot
 ---
+float64 rot
 int64 status
