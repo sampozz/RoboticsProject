@@ -184,6 +184,12 @@ void ShelfinoController::detection_callback(const robotic_vision::BoundingBoxes:
 void ShelfinoController::send_velocity(double linear_vel, double angular_vel)
 {
     geometry_msgs::Twist msg;
+    
+    if (linear_vel > this->linear_velocity)
+        linear_vel = this->linear_velocity;
+    if (angular_vel > this->angular_velocity)
+        angular_vel = this->angular_velocity;
+
     msg.linear.x = linear_vel;
     msg.angular.z = angular_vel;
 

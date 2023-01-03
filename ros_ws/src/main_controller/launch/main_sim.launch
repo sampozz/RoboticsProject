@@ -32,6 +32,6 @@
     <node pkg="shelfino_controller" type="shelfino_controller_node" name="shelfino_controller_node" output="screen" />
 
     <!-- Main controller: specify assignment number into 'args' field ! -->
-    <node pkg="main_controller" type="fsm" name="fsm" output="screen" args="2" />
+    <node pkg="main_controller" type="fsm" name="fsm" output="screen" args="1" />
 
 </launch>
