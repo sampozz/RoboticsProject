@@ -18,7 +18,8 @@
 #include "shelfino_controller/PointTo.h"
 #include "shelfino_controller/MoveForward.h"
 #include "robotic_vision/Detect.h"
-#include "robotic_vision/Stop.h"
+#include "robotic_vision/Ping.h"
+#include "robotic_vision/PointCloud.h"
 #include "gazebo_msgs/SetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 #include <vector>
@@ -33,16 +34,14 @@ typedef enum
     STATE_SHELFINO_NEXT_AREA,
     STATE_SHELFINO_SEARCH_BLOCK,
     STATE_SHELFINO_CHECK_BLOCK,
+    STATE_SHELFINO_PARK,
     STATE_UR5_LOAD,
     STATE_UR5_UNLOAD,
     STATE_END
 } State_t;
 
-typedef struct
-{
-    State_t state;
-    void (*state_function)(void);
-} StateMachine_t;
+typedef void (*state_function)(void);
+typedef std::map<int, state_function> StateMachine_t;
 
 /* States functions for Assignment 2 */
 
@@ -68,7 +67,14 @@ namespace ass_2
 
 namespace ass_3
 {
-    
+    void init(void);
+    void shelfino_rotate_towards_next_area(void);
+    void shelfino_next_area(void);
+    void shelfino_search_block(void);
+    void shelfino_check_block(void);
+    void shelfino_park(void);
+    void ur5_load(void);
+    void ur5_unload(void);    
 }
 
 /* Utils */

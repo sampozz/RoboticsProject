@@ -19,7 +19,7 @@ namespace ass_2 {
     ur5_controller::EulerRotation ur5_default_rot;
     geometry_msgs::Pose block_load_pos;
     robotic_vision::Detect detection_srv;
-    robotic_vision::Stop vision_stop_srv;
+    robotic_vision::Ping vision_stop_srv;
 
     gazebo_msgs::SetModelState model_state_srv;
 

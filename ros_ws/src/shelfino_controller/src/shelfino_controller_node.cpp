@@ -62,7 +62,7 @@ int main(int argc, char **argv)
     ros::NodeHandle controller_node;
 
     // Initialize controller
-    ShelfinoController controller(0.3, 0.3, 1000.0);
+    ShelfinoController controller(0.2, 0.2, 1000.0);
     ros::Duration(2.0).sleep(); // do not remove this sleep (necessary to reset odometry)
     // Reset odometry: shelfino thinks it is in position (0,0,0) after this node starts running
     // otherwise lyapunov control (and the movement functions generally) will have problems

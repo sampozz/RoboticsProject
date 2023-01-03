@@ -14,7 +14,7 @@ ros::ServiceClient shelfino_move_client, shelfino_point_client,
     shelfino_rotate_client, shelfino_forward_client, 
     gazebo_link_attacher, gazebo_link_detacher,
     ur5_move_client, ur5_gripper_client,
-    vision_stop_client;
+    vision_stop_client, pointcloud_client;
 
 shelfino_controller::Coordinates shelfino_current_pos;
 double shelfino_current_rot;

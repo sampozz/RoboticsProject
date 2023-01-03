@@ -1,6 +1,6 @@
 #include "ros/ros.h"
 #include "robotic_vision/Detect.h"
-#include "robotic_vision/Stop.h"
+#include "robotic_vision/Ping.h"
 #include "robotic_vision/BoundingBoxes.h"
 #include "robotic_vision/BoundingBox.h"
 

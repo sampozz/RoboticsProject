@@ -1,6 +1,7 @@
 <launch>
     <!-- Detection configuration -->
-    <arg name="weights"               default="$(find robotic_vision)/scripts/yolov5/best.pt"/>
+    <arg name="shelfino_weights"      default="$(find robotic_vision)/scripts/yolov5/best.pt"/>
+    <arg name="ur5_weights"           default="$(find robotic_vision)/scripts/yolov5/megablocks.pt"/>
     <arg name="data"                  default="$(find robotic_vision)/scripts/yolov5/data/megablocks.yaml"/>
     <arg name="confidence_threshold"  default="0.75"/>
     <arg name="iou_threshold"         default="0.45"/>
@@ -17,7 +18,7 @@
     
     <!-- Visualize using OpenCV window -->
     <arg name="shelfino_view_image"   default="true"/>
-    <arg name="ur5_view_image"        default="true"/>
+    <arg name="ur5_view_image"        default="false"/>
 
     <!-- ROS topics -->
     <arg name="shelfino_input_image_topic"       default="/camera_ir/color/image_raw"/>
@@ -34,7 +35,7 @@
 
     <node pkg="robotic_vision" name="shelfino_detect" type="detect.py" output="screen">
         <param name="namespace"             value="shelfino"/>
-        <param name="weights"               value="$(arg weights)"/>
+        <param name="weights"               value="$(arg shelfino_weights)"/>
         <param name="data"                  value="$(arg data)"/>
         <param name="confidence_threshold"  value="$(arg confidence_threshold)"/>
         <param name="iou_threshold"         value="$(arg iou_threshold)" />
@@ -65,7 +66,7 @@
 
     <node pkg="robotic_vision" name="ur5_detect" type="detect.py" output="screen">
         <param name="namespace"             value="ur5"/>
-        <param name="weights"               value="$(arg weights)"/>
+        <param name="weights"               value="$(arg ur5_weights)"/>
         <param name="data"                  value="$(arg data)"/>
         <param name="confidence_threshold"  value="$(arg confidence_threshold)"/>
         <param name="iou_threshold"         value="$(arg iou_threshold)" />

@@ -24,7 +24,8 @@ add_message_files(
 add_service_files(
   FILES
   Detect.srv
-  Stop.srv
+  Ping.srv
+  PointCloud.srv
 )
 
 generate_messages(

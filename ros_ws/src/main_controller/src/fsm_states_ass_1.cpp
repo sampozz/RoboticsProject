@@ -16,7 +16,7 @@ extern double shelfino_current_rot;
 namespace ass_1 {
     geometry_msgs::Pose block_load_pos;
     robotic_vision::Detect detection_srv;
-    robotic_vision::Stop vision_stop_srv;
+    robotic_vision::Ping vision_stop_srv;
 
     int current_area_index; // Index of the current area in the areas array (different to area number)
     int current_block_class;

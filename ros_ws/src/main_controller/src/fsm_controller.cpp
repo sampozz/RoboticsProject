@@ -10,13 +10,13 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
     gazebo_link_attacher, gazebo_link_detacher,
     ur5_move_client, ur5_gripper_client,
     detection_client, gazebo_model_state,
-    vision_stop_client;
+    vision_stop_client, pointcloud_client;
 
 extern std::vector<std::vector<double>> areas;
 
 /* FSM Functions arrays for the three assignemnts */
 
-StateMachine_t fsm_ass_1[] = {
+StateMachine_t fsm_ass_1 = {
     {STATE_INIT, ass_1::init},
     {STATE_SHELFINO_ROTATE_AREA, ass_1::shelfino_rotate_towards_next_area},
     {STATE_SHELFINO_NEXT_AREA, ass_1::shelfino_next_area},
@@ -24,7 +24,7 @@ StateMachine_t fsm_ass_1[] = {
     {STATE_SHELFINO_CHECK_BLOCK, ass_1::shelfino_check_block},
 };
 
-StateMachine_t fsm_ass_2[] = {
+StateMachine_t fsm_ass_2 = {
     {STATE_INIT, ass_2::init},
     {STATE_SHELFINO_ROTATE_AREA, ass_2::shelfino_rotate_towards_next_area},
     {STATE_SHELFINO_NEXT_AREA, ass_2::shelfino_next_area},
@@ -34,7 +34,16 @@ StateMachine_t fsm_ass_2[] = {
     {STATE_UR5_UNLOAD, ass_2::ur5_unload},
 };
 
-StateMachine_t fsm_ass_3[] = {};
+StateMachine_t fsm_ass_3 = {
+    {STATE_INIT, ass_3::init},
+    {STATE_SHELFINO_ROTATE_AREA, ass_3::shelfino_rotate_towards_next_area},
+    {STATE_SHELFINO_NEXT_AREA, ass_3::shelfino_next_area},
+    {STATE_SHELFINO_SEARCH_BLOCK, ass_3::shelfino_search_block},
+    {STATE_SHELFINO_CHECK_BLOCK, ass_3::shelfino_check_block},
+    {STATE_SHELFINO_PARK, ass_3::shelfino_park},
+    {STATE_UR5_LOAD, ass_3::ur5_load},
+    {STATE_UR5_UNLOAD, ass_3::ur5_unload},
+};
 
 /* Global variables */
 
@@ -87,7 +96,8 @@ int main(int argc, char **argv)
 
     // Vision services
     detection_client = fsm_node.serviceClient<robotic_vision::Detect>("shelfino/yolo/detect");
-    vision_stop_client = fsm_node.serviceClient<robotic_vision::Stop>("shelfino/yolo/stop");
+    vision_stop_client = fsm_node.serviceClient<robotic_vision::Ping>("shelfino/yolo/stop");
+    pointcloud_client = fsm_node.serviceClient<robotic_vision::PointCloud>("ur5/yolo/detect");
 
     // Gazebo services
     gazebo_model_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
@@ -112,11 +122,11 @@ int main(int argc, char **argv)
             ROS_DEBUG("Executing state function %d", current_state);
 
             if (assignment_number == 1)
-                (*fsm_ass_1[current_state].state_function)();      
+                (fsm_ass_1[current_state])();      
             else if (assignment_number == 2)
-                (*fsm_ass_2[current_state].state_function)();      
+                (fsm_ass_2[current_state])();      
             else
-                (*fsm_ass_3[current_state].state_function)();      
+                (fsm_ass_3[current_state])();      
 
             ros::spinOnce();
             loop_rate.sleep();
