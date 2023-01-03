@@ -39,14 +39,17 @@ from utils.augmentations import letterbox
 
 @torch.no_grad()
 class Yolov5Detector:
-    def __init__(self):
+
+    def __init__(self, namespace="shelfino"):
+
+        self.namespace = namespace
         self.conf_thres = rospy.get_param("~confidence_threshold")
         self.iou_thres = rospy.get_param("~iou_threshold")
         self.agnostic_nms = rospy.get_param("~agnostic_nms")
         self.max_det = rospy.get_param("~maximum_detections")
         self.classes = rospy.get_param("~classes", None)
         self.line_thickness = rospy.get_param("~line_thickness")
-        self.view_image = rospy.get_param("~view_image")
+        self.view_image = rospy.get_param(f"~{namespace}/view_image")
         # Initialize weights 
         weights = rospy.get_param("~weights")
         # Initialize model
@@ -77,8 +80,8 @@ class Yolov5Detector:
         self.model.warmup(imgsz=(1 if self.pt else bs, 3, *self.img_size), half=self.half)  # warmup        
         
         # Initialize subscriber to Image/CompressedImage topic
-        input_image_type, input_image_topic, _ = get_topic_type(rospy.get_param("~input_image_topic"), blocking = True)
-        input_depth_type, input_depth_topic, _ = get_topic_type(rospy.get_param("~input_depth_topic"), blocking = True)
+        input_image_type, input_image_topic, _ = get_topic_type(rospy.get_param(f"~{namespace}/input_image_topic"), blocking = True)
+        input_depth_type, input_depth_topic, _ = get_topic_type(rospy.get_param(f"~{namespace}/input_depth_topic"), blocking = True)
         self.compressed_input = input_image_type == "sensor_msgs/CompressedImage"
 
         if self.compressed_input:
@@ -95,19 +98,20 @@ class Yolov5Detector:
             input_depth_topic, Image, self.depth_callback, queue_size=1
         )
 
-        # Initialize subscriber to schelfino odometry
-        self.odom_position = [0, 0]
         self.blacklist = []
-        self.odometry_sub = rospy.Subscriber(
-            "/shelfino2/odom", Odometry, self.odometry_callback, queue_size=100
-        )
+        if namespace == "shelfino":
+            # Initialize subscriber to schelfino odometry
+            self.odom_position = [0, 0]
+            self.odometry_sub = rospy.Subscriber(
+                "/shelfino2/odom", Odometry, self.odometry_callback, queue_size=100
+            )
 
-        # Initialize service for blacklisting blocks
-        self.blacklist_srv = rospy.Service('vision/stop', Stop, self.blacklist_service)
+            # Initialize service for blacklisting blocks
+            self.blacklist_srv = rospy.Service(f'{namespace}/yolo/stop', Stop, self.blacklist_service)
 
         # Initialize prediction publisher
         self.pred_pub = rospy.Publisher(
-            rospy.get_param("~output_topic"), BoundingBoxes, queue_size=10
+            rospy.get_param(f"~{namespace}/output_topic"), BoundingBoxes, queue_size=10
         )
         # Initialize image publisher
         self.publish_image = rospy.get_param("~publish_image")
@@ -219,7 +223,7 @@ class Yolov5Detector:
 
         # Publish & visualize images
         if self.view_image:
-            cv2.imshow(str(0), im0)
+            cv2.imshow(self.namespace, im0)
             cv2.waitKey(1)  # 1 millisecond
         if self.publish_image:
             self.image_pub.publish(self.bridge.cv2_to_imgmsg(im0, "bgr8"))
@@ -243,6 +247,8 @@ if __name__ == "__main__":
     check_requirements(exclude=("tensorboard", "thop"))
     
     rospy.init_node("yolov5", anonymous=True)
-    detector = Yolov5Detector()
+
+    namespace = rospy.get_param(f"~namespace")
+    shelfino_detector = Yolov5Detector(namespace=namespace)
 
     rospy.spin()

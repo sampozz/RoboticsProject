@@ -49,9 +49,11 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(vision_node src/vision_node.cpp)
+add_executable(shelfino_yolo_node src/shelfino_yolo_node.cpp)
+add_executable(ur5_yolo_node src/ur5_yolo_node.cpp)
 
-target_link_libraries(vision_node ${catkin_LIBRARIES})
+target_link_libraries(shelfino_yolo_node ${catkin_LIBRARIES})
+target_link_libraries(ur5_yolo_node ${catkin_LIBRARIES})
 
 catkin_install_python(PROGRAMS
   scripts/detect.py
@@ -63,7 +65,7 @@ catkin_install_python(PROGRAMS
 #############
 
 ## Mark libraries for installation
-install(TARGETS vision_node
+install(TARGETS shelfino_yolo_node ur5_yolo_node
   ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
   RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}

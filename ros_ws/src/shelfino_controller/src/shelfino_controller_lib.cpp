@@ -19,7 +19,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
 
     // Subscriber initialization
     odometry_sub = node.subscribe("/shelfino2/odom", 100, &ShelfinoController::odometry_callback, this);
-    detection_sub = node.subscribe("/yolov5/detections", 10, &ShelfinoController::detection_callback, this);
+    detection_sub = node.subscribe("/shelfino/yolo/detections", 10, &ShelfinoController::detection_callback, this);
 }
 
 double ShelfinoController::move_to(Coordinates &pos, double yaw)

@@ -21,17 +21,14 @@
     <!-- Spawn Shelfino -->
     <include file="$(find shelfino_gazebo)/launch/shelfino.launch" />
 
-    <!-- YOLO Python -->
+    <!-- YOLO -->
     <include file="$(find robotic_vision)/launch/yolov5.launch" />
-
-    <!-- C++ code (perception) -->
-    <node pkg="robotic_vision" type="vision_node" name="vision_node" output="screen" />
 
     <!-- C++ code (controllers) -->
     <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" output="screen" />
     <node pkg="shelfino_controller" type="shelfino_controller_node" name="shelfino_controller_node" output="screen" />
 
     <!-- Main controller: specify assignment number into 'args' field ! -->
-    <node pkg="main_controller" type="fsm" name="fsm" output="screen" args="1" />
+    <node pkg="main_controller" type="fsm" name="fsm" output="screen" args="2" />
 
 </launch>

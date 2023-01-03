@@ -44,12 +44,12 @@ bool detect_srv(robotic_vision::Detect::Request &req, robotic_vision::Detect::Re
 int main(int argc, char **argv)
 {
     // ROS Node initialization
-    ros::init(argc, argv, "vision_node");
-    ros::NodeHandle vision_node;
+    ros::init(argc, argv, "shelfino_yolo_node");
+    ros::NodeHandle shelfino_yolo_node;
 
-    ros::Subscriber yolo_detection_sub = vision_node.subscribe("/yolov5/detections", 10, yolo_callback);
+    ros::Subscriber yolo_detection_sub = shelfino_yolo_node.subscribe("/shelfino/yolo/detections", 10, yolo_callback);
 
-    ros::ServiceServer detection_service = vision_node.advertiseService("vision/detect", detect_srv);
+    ros::ServiceServer detection_service = shelfino_yolo_node.advertiseService("shelfino/yolo/detect", detect_srv);
     ros::spin();
 
     return 0;

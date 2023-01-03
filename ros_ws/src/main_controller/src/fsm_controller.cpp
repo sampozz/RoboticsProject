@@ -86,8 +86,8 @@ int main(int argc, char **argv)
     shelfino_forward_client = fsm_node.serviceClient<shelfino_controller::MoveForward>("shelfino/move_forward");
 
     // Vision services
-    detection_client = fsm_node.serviceClient<robotic_vision::Detect>("vision/detect");
-    vision_stop_client = fsm_node.serviceClient<robotic_vision::Stop>("vision/stop");
+    detection_client = fsm_node.serviceClient<robotic_vision::Detect>("shelfino/yolo/detect");
+    vision_stop_client = fsm_node.serviceClient<robotic_vision::Stop>("shelfino/yolo/stop");
 
     // Gazebo services
     gazebo_model_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");

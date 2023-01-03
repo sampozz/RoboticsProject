@@ -16,19 +16,24 @@
     <arg name="inference_size_w"      default="640"/>
     
     <!-- Visualize using OpenCV window -->
-    <arg name="view_image"            default="true"/>
+    <arg name="shelfino_view_image"   default="true"/>
+    <arg name="ur5_view_image"        default="true"/>
 
     <!-- ROS topics -->
-    <arg name="input_image_topic"       default="/camera_ir/color/image_raw"/>
-    <arg name="input_depth_topic"       default="/camera_ir/depth/image_raw"/>
-    <arg name="output_topic"            default="/yolov5/detections"/>
+    <arg name="shelfino_input_image_topic"       default="/camera_ir/color/image_raw"/>
+    <arg name="shelfino_input_depth_topic"       default="/camera_ir/depth/image_raw"/>
+    <arg name="ur5_input_image_topic"       default="/ur5/zed_node/left_raw/image_raw_color"/>
+    <arg name="ur5_input_depth_topic"       default="/ur5/zed_node/depth/depth_registered"/>
+    <arg name="shelfino_output_topic"       default="/shelfino/yolo/detections"/>
+    <arg name="ur5_output_topic"            default="/ur5/yolo/detections"/>
 
     <!-- Optional topic (publishing annotated image) -->
     <arg name="publish_image"           default="false"/>
     <arg name="output_image_topic"      default="/yolov5/image_out"/>
 
 
-    <node pkg="robotic_vision" name="detect" type="detect.py" output="screen">
+    <node pkg="robotic_vision" name="shelfino_detect" type="detect.py" output="screen">
+        <param name="namespace"             value="shelfino"/>
         <param name="weights"               value="$(arg weights)"/>
         <param name="data"                  value="$(arg data)"/>
         <param name="confidence_threshold"  value="$(arg confidence_threshold)"/>
@@ -43,16 +48,53 @@
         <param name="inference_size_h"      value="$(arg inference_size_h)"/>
         <param name="inference_size_w"      value="$(arg inference_size_w)"/>
 
-        <param name="input_image_topic"     value="$(arg input_image_topic)"/>
-        <param name="input_depth_topic"     value="$(arg input_depth_topic)"/>
-        <param name="output_topic"          value="$(arg output_topic)"/>
+        <param name="shelfino/input_image_topic"       value="$(arg shelfino_input_image_topic)"/>
+        <param name="shelfino/input_depth_topic"       value="$(arg shelfino_input_depth_topic)"/>
+        <param name="ur5/input_image_topic"            value="$(arg ur5_input_image_topic)"/>
+        <param name="ur5/input_depth_topic"            value="$(arg ur5_input_depth_topic)"/>
+        <param name="shelfino/output_topic"            value="$(arg shelfino_output_topic)"/>
+        <param name="ur5/output_topic"                 value="$(arg ur5_output_topic)"/>
 
-        <param name="view_image"            value="$(arg view_image)"/>
+        <param name="shelfino/view_image"      value="$(arg shelfino_view_image)"/>
+        <param name="ur5/view_image"           value="$(arg ur5_view_image)"/>
 
         <param name="publish_image"         value="$(arg publish_image)"/>
         <param name="output_image_topic"    value="$(arg output_image_topic)"/>
     </node>
-    <!-- <include file="$(find camera_launch)/launch/d435.launch"/> -->
 
+
+    <node pkg="robotic_vision" name="ur5_detect" type="detect.py" output="screen">
+        <param name="namespace"             value="ur5"/>
+        <param name="weights"               value="$(arg weights)"/>
+        <param name="data"                  value="$(arg data)"/>
+        <param name="confidence_threshold"  value="$(arg confidence_threshold)"/>
+        <param name="iou_threshold"         value="$(arg iou_threshold)" />
+        <param name="maximum_detections"    value="$(arg maximum_detections)"/>
+        <param name="device"                value="$(arg device)" />
+        <param name="agnostic_nms"          value="$(arg agnostic_nms)" />
+        <param name="line_thickness"        value="$(arg line_thickness)"/>
+        <param name="dnn"                   value="$(arg dnn)"/>
+        <param name="half"                  value="$(arg half)"/>
+
+        <param name="inference_size_h"      value="$(arg inference_size_h)"/>
+        <param name="inference_size_w"      value="$(arg inference_size_w)"/>
+
+        <param name="shelfino/input_image_topic"       value="$(arg shelfino_input_image_topic)"/>
+        <param name="shelfino/input_depth_topic"       value="$(arg shelfino_input_depth_topic)"/>
+        <param name="ur5/input_image_topic"            value="$(arg ur5_input_image_topic)"/>
+        <param name="ur5/input_depth_topic"            value="$(arg ur5_input_depth_topic)"/>
+        <param name="shelfino/output_topic"            value="$(arg shelfino_output_topic)"/>
+        <param name="ur5/output_topic"                 value="$(arg ur5_output_topic)"/>
+
+        <param name="shelfino/view_image"      value="$(arg shelfino_view_image)"/>
+        <param name="ur5/view_image"           value="$(arg ur5_view_image)"/>
+
+        <param name="publish_image"         value="$(arg publish_image)"/>
+        <param name="output_image_topic"    value="$(arg output_image_topic)"/>
+    </node>
+
+    <!-- C++ nodes -->
+    <node pkg="robotic_vision" type="shelfino_yolo_node" name="shelfino_yolo_node" output="screen" />
+    <node pkg="robotic_vision" type="ur5_yolo_node" name="ur5_yolo_node" output="screen" />
 
 </launch>
