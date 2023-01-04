@@ -2,6 +2,7 @@
   <param name="robot_description" command="xacro $(find shelfino_gazebo)/models/model_high.sdf" />
   
   <node pkg="gazebo_ros" type="spawn_model" name="spawn_urdf"  args="-urdf -model shelfino -x 0.5 -y 1.2 -z 0.1 -param robot_description" />
+  <!-- <node pkg="gazebo_ros" type="spawn_model" name="spawn_plate" args="-x 0.5 -y 1.2 -z 1 -file $(env HOME)/robotics_group_v/locosim/models/plate/plate.sdf -model plate -sdf"/> -->
   
   <node pkg="robot_state_publisher" type="robot_state_publisher" name="robot_state_publisher" />
   

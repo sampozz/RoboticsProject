@@ -102,13 +102,13 @@ bool UR5Controller::validate_path(double *path, int n)
             continue;
 
         // Check position constraints
-        if (testing_position(2) > 0.74)
+        if (testing_position(2) > 0.74 && testing_position(1) > -0.4)
             return false;
 
         Eigen::Matrix<double, 6, 6> jac;
         ur5_jacobian(intermediate_testing_joints, jac);
         
-        // Check singularity with jacobian determinant
+        // // Check singularity with jacobian determinant
         if (abs(jac.determinant()) < 0.00001)
             return false;
 
@@ -122,7 +122,7 @@ bool UR5Controller::validate_path(double *path, int n)
 
 int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints)
 {
-    map<double, int> m;
+    multimap<double, int> m;
     for (int i = 0; i < 8; i++)
     {
         JointStateVector comp;

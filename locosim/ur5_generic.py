@@ -286,15 +286,18 @@ class Ur5Generic(BaseControllerFixed):
         self.pointcloud_data = msg
 
     def handle_pointcloud_srv(self, req):
-        for i in range(10):
-            print("candalporco")
+        # print("Request:", req.x, req.y)
         points_list = []
         for data in point_cloud2.read_points(self.pointcloud_data, field_names=['x', 'y', 'z'], skip_nans=False, uvs=[(int(req.x), int(req.y))]):
             points_list.append([data[0], data[1], data[2]])
         # print("Data Optical frame: ", points_list)
         pointW = self.w_R_c.dot(points_list[0]) + self.x_c + self.base_offset
         # print("Data World frame: ", pointW)
-        return PointCloudResponse(pointW[0], pointW[1], pointW[2])
+        res = PointCloudResponse()
+        res.wx = pointW[0]
+        res.wy = pointW[1]
+        res.wz = pointW[2]
+        return res
 
 
 def talker(p):

@@ -63,6 +63,7 @@ void ass_3::init(void)
     ur5_move(ur5_home_pos, ur5_default_rot);
 
     current_state = STATE_SHELFINO_ROTATE_AREA;
+    // current_state = STATE_UR5_LOAD;
 }
 
 void ass_3::shelfino_rotate_towards_next_area(void)
@@ -179,39 +180,45 @@ void ass_3::shelfino_park(void)
 {
     // gazebo move block on top of shelfino
     model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area_index][3]);
-    model_state_srv.request.model_state.pose.position.x = shelfino_current_pos.x + 0.5;
-    model_state_srv.request.model_state.pose.position.y = shelfino_current_pos.y + 1.2;
+    model_state_srv.request.model_state.pose.position.x = shelfino_current_pos.x + 0.6;
+    model_state_srv.request.model_state.pose.position.y = shelfino_current_pos.y + 1.3;
     model_state_srv.request.model_state.pose.position.z = 1;
+    model_state_srv.request.model_state.pose.orientation.w = cos((shelfino_current_rot + M_PI / 2) / 2);
+    model_state_srv.request.model_state.pose.orientation.z = sin((shelfino_current_rot + M_PI / 2) / 2);
     gazebo_model_state.call(model_state_srv);
+    ros::Duration(1.0).sleep();
 
     // shelfino_move_to(0, 1, 0);
-    shelfino_move_to(0, 0, 0);
+    shelfino_move_to(-0.2, -0.1, M_PI);
     current_state = STATE_UR5_LOAD;
 }
 
 void ass_3::ur5_load(void)
 {
-    // Move ur5 to home position
-    ur5_move(ur5_home_pos, ur5_default_rot);
-    // Open gripper
-    ur5_grip(100);
-
     // Move ur5 to load position
     // TODO: service call to vision node to get the exact position of the block over shelfino
     pointcloud_client.call(pointcloud_srv);
     if (pointcloud_srv.response.state == 0)
     {
-        ur5_load_pos.x = pointcloud_srv.response.wx + 0.5;
+        ur5_load_pos.x = pointcloud_srv.response.wx - 0.5;
         ur5_load_pos.y = 0.35 - pointcloud_srv.response.wy;
-        ur5_load_pos.z = 0.136 - pointcloud_srv.response.wz;
+        ur5_load_pos.z = 0.8;
         ROS_DEBUG("Response from pointcloud: %f %f %f", ur5_load_pos.x, ur5_load_pos.y, ur5_load_pos.z);
     }
     else
     {
         ROS_WARN("UR5 could not find block. Cannot proceed.");
+        ros::Duration(1.0).sleep();
         // TODO? Shake shelfino to let ur5 find the block
         return;
     }
+
+    // Move ur5 to home position
+    ur5_move(ur5_home_pos, ur5_default_rot);
+    // Open gripper
+    ur5_grip(100);
+
+    // Move UR5 to load position
     ur5_move(ur5_load_pos, ur5_default_rot);
 
     // Grab
