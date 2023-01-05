@@ -143,7 +143,7 @@ void ass_3::shelfino_check_block(void)
     }
     
     ROS_INFO("Shelfino classified block: %s", block_shelfino.Class.data());
-    vision_stop_client.call(vision_stop_srv);
+    vision_stop_client.call(vision_stop_srv); // Blacklist this block
 
     // Check in which area shelfino is
     // TODO: block position should be used instead of shelfino position
@@ -187,7 +187,7 @@ void ass_3::shelfino_park(void)
     ros::Duration(1.0).sleep();
 
     // shelfino_move_to(0, 1, 0);
-    shelfino_move_to(-0.2, -0.1, M_PI);
+    shelfino_move_to(-0.2, -0.1, M_PI + 0.1);
     current_state = STATE_UR5_LOAD;
 }
 

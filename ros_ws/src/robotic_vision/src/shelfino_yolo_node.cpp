@@ -12,17 +12,25 @@ double camera_angle = 1.07;
 
 void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
 {
-    // TODO: if n > 1 return nearest
-    if (msg->n > 0)
+    for (int i = 0; i < msg->n; i++)
     {
         // Block detected
-        block = msg->bounding_boxes[0];
-        detection_timestamp = ros::Time::now().toSec();
+        robotic_vision::BoundingBox b = msg->bounding_boxes[i];
+        if (b.is_blacklisted || b.distance > 2.5)
+        {
+            ROS_DEBUG("Detected block is blacklisted or too far");
+            continue;
+        }
+
+        if (i == 0)
+            block = b;            
+
+        // Return nearest block only
+        if (b.distance < block.distance)
+            block = b;
         
-        if (!block.is_blacklisted)
-            block_detected = true;
-        else
-            ROS_DEBUG("Detected block is blacklisted");
+        block_detected = true;
+        detection_timestamp = ros::Time::now().toSec();
     }
 }
 
