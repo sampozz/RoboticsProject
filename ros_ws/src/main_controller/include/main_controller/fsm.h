@@ -21,6 +21,7 @@
 #include "robotic_vision/Ping.h"
 #include "robotic_vision/PointCloud.h"
 #include "gazebo_msgs/SetModelState.h"
+#include "gazebo_msgs/GetModelState.h"
 #include "gazebo_ros_link_attacher/Attach.h"
 #include <vector>
 #include <map>
@@ -83,7 +84,7 @@ void shelfino_move_to(double x, double y, double yaw);
 void shelfino_forward(double distance, bool control);
 void shelfino_rotate(double angle);
 void shelfino_point_to(double x, double y);
-void ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot);
+bool ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot);
 void ur5_grip(double diameter);
 
 void attach(int model);

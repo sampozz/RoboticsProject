@@ -1,7 +1,7 @@
 <launch>
     <!-- Detection configuration -->
     <arg name="shelfino_weights"      default="$(find robotic_vision)/scripts/yolov5/best.pt"/>
-    <arg name="ur5_weights"           default="$(find robotic_vision)/scripts/yolov5/megablocks.pt"/>
+    <arg name="ur5_weights"           default="$(find robotic_vision)/scripts/yolov5/best2.pt"/>
     <arg name="data"                  default="$(find robotic_vision)/scripts/yolov5/data/megablocks.yaml"/>
     <arg name="confidence_threshold"  default="0.75"/>
     <arg name="iou_threshold"         default="0.45"/>
@@ -17,7 +17,7 @@
     <arg name="inference_size_w"      default="640"/>
     
     <!-- Visualize using OpenCV window -->
-    <arg name="shelfino_view_image"   default="false"/>
+    <arg name="shelfino_view_image"   default="true"/>
     <arg name="ur5_view_image"        default="true"/>
 
     <!-- ROS topics -->

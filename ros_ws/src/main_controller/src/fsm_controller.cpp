@@ -9,8 +9,9 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
     shelfino_rotate_client, shelfino_forward_client, 
     gazebo_link_attacher, gazebo_link_detacher,
     ur5_move_client, ur5_gripper_client,
-    detection_client, gazebo_model_state,
-    vision_stop_client, pointcloud_client;
+    detection_client, gazebo_set_state, 
+    gazebo_get_state, vision_stop_client, 
+    pointcloud_client;
 
 extern std::vector<std::vector<double>> areas;
 
@@ -47,7 +48,7 @@ StateMachine_t fsm_ass_3 = {
 
 /* Global variables */
 
-ros::ServiceClient detection_client, gazebo_model_state;
+ros::ServiceClient detection_client, gazebo_set_state, gazebo_get_state;
 State_t current_state;
 std::vector<std::vector<double>> areas;
 
@@ -63,29 +64,17 @@ void get_world_params(ros::NodeHandle& n)
 }
 
 int main(int argc, char **argv)
-{
-    // Arguments validation
-    if (argc < 2)
-    {
-        ROS_ERROR("Assignment number not provided. Exiting...");
-        return 1;
-    }
-    
-    int assignment_number = std::stoi(argv[1]);
-
-    if (assignment_number < 1 || assignment_number > 3)
-    {
-        ROS_ERROR("Assignment number is wrong. Exiting...");
-        return 1;
-    }
-
-    ROS_INFO("Executing assignment %d", assignment_number);
+{      
 
     // ROS Node initialization
     ros::init(argc, argv, "fsm_controller");
     ros::NodeHandle fsm_node;
     ros::Rate loop_rate(100.);
 
+    int assignment_number;
+    ros::param::get("~assignment", assignment_number);
+    ROS_INFO("Executing assignment %d", assignment_number);
+    
     // Setup services
     ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("ur5/move_to");
     ur5_gripper_client = fsm_node.serviceClient<ur5_controller::SetGripper>("ur5/set_gripper");
@@ -100,7 +89,8 @@ int main(int argc, char **argv)
     pointcloud_client = fsm_node.serviceClient<robotic_vision::PointCloud>("ur5/yolo/detect");
 
     // Gazebo services
-    gazebo_model_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
+    gazebo_set_state = fsm_node.serviceClient<gazebo_msgs::SetModelState>("/gazebo/set_model_state");
+    gazebo_get_state = fsm_node.serviceClient<gazebo_msgs::GetModelState>("/gazebo/get_model_state");
     gazebo_link_attacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/attach");
     gazebo_link_detacher = fsm_node.serviceClient<gazebo_ros_link_attacher::Attach>("link_attacher_node/detach");
 

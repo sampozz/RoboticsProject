@@ -1,7 +1,7 @@
 float64 x
 float64 y
 ---
-int64 state
 float64 wx
 float64 wy
 float64 wz
+BoundingBox box

@@ -58,11 +58,13 @@ void shelfino_point_to(double x, double y)
     shelfino_current_rot = shelfino_point_srv.response.rot;
 }
 
-void ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot)
+bool ur5_move(ur5_controller::Coordinates& pos, ur5_controller::EulerRotation& rot)
 {
     ur5_move_srv.request.pos = pos;
     ur5_move_srv.request.rot = rot;
     ur5_move_client.call(ur5_move_srv);
+
+    return ur5_move_srv.response.status;
 }
 
 void ur5_grip(double diameter)

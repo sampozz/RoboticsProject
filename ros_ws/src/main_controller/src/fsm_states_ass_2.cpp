@@ -6,7 +6,7 @@
 extern State_t current_state;
 extern std::vector<std::vector<double>> areas;
 extern ros::ServiceClient detection_client;
-extern ros::ServiceClient gazebo_model_state;	
+extern ros::ServiceClient gazebo_set_state;	
 extern ros::ServiceClient vision_stop_client;
 
 extern shelfino_controller::Coordinates shelfino_current_pos;
@@ -185,7 +185,7 @@ void ass_2::shelfino_check_block(void)
     // gazebo move block to ur5 load position
     model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area_index][3]);
     model_state_srv.request.model_state.pose = block_load_pos;
-    gazebo_model_state.call(model_state_srv);
+    gazebo_set_state.call(model_state_srv);
 
     current_state = STATE_UR5_LOAD;
 }

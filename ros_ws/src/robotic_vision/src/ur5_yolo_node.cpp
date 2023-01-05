@@ -41,11 +41,11 @@ bool detect_srv(robotic_vision::PointCloud::Request &req, robotic_vision::PointC
 
         pointcloud_client.call(pointcloud_srv);
         res = pointcloud_srv.response;
-        res.state = 0;
+        res.box = block;
     }
     else
     {
-        res.state = 1;
+        res.box.class_n = -1;
         ROS_DEBUG("Could not identify block");
     }
     
