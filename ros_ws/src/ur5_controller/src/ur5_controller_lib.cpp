@@ -29,10 +29,10 @@ void UR5Controller::set_gripper(int diameter)
     send_gripper_state(diameter);
 }
 
-void UR5Controller::get_joint_states(JointStateVector &joints)
+JointStateVector UR5Controller::get_joint_states(void) const
 {
     ros::spinOnce();
-    joints = current_joints;
+    return current_joints;
 }
 
 /* Private functions */
@@ -63,7 +63,7 @@ void UR5Controller::joint_state_callback(const sensor_msgs::JointState::ConstPtr
     }
 }
 
-void UR5Controller::send_joint_state(JointStateVector &desired_joints)
+void UR5Controller::send_joint_state(const JointStateVector &desired_joints) const
 {
     std_msgs::Float64MultiArray joint_state_msg_array;
     if (is_real_robot || !is_simulating_gripper)
@@ -89,7 +89,7 @@ void UR5Controller::send_joint_state(JointStateVector &desired_joints)
     joint_state_pub.publish(joint_state_msg_array);
 }
 
-void UR5Controller::send_gripper_state(int diameter)
+void UR5Controller::send_gripper_state(int diameter) const
 {
     std_msgs::Int32 diameter_msg;
     diameter_msg.data = diameter;

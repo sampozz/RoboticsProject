@@ -1,8 +1,4 @@
-#include "ros/ros.h"
-#include "robotic_vision/Detect.h"
-#include "robotic_vision/Ping.h"
-#include "robotic_vision/BoundingBoxes.h"
-#include "robotic_vision/BoundingBox.h"
+#include "robotic_vision/shelfino_vision.h"
 
 bool block_detected = false;
 double detection_timestamp = 0;
@@ -34,7 +30,7 @@ void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
     }
 }
 
-bool detect_srv(robotic_vision::Detect::Request &req, robotic_vision::Detect::Response &res)
+bool srv_shelfino_detect(robotic_vision::Detect::Request &req, robotic_vision::Detect::Response &res)
 {
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {
@@ -57,7 +53,7 @@ int main(int argc, char **argv)
 
     ros::Subscriber yolo_detection_sub = shelfino_yolo_node.subscribe("/shelfino/yolo/detections", 10, yolo_callback);
 
-    ros::ServiceServer detection_service = shelfino_yolo_node.advertiseService("shelfino/yolo/detect", detect_srv);
+    ros::ServiceServer detection_service = shelfino_yolo_node.advertiseService("shelfino/yolo/detect", srv_shelfino_detect);
     ros::spin();
 
     return 0;

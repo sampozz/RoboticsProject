@@ -3,7 +3,7 @@
 
 /* Public functions */
 
-void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot)
+RotationMatrix euler_to_rot(double roll, double pitch, double yaw)
 {
     RotationMatrix x_rot;
     RotationMatrix y_rot;
@@ -21,7 +21,7 @@ void euler_to_rot(double roll, double pitch, double yaw, RotationMatrix &rot)
         sin(roll), cos(roll), 0,
         0, 0, 1;
 
-    rot = z_rot * y_rot * x_rot;
+    return z_rot * y_rot * x_rot;
 }
 
 double quaternion_to_yaw(double qx, double qy, double qz, double qw)

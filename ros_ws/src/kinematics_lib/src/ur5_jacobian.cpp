@@ -3,8 +3,10 @@
 
 /* Public functions */
 
-void ur5_jacobian(JointStateVector &th, Eigen::Matrix<double, 6, 6> &jac)
+Eigen::Matrix<double, 6, 6> ur5_jacobian(const JointStateVector &th)
 {
+    Eigen::Matrix<double, 6, 6> jac;
+
     jac(0, 0) = dh_d[4] * (cos(th(0)) * cos(th(4)) + cos(th(1) + th(2) + th(3)) * sin(th(0)) * sin(th(4))) + dh_d[2] * cos(th(0)) + dh_d[3] * cos(th(0)) - dh_a[2] * cos(th(1) + th(2)) * sin(th(0)) - dh_a[1] * cos(th(1)) * sin(th(0)) - dh_d[4] * sin(th(1) + th(2) + th(3)) * sin(th(0));
     jac(1, 0) = dh_d[4] * (cos(th(4)) * sin(th(0)) - cos(th(1) + th(2) + th(3)) * cos(th(0)) * sin(th(4))) + dh_d[2] * sin(th(0)) + dh_d[3] * sin(th(0)) + dh_a[2] * cos(th(1) + th(2)) * cos(th(0)) + dh_a[1] * cos(th(0)) * cos(th(1)) + dh_d[4] * sin(th(1) + th(2) + th(3)) * cos(th(0));
     jac(2, 0) = 0;
@@ -46,4 +48,6 @@ void ur5_jacobian(JointStateVector &th, Eigen::Matrix<double, 6, 6> &jac)
     jac(3, 5) = cos(th(4)) * sin(th(0)) - cos(th(1) + th(2) + th(3)) * cos(th(0)) * sin(th(4));
     jac(4, 5) = -cos(th(0)) * cos(th(4)) - cos(th(1) + th(2) + th(3)) * sin(th(0)) * sin(th(4));
     jac(5, 5) = -sin(th(1) + th(2) + th(3)) * sin(th(4));
+
+    return jac;
 }

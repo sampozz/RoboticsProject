@@ -7,11 +7,9 @@ using namespace std;
 static JointStateVector lin_filter;
 static double v_ref;
 
-int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints);
-
 /* Public functions */
 
-bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
+bool UR5Controller::move_to(const Coordinates &pos, const RotationMatrix &rot, int n)
 {
     // Read the /ur5/joint_states topic and get the initial configuration
     ros::spinOnce();
@@ -21,7 +19,7 @@ bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
 
     // Compute complete inverse kinematics to find all the possibile final configurations
     Eigen::Matrix<double, 8, 6> ik_result;
-    ur5_inverse_complete(pos, rot, ik_result);
+    ik_result = ur5_inverse_complete(pos, rot);
     int *indexes = sort_ik_result(ik_result, initial_joints);
 
     double *path;
@@ -48,6 +46,7 @@ bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
     if (!is_valid)
     {
         ROS_WARN("UR5 could not find a valid path!");
+        free(path);
         return false;
     }
 
@@ -80,12 +79,13 @@ bool UR5Controller::move_to(Coordinates &pos, RotationMatrix &rot, int n)
     }
     ROS_DEBUG("Moving UR5: final joints values: %.2f %.2f %.2f %.2f %.2f %.2f", current_joints(0), current_joints(1), current_joints(2),
         current_joints(3), current_joints(4), current_joints(5)); 
+    free(path);
     return true;
 }
 
 /* Private functions */
 
-bool UR5Controller::validate_path(double *path, int n)
+bool UR5Controller::validate_path(double *path, int n) const
 {
     // Compute direct kinematics on every configuration inside the path
     for (int j = 0; j < n; j++)
@@ -106,7 +106,7 @@ bool UR5Controller::validate_path(double *path, int n)
             return false;
 
         Eigen::Matrix<double, 6, 6> jac;
-        ur5_jacobian(intermediate_testing_joints, jac);
+        jac = ur5_jacobian(intermediate_testing_joints);
         
         // // Check singularity with jacobian determinant
         if (abs(jac.determinant()) < 0.00001)
@@ -120,7 +120,7 @@ bool UR5Controller::validate_path(double *path, int n)
     return true;
 }
 
-int *sort_ik_result(Eigen::Matrix<double, 8, 6> &ik_result, JointStateVector &initial_joints)
+int *sort_ik_result(const Eigen::Matrix<double, 8, 6> &ik_result, const JointStateVector &initial_joints)
 {
     multimap<double, int> m;
     for (int i = 0; i < 8; i++)
@@ -163,7 +163,7 @@ double norm_angle(double angle)
     return angle;
 }
 
-double UR5Controller::compute_error(JointStateVector &first_vector, JointStateVector &second_vector)
+double UR5Controller::compute_error(const JointStateVector &first_vector, const JointStateVector &second_vector) const
 {
     JointStateVector current_normed, desired_normed;
     for (int i = 0; i < 6; i++)

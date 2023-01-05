@@ -5,7 +5,7 @@
 const double kp = 0.5;
 const double kth = 0.5;
 
-double shelfino_trajectory_rotation(Coordinates &initial_pos, double initial_rot, Coordinates &final_position)
+double shelfino_trajectory_rotation(const Coordinates &initial_pos, double initial_rot, const Coordinates &final_position)
 {
     double dx = final_position(0) - initial_pos(0);
     double dy = final_position(1) - initial_pos(1);
@@ -25,7 +25,7 @@ double sinc(double t)
     return s;
 }
 
-void line_control(Coordinates &initial_pos, double initial_rot, Coordinates &desired_pos, double desired_rot, double desired_linvel, double desired_angvel, double &linear_vel, double &angular_vel)
+void line_control(const Coordinates &initial_pos, double initial_rot, const Coordinates &desired_pos, double desired_rot, double desired_linvel, double desired_angvel, double &linear_vel, double &angular_vel)
 {
     initial_rot = norm_angle(initial_rot);
     desired_rot = norm_angle(desired_rot);

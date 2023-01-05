@@ -1,11 +1,4 @@
-#include "ros/ros.h"
-#include "shelfino_controller/shelfino_controller_lib.h"
-#include "shelfino_controller/MoveTo.h"
-#include "shelfino_controller/Rotate.h"
-#include "shelfino_controller/PointTo.h"
-#include "shelfino_controller/MoveForward.h"
-#include "std_srvs/SetBool.h"
-#include <signal.h>
+#include "shelfino_controller/shelfino_services.h"
 
 ShelfinoController *controller_ptr = nullptr;
 

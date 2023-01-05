@@ -7,9 +7,10 @@ using namespace std;
 
 /* Public functions */
 
-void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th)
+JointStateVector ur5_inverse(Coordinates &pe, RotationMatrix &re)
 {
     std::complex<double> complex_converter(1.0, 0.0);
+    JointStateVector th;
 
     HomoTrMatrix t60;
     t60 << re(0), re(3), re(6), pe(0),
@@ -93,9 +94,11 @@ void ur5_inverse(Coordinates &pe, RotationMatrix &re, JointStateVector &th)
     Coordinates x_hat43;
     x_hat43 << t43m(0, 0), t43m(1, 0), t43m(2, 0);
     th(3) = real(atan2(x_hat43(1), x_hat43(0)) * complex_converter);
+
+    return th;
 }
 
-void ur5_inverse_complete(Coordinates &pe, RotationMatrix &re, Eigen::Matrix<double, 8, 6> &th)
+Eigen::Matrix<double, 8, 6> ur5_inverse_complete(const Coordinates &pe, const RotationMatrix &re)
 {
     std::complex<double> complex_converter(1.0, 0.0);
 
@@ -249,6 +252,7 @@ void ur5_inverse_complete(Coordinates &pe, RotationMatrix &re, Eigen::Matrix<dou
     x_hat43 << t43m(0, 0), t43m(1, 0), t43m(2, 0);
     double th4_8 = real(atan2(x_hat43(1), x_hat43(0)) * complex_converter);
 
+    Eigen::Matrix<double, 8, 6> th;
     th << th1_1, th2_1, th3_1, th4_1, th5_1, th6_1,
         th1_1, th2_2, th3_2, th4_2, th5_2, th6_2,
         th1_2, th2_3, th3_3, th4_3, th5_3, th6_3,
@@ -257,4 +261,6 @@ void ur5_inverse_complete(Coordinates &pe, RotationMatrix &re, Eigen::Matrix<dou
         th1_1, th2_6, th3_6, th4_6, th5_2, th6_2,
         th1_2, th2_7, th3_7, th4_7, th5_3, th6_3,
         th1_2, th2_8, th3_8, th4_8, th5_4, th6_4;
+    
+    return th;
 }

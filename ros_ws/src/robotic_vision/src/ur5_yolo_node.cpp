@@ -1,8 +1,4 @@
-#include "ros/ros.h"
-#include "robotic_vision/PointCloud.h"
-#include "robotic_vision/Ping.h"
-#include "robotic_vision/BoundingBoxes.h"
-#include "robotic_vision/BoundingBox.h"
+#include "robotic_vision/ur5_vision.h"
 
 bool block_detected = false;
 double detection_timestamp = 0;
@@ -31,7 +27,7 @@ void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
     }
 }
 
-bool detect_srv(robotic_vision::PointCloud::Request &req, robotic_vision::PointCloud::Response &res)
+bool srv_ur5_detect(robotic_vision::PointCloud::Request &req, robotic_vision::PointCloud::Response &res)
 {
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 3)
     {
@@ -60,7 +56,7 @@ int main(int argc, char **argv)
     ros::NodeHandle ur5_yolo_node;
 
     ros::Subscriber yolo_detection_sub = ur5_yolo_node.subscribe("/ur5/yolo/detections", 10, yolo_callback);
-    ros::ServiceServer detection_service = ur5_yolo_node.advertiseService("ur5/yolo/detect", detect_srv);
+    ros::ServiceServer detection_service = ur5_yolo_node.advertiseService("ur5/yolo/detect", srv_ur5_detect);
 
     pointcloud_client = ur5_yolo_node.serviceClient<robotic_vision::PointCloud>("/ur5/locosim/pointcloud");
 

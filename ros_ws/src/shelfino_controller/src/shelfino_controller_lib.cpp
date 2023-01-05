@@ -22,7 +22,7 @@ ShelfinoController::ShelfinoController(double linear_velocity, double angular_ve
     detection_sub = node.subscribe("/shelfino/yolo/detections", 10, &ShelfinoController::detection_callback, this);
 }
 
-double ShelfinoController::move_to(Coordinates &pos, double yaw)
+double ShelfinoController::move_to(const Coordinates &pos, double yaw)
 {
     ROS_DEBUG("Moving Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     disable_vision = true;
@@ -51,7 +51,7 @@ double ShelfinoController::move_to(Coordinates &pos, double yaw)
     return current_rotation;
 }
 
-double ShelfinoController::point_to(Coordinates &pos)
+double ShelfinoController::point_to(const Coordinates &pos)
 {
     ROS_DEBUG("Rotating Shelfino: initial position: %.2f %.2f %.2f, initial rotation: %.2f", current_position(0), current_position(1), current_position(2), current_rotation); 
     
@@ -181,7 +181,7 @@ void ShelfinoController::detection_callback(const robotic_vision::BoundingBoxes:
     }
 }
 
-void ShelfinoController::send_velocity(double linear_vel, double angular_vel)
+void ShelfinoController::send_velocity(double linear_vel, double angular_vel) const
 {
     geometry_msgs::Twist msg;
     
@@ -196,7 +196,7 @@ void ShelfinoController::send_velocity(double linear_vel, double angular_vel)
     velocity_pub.publish(msg);
 }
 
-void ShelfinoController::send_velocity(double linear_vel, double angular_vel, int n)
+void ShelfinoController::send_velocity(double linear_vel, double angular_vel, int n) const
 {
     for (int i = 0; i < n; i++)
     {
