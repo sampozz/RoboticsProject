@@ -7,6 +7,7 @@
 
     <!-- Set log level -->
     <env name="ROSCONSOLE_CONFIG_FILE" value="$(find main_controller)/launch/rosconsole.conf"/>
+    <env name="ROSCONSOLE_FORMAT" value="[${severity} ] [${node}]: ${message}"/>
 
     <!-- World generation -->
     <rosparam command="load" file="$(find main_controller)/launch/$(arg areas_filename)" />

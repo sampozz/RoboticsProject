@@ -5,7 +5,7 @@ ShelfinoController *controller_ptr = nullptr;
 std_srvs::SetBool shelfino_power_srv;
 ros::ServiceClient shelfino_power;
 
-bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::MoveTo::Response &res)
+bool srv_move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::MoveTo::Response &res)
 {
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
@@ -15,14 +15,14 @@ bool move_to(shelfino_controller::MoveTo::Request &req, shelfino_controller::Mov
     return true;
 }
 
-bool rotate(shelfino_controller::Rotate::Request &req, shelfino_controller::Rotate::Response &res)
+bool srv_rotate(shelfino_controller::Rotate::Request &req, shelfino_controller::Rotate::Response &res)
 {    
     double angle = controller_ptr->rotate(req.angle);
     res.rot = angle;
     return true;
 }
 
-bool point_to(shelfino_controller::PointTo::Request &req, shelfino_controller::PointTo::Response &res)
+bool srv_point_to(shelfino_controller::PointTo::Request &req, shelfino_controller::PointTo::Response &res)
 {    
     Coordinates pos;
     pos << req.pos.x, req.pos.y, 0;
@@ -32,7 +32,7 @@ bool point_to(shelfino_controller::PointTo::Request &req, shelfino_controller::P
     return true;
 }
 
-bool move_forward(shelfino_controller::MoveForward::Request &req, shelfino_controller::MoveForward::Response &res)
+bool srv_move_forward(shelfino_controller::MoveForward::Request &req, shelfino_controller::MoveForward::Response &res)
 {    
     Coordinates new_position = controller_ptr->move_forward(req.distance, req.control);
     res.pos.x = new_position(0);
@@ -75,10 +75,10 @@ int main(int argc, char **argv)
         ROS_WARN("Cannot start Shelfino engines");
 
     // Advertise services and keep listening
-    ros::ServiceServer move_service = controller_node.advertiseService("shelfino/move_to", move_to);
-    ros::ServiceServer rotate_service = controller_node.advertiseService("shelfino/rotate", rotate);
-    ros::ServiceServer point_service = controller_node.advertiseService("shelfino/point_to", point_to);
-    ros::ServiceServer forward_service = controller_node.advertiseService("shelfino/move_forward", move_forward);
+    ros::ServiceServer move_service = controller_node.advertiseService("shelfino/move_to", srv_move_to);
+    ros::ServiceServer rotate_service = controller_node.advertiseService("shelfino/rotate", srv_rotate);
+    ros::ServiceServer point_service = controller_node.advertiseService("shelfino/point_to", srv_point_to);
+    ros::ServiceServer forward_service = controller_node.advertiseService("shelfino/move_forward", srv_move_forward);
     
     ros::spin();
 

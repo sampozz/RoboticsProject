@@ -1,41 +1,38 @@
 #include "main_controller/fsm.h"
 #include <string> 
 
-/* Extern variables */
+/* Services */
 
-extern State_t current_state;
-extern std::vector<std::vector<double>> areas;
 extern ros::ServiceClient detection_client;
 extern ros::ServiceClient gazebo_set_state;	
 extern ros::ServiceClient gazebo_get_state;	
 extern ros::ServiceClient vision_stop_client;
 extern ros::ServiceClient pointcloud_client;
 
-extern shelfino_controller::Coordinates shelfino_current_pos;
+extern robotic_vision::Detect detection_srv;
+extern robotic_vision::Ping vision_stop_srv;
+extern robotic_vision::PointCloud pointcloud_srv;
+extern gazebo_msgs::GetModelState get_state_srv;
+extern gazebo_msgs::SetModelState set_state_srv;
+
+/* Global state variables (defined into fsm_utils.cpp) */
+
+extern State_t current_state;
+extern std::vector<std::vector<double>> areas;
+
+extern geometry_msgs::Pose block_load_pos;
+extern ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
+extern ur5_controller::EulerRotation ur5_default_rot;
+extern shelfino_controller::Coordinates shelfino_current_pos, block_pos;
 extern double shelfino_current_rot;
+extern int current_area_index; 
+extern robotic_vision::BoundingBox block_shelfino;
+extern robotic_vision::BoundingBox block_ur5;
+extern double block_angle; 
+extern int choosen_block_class;
 
-/* Global variables */
-
-namespace ass_3 {
-    ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
-    ur5_controller::EulerRotation ur5_default_rot;
-
-    robotic_vision::Detect detection_srv;
-    robotic_vision::Ping vision_stop_srv;
-    robotic_vision::PointCloud pointcloud_srv;
-
-    gazebo_msgs::SetModelState set_state_srv;
-    gazebo_msgs::GetModelState get_state_srv;
-
-    std::vector<double> unload_pos_y;
-    std::map<int, int> class_to_basket_map;
-
-    int current_area_index; // Index of the current area in the areas array (different to area number)
-    robotic_vision::BoundingBox block_shelfino; // Block detected and classified by shelfino
-    robotic_vision::BoundingBox block_ur5; // Block detected and classified by ur5
-    double current_block_angle; // If the block is not centered in front of shelfino
-    int choosen_block_class; // Class of the detected block choosen after classification from shelfino and ur5
-}
+extern std::vector<double> unload_pos_y;
+extern std::map<int, int> class_to_basket_map;
 
 void ass_3::init(void)
 {
@@ -73,19 +70,15 @@ void ass_3::shelfino_rotate_towards_next_area(void)
     shelfino_point_to(areas[current_area_index][0], areas[current_area_index][1]);
 
     // Service call to block detection node
-    detection_client.call(detection_srv);
-    if (detection_srv.response.status == 1)
+    if (shelfino_detect())
     {
         ROS_INFO("Block identified!");
-        block_shelfino = detection_srv.response.box;
-        block_shelfino.distance -= 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
-    else 
+    else
     {
         current_state = STATE_SHELFINO_NEXT_AREA;
-    }
+    } 
 }
 
 void ass_3::shelfino_next_area(void)
@@ -103,16 +96,10 @@ void ass_3::shelfino_next_area(void)
 
 void ass_3::shelfino_search_block(void)
 {
-    // Make service call to python detection node
-    // call returns distance to block
-    detection_client.call(detection_srv);
-    // if response is valid:
-    if (detection_srv.response.status == 1)
+    // Service call to block detection node
+    if (shelfino_detect())
     {
         ROS_INFO("Block identified!");
-        block_shelfino = detection_srv.response.box;
-        block_shelfino.distance -= 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;
         return;
     }
@@ -123,15 +110,9 @@ void ass_3::shelfino_search_block(void)
 
 void ass_3::shelfino_check_block(void)
 {
-    // // Rotate shelfino if block is not centered in front of him
-    // shelfino_rotate(current_block_angle);
-
-    // // Move shelfino forward to detected block
-    // shelfino_forward(block_shelfino.distance - 0.5, false);
-
     shelfino_move_to(
-        shelfino_current_pos.x + block_shelfino.distance * cos(current_block_angle + shelfino_current_rot),
-        shelfino_current_pos.y + block_shelfino.distance * sin(current_block_angle + shelfino_current_rot),
+        shelfino_current_pos.x + block_shelfino.distance * cos(block_angle + shelfino_current_rot),
+        shelfino_current_pos.y + block_shelfino.distance * sin(block_angle + shelfino_current_rot),
         0
     );
 
@@ -142,7 +123,7 @@ void ass_3::shelfino_check_block(void)
         block_shelfino = detection_srv.response.box;
     }
     
-    ROS_INFO("Shelfino classified block: %s", block_shelfino.Class.data());
+    ROS_INFO("Block classified: %s, position: (%f, %f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
     vision_stop_client.call(vision_stop_srv); // Blacklist this block
 
     // Check in which area shelfino is
@@ -186,7 +167,6 @@ void ass_3::shelfino_park(void)
     gazebo_set_state.call(set_state_srv);
     ros::Duration(1.0).sleep();
 
-    // shelfino_move_to(0, 1, 0);
     shelfino_move_to(-0.2, -0.1, M_PI + 0.1);
     current_state = STATE_UR5_LOAD;
 }
@@ -194,7 +174,6 @@ void ass_3::shelfino_park(void)
 void ass_3::ur5_load(void)
 {
     // Move ur5 to load position
-    // TODO: service call to vision node to get the exact position of the block over shelfino
     pointcloud_client.call(pointcloud_srv);
     if (pointcloud_srv.response.box.class_n != -1)
     {

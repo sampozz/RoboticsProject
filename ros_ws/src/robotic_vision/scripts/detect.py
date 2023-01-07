@@ -81,7 +81,6 @@ class Yolov5Detector:
         
         # Initialize subscriber to Image/CompressedImage topic
         input_image_type, input_image_topic, _ = get_topic_type(rospy.get_param(f"~{namespace}/input_image_topic"), blocking = True)
-        input_depth_type, input_depth_topic, _ = get_topic_type(rospy.get_param(f"~{namespace}/input_depth_topic"), blocking = True)
         self.compressed_input = input_image_type == "sensor_msgs/CompressedImage"
 
         if self.compressed_input:
@@ -95,6 +94,7 @@ class Yolov5Detector:
 
         if namespace == "shelfino":
             # Initialize subscriber to depth camera
+            _, input_depth_topic, _ = get_topic_type(rospy.get_param(f"~{namespace}/input_depth_topic"), blocking = True)
             self.depth_sub = rospy.Subscriber(
                 input_depth_topic, Image, self.depth_callback, queue_size=1
             )

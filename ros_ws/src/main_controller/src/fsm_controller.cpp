@@ -48,7 +48,6 @@ StateMachine_t fsm_ass_3 = {
 
 /* Global variables */
 
-ros::ServiceClient detection_client, gazebo_set_state, gazebo_get_state;
 State_t current_state;
 std::vector<std::vector<double>> areas;
 

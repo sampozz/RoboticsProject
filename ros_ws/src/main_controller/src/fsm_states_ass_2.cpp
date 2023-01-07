@@ -1,35 +1,32 @@
 #include "main_controller/fsm.h"
 #include <string> 
 
-/* Extern variables */
+/* Services */
 
-extern State_t current_state;
-extern std::vector<std::vector<double>> areas;
 extern ros::ServiceClient detection_client;
 extern ros::ServiceClient gazebo_set_state;	
 extern ros::ServiceClient vision_stop_client;
 
-extern shelfino_controller::Coordinates shelfino_current_pos;
+extern robotic_vision::Detect detection_srv;
+extern robotic_vision::Ping vision_stop_srv;
+extern gazebo_msgs::SetModelState set_state_srv;
+
+/* Global state variables (defined into fsm_utils.cpp) */
+
+extern State_t current_state;
+extern std::vector<std::vector<double>> areas;
+
+extern geometry_msgs::Pose block_load_pos;
+extern ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
+extern ur5_controller::EulerRotation ur5_default_rot;
+extern shelfino_controller::Coordinates shelfino_current_pos, block_pos;
 extern double shelfino_current_rot;
+extern int current_area_index; 
+extern robotic_vision::BoundingBox block_shelfino;
+extern double block_angle; 
 
-/* Global variables */
-
-namespace ass_2 {
-    ur5_controller::Coordinates ur5_home_pos, ur5_load_pos, ur5_unload_pos;
-    ur5_controller::EulerRotation ur5_default_rot;
-    geometry_msgs::Pose block_load_pos;
-    robotic_vision::Detect detection_srv;
-    robotic_vision::Ping vision_stop_srv;
-
-    gazebo_msgs::SetModelState model_state_srv;
-
-    std::vector<double> unload_pos_y;
-    std::map<int, int> class_to_basket_map;
-
-    int current_area_index; // Index of the current area in the areas array (different to area number)
-    robotic_vision::BoundingBox block;
-    double current_block_angle; // If the block is not centered in front of shelfino
-}
+extern std::vector<double> unload_pos_y;
+extern std::map<int, int> class_to_basket_map;
 
 void ass_2::init(void)
 {
@@ -78,19 +75,15 @@ void ass_2::shelfino_rotate_towards_next_area(void)
     shelfino_point_to(areas[current_area_index][0], areas[current_area_index][1]);
 
     // Service call to block detection node
-    detection_client.call(detection_srv);
-    if (detection_srv.response.status == 1)
+    if (shelfino_detect())
     {
         ROS_INFO("Block identified!");
-        block = detection_srv.response.box;
-        block.distance -= 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
-    else 
+    else
     {
         current_state = STATE_SHELFINO_NEXT_AREA;
-    }
+    } 
 }
 
 void ass_2::shelfino_next_area(void)
@@ -108,16 +101,10 @@ void ass_2::shelfino_next_area(void)
 
 void ass_2::shelfino_search_block(void)
 {
-    // Make service call to python detection node
-    // call returns distance to block
-    detection_client.call(detection_srv);
-    // if response is valid:
-    if (detection_srv.response.status == 1)
+    // Service call to block detection node
+    if (shelfino_detect())
     {
         ROS_INFO("Block identified!");
-        block = detection_srv.response.box;
-        block.distance -= 0.50;
-        current_block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
         current_state = STATE_SHELFINO_CHECK_BLOCK;
         return;
     }
@@ -128,33 +115,27 @@ void ass_2::shelfino_search_block(void)
 
 void ass_2::shelfino_check_block(void)
 {
-    // // Rotate shelfino if block is not centered in front of him
-    // shelfino_rotate(current_block_angle);
-
-    // // Move shelfino forward to detected block
-    // shelfino_forward(current_block_distance - 0.5, false);
-
     shelfino_move_to(
-        shelfino_current_pos.x + block.distance * cos(current_block_angle + shelfino_current_rot),
-        shelfino_current_pos.y + block.distance * sin(current_block_angle + shelfino_current_rot),
+        shelfino_current_pos.x + block_shelfino.distance * cos(block_angle + shelfino_current_rot),
+        shelfino_current_pos.y + block_shelfino.distance * sin(block_angle + shelfino_current_rot),
         0
     );
 
     ros::Duration(1.0).sleep();
     detection_client.call(detection_srv);
-    if (detection_srv.response.status == 1 && detection_srv.response.box.probability > block.probability)
+    if (detection_srv.response.status == 1 && detection_srv.response.box.probability > block_shelfino.probability)
     {
-        block = detection_srv.response.box;
+        block_shelfino = detection_srv.response.box;
     }
     
-    ROS_INFO("Block classified: %s", block.Class.data());
+    ROS_INFO("Block classified: %s, position: (%f, %f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
     vision_stop_client.call(vision_stop_srv);
 
     // Choose the right basket based on the block class
-    if (class_to_basket_map.find(block.class_n) == class_to_basket_map.end())
+    if (class_to_basket_map.find(block_shelfino.class_n) == class_to_basket_map.end())
     {
         // Use an empy basket
-        class_to_basket_map.insert(std::pair<int, int>(block.class_n, class_to_basket_map.size()));
+        class_to_basket_map.insert(std::pair<int, int>(block_shelfino.class_n, class_to_basket_map.size()));
         // Else, an object of the same class has already been classified: put it in the same basket
     }
 
@@ -181,9 +162,9 @@ void ass_2::shelfino_check_block(void)
     }
     
     // gazebo move block to ur5 load position
-    model_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area_index][3]);
-    model_state_srv.request.model_state.pose = block_load_pos;
-    gazebo_set_state.call(model_state_srv);
+    set_state_srv.request.model_state.model_name = std::to_string((int)areas[current_area_index][3]);
+    set_state_srv.request.model_state.pose = block_load_pos;
+    gazebo_set_state.call(set_state_srv);
 
     current_state = STATE_UR5_LOAD;
 }
@@ -209,7 +190,7 @@ void ass_2::ur5_unload(void)
     // Move ur5 to home position
     ur5_move(ur5_home_pos, ur5_default_rot);
     // Move ur5 to unload position
-    ur5_unload_pos.y = unload_pos_y[class_to_basket_map[block.class_n]];
+    ur5_unload_pos.y = unload_pos_y[class_to_basket_map[block_shelfino.class_n]];
     ur5_move(ur5_unload_pos, ur5_default_rot);
 
     // Open gripper

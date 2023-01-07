@@ -24,7 +24,6 @@
     <arg name="shelfino_input_image_topic"       default="/camera_ir/color/image_raw"/>
     <arg name="shelfino_input_depth_topic"       default="/camera_ir/depth/image_raw"/>
     <arg name="ur5_input_image_topic"       default="/ur5/zed_node/left_raw/image_raw_color"/>
-    <arg name="ur5_input_depth_topic"       default="/ur5/zed_node/depth/depth_registered"/>
     <arg name="shelfino_output_topic"       default="/shelfino/yolo/detections"/>
     <arg name="ur5_output_topic"            default="/ur5/yolo/detections"/>
 
@@ -52,7 +51,6 @@
         <param name="shelfino/input_image_topic"       value="$(arg shelfino_input_image_topic)"/>
         <param name="shelfino/input_depth_topic"       value="$(arg shelfino_input_depth_topic)"/>
         <param name="ur5/input_image_topic"            value="$(arg ur5_input_image_topic)"/>
-        <param name="ur5/input_depth_topic"            value="$(arg ur5_input_depth_topic)"/>
         <param name="shelfino/output_topic"            value="$(arg shelfino_output_topic)"/>
         <param name="ur5/output_topic"                 value="$(arg ur5_output_topic)"/>
 
@@ -83,7 +81,6 @@
         <param name="shelfino/input_image_topic"       value="$(arg shelfino_input_image_topic)"/>
         <param name="shelfino/input_depth_topic"       value="$(arg shelfino_input_depth_topic)"/>
         <param name="ur5/input_image_topic"            value="$(arg ur5_input_image_topic)"/>
-        <param name="ur5/input_depth_topic"            value="$(arg ur5_input_depth_topic)"/>
         <param name="shelfino/output_topic"            value="$(arg shelfino_output_topic)"/>
         <param name="ur5/output_topic"                 value="$(arg ur5_output_topic)"/>
 
