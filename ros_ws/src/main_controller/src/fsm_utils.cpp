@@ -118,19 +118,35 @@ void ur5_grip(double diameter)
     ur5_gripper_client.call(ur5_gripper_srv);
 }
 
-void attach(int model)
+void attach(int model, bool gripper)
 {
-    link_attacher_srv.request.model_name_1 = "ur5";
-    link_attacher_srv.request.link_name_1 = "hand_1_link";
+    if (gripper)
+    {
+        link_attacher_srv.request.model_name_1 = "ur5";
+        link_attacher_srv.request.link_name_1 = "hand_1_link";
+    }
+    else
+    {
+        link_attacher_srv.request.model_name_1 = "shelfino";
+        link_attacher_srv.request.link_name_1 = "base_link";
+    }
     link_attacher_srv.request.model_name_2 = std::to_string(model);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_attacher.call(link_attacher_srv);
 }
 
-void detach(int model)
+void detach(int model, bool gripper)
 {
-    link_attacher_srv.request.model_name_1 = "ur5";
-    link_attacher_srv.request.link_name_1 = "hand_1_link";
+    if (gripper)
+    {
+        link_attacher_srv.request.model_name_1 = "ur5";
+        link_attacher_srv.request.link_name_1 = "hand_1_link";
+    }
+    else
+    {
+        link_attacher_srv.request.model_name_1 = "shelfino";
+        link_attacher_srv.request.link_name_1 = "base_link";
+    }
     link_attacher_srv.request.model_name_2 = std::to_string(model);
     link_attacher_srv.request.link_name_2 = "link";
     gazebo_link_detacher.call(link_attacher_srv);

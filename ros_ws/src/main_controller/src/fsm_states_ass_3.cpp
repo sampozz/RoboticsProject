@@ -167,7 +167,10 @@ void ass_3::shelfino_park(void)
     gazebo_set_state.call(set_state_srv);
     ros::Duration(1.0).sleep();
 
+    attach((int)areas[current_area_index][3], false);
     shelfino_move_to(-0.2, -0.1, M_PI + 0.1);
+    detach((int)areas[current_area_index][3], false);
+    
     current_state = STATE_UR5_LOAD;
 }
 
@@ -242,7 +245,7 @@ void ass_3::ur5_load(void)
     // Grab
     // TODO: close the gripper based on block class
     ur5_grip(31);
-    attach((int)areas[current_area_index][3]);
+    attach((int)areas[current_area_index][3], true);
 
     current_state = STATE_UR5_UNLOAD;
 }
@@ -256,7 +259,7 @@ void ass_3::ur5_unload(void)
     ur5_move(ur5_unload_pos, ur5_default_rot);
 
     // Open gripper
-    detach((int)areas[current_area_index][3]);
+    detach((int)areas[current_area_index][3], true);
     ur5_grip(100);
 
     ROS_INFO("Completed area %d, %ld remaining", (int)areas[current_area_index][3], areas.size() - 1);

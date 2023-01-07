@@ -150,7 +150,7 @@ void ur5_grip(double diameter);
  */
 bool shelfino_detect(void);
 
-void attach(int model);
-void detach(int model);
+void attach(int model, bool gripper);
+void detach(int model, bool gripper);
 
 #endif
