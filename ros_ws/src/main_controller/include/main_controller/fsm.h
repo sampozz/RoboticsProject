@@ -57,6 +57,9 @@ typedef std::map<int, state_function> StateMachine_t;
  * For a description of the state functions, please refer to the project report.
  */
 
+/**
+ * @brief State functions for asssignment 1
+ */
 namespace ass_1
 {
     void init(void);
@@ -66,6 +69,9 @@ namespace ass_1
     void shelfino_check_block(void);
 }
 
+/**
+ * @brief State functions for asssignment 2
+ */
 namespace ass_2 
 {
     void init(void);
@@ -77,6 +83,9 @@ namespace ass_2
     void ur5_unload(void);
 }
 
+/**
+ * @brief State functions for asssignment 3
+ */
 namespace ass_3
 {
     void init(void);
