@@ -33,6 +33,16 @@ void line_control(const Coordinates &initial_pos, double initial_rot, const Coor
     double error_y = initial_pos(1) - desired_pos(1);
     double error_rot = initial_rot - desired_rot;
 
+    // This statement fixes a problem with the angles from odometry
+    if (abs(error_rot) > 4)
+    {
+        if (initial_rot < 0)
+            initial_rot += 2 * M_PI;
+        else
+            desired_rot += 2 * M_PI;
+    }
+    error_rot = initial_rot - desired_rot;
+
     double psi = atan2(error_y, error_x);
     double alpha = (initial_rot + desired_rot) / 2;
     double error_xy = sqrt(error_x * error_x + error_y * error_y);

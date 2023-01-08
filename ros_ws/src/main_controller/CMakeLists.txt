@@ -47,6 +47,7 @@ add_library(${PROJECT_NAME}
   src/fsm_states_ass_1.cpp
   src/fsm_states_ass_2.cpp
   src/fsm_states_ass_3.cpp
+  src/fsm_test.cpp
 )
 
 ## Declare a C++ executable

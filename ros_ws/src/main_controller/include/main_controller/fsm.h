@@ -152,5 +152,6 @@ bool shelfino_detect(void);
 
 void attach(int model, bool gripper);
 void detach(int model, bool gripper);
+void state_test(void);
 
 #endif

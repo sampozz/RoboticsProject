@@ -16,7 +16,11 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
 extern std::vector<std::vector<double>> areas;
 extern bool real_robot;
 
-/* FSM Functions arrays for the three assignemnts */
+/* FSM Functions arrays for the three assignments */
+
+StateMachine_t fsm_test = {
+    {STATE_INIT, state_test}
+};
 
 StateMachine_t fsm_ass_1 = {
     {STATE_INIT, ass_1::init},
@@ -117,8 +121,10 @@ int main(int argc, char **argv)
                 (fsm_ass_1[current_state])();      
             else if (assignment_number == 2)
                 (fsm_ass_2[current_state])();      
+            else if (assignment_number == 3)
+                (fsm_ass_3[current_state])();    
             else
-                (fsm_ass_3[current_state])();      
+                (fsm_test[current_state])();  
 
             ros::spinOnce();
             loop_rate.sleep();
