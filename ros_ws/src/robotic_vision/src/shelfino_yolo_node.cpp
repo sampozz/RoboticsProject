@@ -6,6 +6,8 @@ robotic_vision::BoundingBox block;
 
 double camera_angle = 1.07;
 
+bool real_robot = false;
+
 void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
 {
     for (int i = 0; i < msg->n; i++)
@@ -35,7 +37,10 @@ bool srv_shelfino_detect(robotic_vision::Detect::Request &req, robotic_vision::D
     if (block_detected && ros::Time::now().toSec() - detection_timestamp < 5)
     {
         // Adjust distance based on camera position
-        block.distance = block.distance * sin(camera_angle);
+        if (real_robot)
+            block.distance = block.distance * sin(camera_angle);
+        else            
+            block.distance = block.distance * sin(camera_angle) + 0.25;    
 
         res.box = block;
         res.status = 1;
@@ -51,9 +56,12 @@ int main(int argc, char **argv)
     ros::init(argc, argv, "shelfino_yolo_node");
     ros::NodeHandle shelfino_yolo_node;
 
+    ros::param::get("real_robot", real_robot);
+
     ros::Subscriber yolo_detection_sub = shelfino_yolo_node.subscribe("/shelfino/yolo/detections", 10, yolo_callback);
 
     ros::ServiceServer detection_service = shelfino_yolo_node.advertiseService("shelfino/yolo/detect", srv_shelfino_detect);
+
     ros::spin();
 
     return 0;

@@ -2,7 +2,7 @@
 
 <launch>
     <!-- Set parameters -->
-    <arg name="assignment_number"  default="3"/>
+    <arg name="assignment_number"  default="1"/>
     <arg name="areas_filename"  default="areas.yaml"/>
 
     <!-- Set log level -->

@@ -14,6 +14,7 @@ extern ros::ServiceClient shelfino_move_client, shelfino_point_client,
     pointcloud_client;
 
 extern std::vector<std::vector<double>> areas;
+extern bool real_robot;
 
 /* FSM Functions arrays for the three assignemnts */
 
@@ -72,7 +73,9 @@ int main(int argc, char **argv)
 
     int assignment_number;
     ros::param::get("~assignment", assignment_number);
+    ros::param::get("real_robot", real_robot);
     ROS_INFO("Executing assignment %d", assignment_number);
+    ROS_INFO("Using real robot: %d", real_robot);
     
     // Setup services
     ur5_move_client = fsm_node.serviceClient<ur5_controller::MoveTo>("ur5/move_to");

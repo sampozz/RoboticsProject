@@ -128,7 +128,7 @@ void ass_2::shelfino_check_block(void)
         block_shelfino = detection_srv.response.box;
     }
     
-    ROS_INFO("Block classified: %s, position: (%f, %f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
+    ROS_INFO("Block classified: %s, position: (%.2f, %.2f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
     vision_stop_client.call(vision_stop_srv);
 
     // Choose the right basket based on the block class

@@ -49,6 +49,7 @@ int choosen_block_class; // Class of the detected block choosen after classifica
 
 std::vector<double> unload_pos_y;
 std::map<int, int> class_to_basket_map;
+bool real_robot;
 
 void shelfino_move_to(double x, double y, double yaw)
 {
@@ -91,15 +92,23 @@ void shelfino_point_to(double x, double y)
 
 bool shelfino_detect(void)
 {
+    double sim_correction[3] = {0, 0, -0.5};
+    if (!real_robot)
+    {
+        sim_correction[0] = 0.5; // initial x position of shelfino in gazebo
+        sim_correction[1] = 1.2; // initial y position of shelfino in gazebo
+        sim_correction[2] = -0.65; // distance block-shelfino used in check_block state 
+    }
+
     detection_client.call(detection_srv);
     if (detection_srv.response.status == 0)
         return false;
 
     block_shelfino = detection_srv.response.box;
     block_angle = (320.0 - (double)(detection_srv.response.box.xmax + detection_srv.response.box.xmin) / 2.0) / 320.0 * (M_PI / 6.0);
-    block_pos.x = shelfino_current_pos.x + block_shelfino.distance * cos(block_angle + shelfino_current_rot) + 0.5;
-    block_pos.y = shelfino_current_pos.y + block_shelfino.distance * sin(block_angle + shelfino_current_rot) + 1.2;
-    block_shelfino.distance -= 0.50;
+    block_pos.x = shelfino_current_pos.x + block_shelfino.distance * cos(block_angle + shelfino_current_rot) + sim_correction[0];
+    block_pos.y = shelfino_current_pos.y + block_shelfino.distance * sin(block_angle + shelfino_current_rot) + sim_correction[1];
+    block_shelfino.distance += sim_correction[2];
     return true;
 }
 

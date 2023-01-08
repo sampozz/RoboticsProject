@@ -159,11 +159,11 @@
     <joint name="camera_joint" type="fixed">
       <parent link="base_link"></parent>
       <child link="base_camera"></child>
-      <origin xyz="0 0 0.7" rpy="-1.5707 0 -1.5707"/>
+      <origin xyz="0.25 0 0.7" rpy="-1.5707 0 -1.5707"/>
     </joint>
 
   <!--
-                                                        LIDAR 
+                                                        CAMERA 
   -->
     <link name="base_camera">
     </link>
