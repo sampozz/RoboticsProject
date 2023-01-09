@@ -20,7 +20,7 @@
         <geometry>
           <mesh>
             <uri>/home/sam/robotics_group_v/locosim/models/basket/basket.stl</uri>
-            <scale> 0.0015 0.0015 0.0015 </scale>
+            <scale> 0.003 0.002 0.002 </scale>
           </mesh>
         </geometry>
       </collision>
@@ -28,7 +28,7 @@
         <geometry>
           <mesh>
             <uri>/home/sam/robotics_group_v/locosim/models/basket/basket.stl</uri>
-            <scale> 0.0015 0.0015 0.0015 </scale>
+            <scale> 0.003 0.002 0.002 </scale>
           </mesh>
         </geometry>
       </visual>

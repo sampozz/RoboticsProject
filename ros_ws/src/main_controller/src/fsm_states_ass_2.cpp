@@ -56,7 +56,7 @@ void ass_2::init(void)
     block_load_pos.orientation.z = 0.706;
     
     // Where to find baskets
-    ur5_unload_pos.x = 0.42;
+    ur5_unload_pos.x = 0.38;
     ur5_unload_pos.z = 0.55;
     unload_pos_y.push_back(0.12);
     unload_pos_y.push_back(-0.03);

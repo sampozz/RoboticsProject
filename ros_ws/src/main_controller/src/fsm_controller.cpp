@@ -19,7 +19,7 @@ extern bool real_robot;
 /* FSM Functions arrays for the three assignments */
 
 StateMachine_t fsm_test = {
-    {STATE_INIT, state_test}
+    {STATE_INIT, state_test},
 };
 
 StateMachine_t fsm_ass_1 = {
