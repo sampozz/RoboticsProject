@@ -235,9 +235,13 @@ class Yolov5Detector:
         Adapted from yolov5/utils/datasets.py LoadStreams class
         """
         img0 = img.copy()
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = cv2.cvtColor(img, cv2.COLOR_GRAY2BGR)
         img = np.array([letterbox(img, self.img_size, stride=self.stride, auto=self.pt)[0]])
+        
         # Convert
         img = img[..., ::-1].transpose((0, 3, 1, 2))  # BGR to RGB, BHWC to BCHW
+        
         img = np.ascontiguousarray(img)
 
         return img, img0 

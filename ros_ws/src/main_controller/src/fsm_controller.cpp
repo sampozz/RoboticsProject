@@ -110,6 +110,7 @@ int main(int argc, char **argv)
     ur5_move_client.waitForExistence();
     shelfino_rotate_client.waitForExistence();
     detection_client.waitForExistence();
+    system("clear");
 
     while (ros::ok())
     {

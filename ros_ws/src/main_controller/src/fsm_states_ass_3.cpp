@@ -72,7 +72,7 @@ void ass_3::shelfino_rotate_towards_next_area(void)
     // Service call to block detection node
     if (shelfino_detect())
     {
-        ROS_INFO("Block identified!");
+        ROS_INFO("Object identified");
         current_state = STATE_SHELFINO_CHECK_BLOCK;   
     }
     else
@@ -99,7 +99,7 @@ void ass_3::shelfino_search_block(void)
     // Service call to block detection node
     if (shelfino_detect())
     {
-        ROS_INFO("Block identified!");
+        ROS_INFO("Object identified");
         current_state = STATE_SHELFINO_CHECK_BLOCK;
         return;
     }
@@ -123,7 +123,7 @@ void ass_3::shelfino_check_block(void)
         block_shelfino = detection_srv.response.box;
     }
     
-    ROS_INFO("Block classified: %s, position: (%.2f, %.2f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
+    ROS_INFO("Object classified: %s, position: (%.2f, %.2f)", block_shelfino.Class.data(), block_pos.x, block_pos.y);
     vision_stop_client.call(vision_stop_srv); // Blacklist this block
 
     // Check in which area shelfino is
@@ -143,7 +143,7 @@ void ass_3::shelfino_check_block(void)
     }
 
     if (!area_found){	
-        ROS_INFO("Could not find the area associated to the detected block.");	
+        ROS_INFO("Could not find the area associated to the detected object.");	
         current_state = STATE_SHELFINO_ROTATE_AREA;	
         return;	
     }
@@ -188,13 +188,13 @@ void ass_3::ur5_load(void)
     }
     else
     {
-        ROS_WARN("UR5 could not find block. Cannot proceed.");
+        ROS_WARN("UR5 could not find object. Cannot proceed.");
         ros::Duration(1.0).sleep();
         // TODO? Shake shelfino to let ur5 find the block
         return;
     }
 
-    ROS_INFO("UR5 classified the block: %s", block_ur5.Class.data());
+    ROS_INFO("UR5 classified the object: %s", block_ur5.Class.data());
     
     // If the two cameras classified differently
     choosen_block_class = block_shelfino.class_n;

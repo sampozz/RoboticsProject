@@ -1,0 +1,25 @@
+# Center (x, y), radius and index of the four areas
+# Coordinates are referred to shelfino inital position (0.5 , 1.2)
+area0:
+  - 2.0
+  - 0.8
+  - 1
+  - 0
+
+area1:
+  - 2.0
+  - 3.3
+  - 1.5
+  - 1
+
+area2:
+  - 4.5
+  - 3.3
+  - 1
+  - 2
+
+area3:
+  - 4.5
+  - 0.8
+  - 1
+  - 3
