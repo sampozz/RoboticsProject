@@ -2,8 +2,8 @@
 
 <launch>
     <!-- Set parameters -->
-    <arg name="assignment_number"  default="2"/>
-    <arg name="areas_filename"  default="areas.yaml"/>
+    <arg name="assignment_number"  default="1"/>
+    <arg name="areas_filename"  default="areas_test.yaml"/>
 
     <!-- Set ROS log -->
     <env name="ROSCONSOLE_CONFIG_FILE" value="$(find main_controller)/launch/rosconsole.conf"/>
@@ -13,7 +13,8 @@
     <rosparam command="load" file="$(find main_controller)/launch/$(arg areas_filename)" />
 
     <!-- YOLO -->
-    <include file="$(find robotic_vision)/launch/yolov5.launch" />
+    <!-- <include file="$(find robotic_vision)/launch/yolov5.launch" /> -->
+    <include file="$(find robotic_vision)/launch/shelfino_only.launch" />
 
     <!-- C++ code (controllers) -->
     <node pkg="ur5_controller" type="ur5_controller_node" name="ur5_controller_node" output="screen" />

@@ -154,6 +154,9 @@ class Ur5Generic(BaseControllerFixed):
 
     def _receive_gripper_cmd(self, msg):
         diameter = int(msg.data)
+        if self.real_robot:
+            self.controller_manager.gm.move_gripper(diameter)
+            return
         grip_des = self.controller_manager.gm.mapToGripperJoints(diameter)
         rate = ros.Rate(1 / conf.robot_params[p.robot_name]['dt'])
         timer = 2  # Run for a maximum of two seconds

@@ -26,6 +26,8 @@ extern double block_angle;
 extern std::vector<double> unload_pos_y;
 extern std::map<int, int> class_to_basket_map;
 
+int cont = 0;
+
 void state_test(void)
 {    
     srand(time(0));
@@ -38,11 +40,12 @@ void state_test(void)
     // Where to load the megablock
     ur5_load_pos.x = 0.0;
     ur5_load_pos.y = -0.35;
-    ur5_load_pos.z = 0.73;
+    ur5_load_pos.z = 0.68;
     
     // Where to find baskets
     ur5_unload_pos.x = 0.38;
-    ur5_unload_pos.z = 0.55;
+    // ur5_unload_pos.z = 0.55;
+    ur5_unload_pos.z = 0.65;
     unload_pos_y.push_back(0.12);
     unload_pos_y.push_back(-0.03);
     unload_pos_y.push_back(-0.18);
@@ -62,7 +65,7 @@ void state_test(void)
     ur5_move(ur5_load_pos, ur5_default_rot);
     // Grab
     ur5_grip(31);
-
+    ros::Duration(1.0).sleep();
 
     //////////
     // UNLOAD
@@ -70,8 +73,14 @@ void state_test(void)
     // Move ur5 to home position
     ur5_move(ur5_home_pos, ur5_default_rot);
     // Move ur5 to unload position
-    ur5_unload_pos.y = unload_pos_y[rand() % 4];
+    ur5_unload_pos.y = unload_pos_y[cont++];
     ur5_move(ur5_unload_pos, ur5_default_rot);
     // Open gripper
     ur5_grip(100);
+    ros::Duration(1.0).sleep();
+
+    if (cont == 4)
+    {
+        current_state = STATE_END;
+    }
 }
