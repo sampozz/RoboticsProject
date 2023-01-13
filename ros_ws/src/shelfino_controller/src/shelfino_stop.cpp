@@ -10,7 +10,7 @@ int main(int argc, char **argv)
     ros::NodeHandle node;
     ros::Rate loop_rate(100.);
 
-    ros::Publisher velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino/velocity/command", 1);
+    ros::Publisher velocity_pub = node.advertise<geometry_msgs::Twist>("/shelfino3/cmd_vel", 1);
 
     geometry_msgs::Twist msg;
     msg.linear.x = 0;

@@ -107,9 +107,10 @@ int main(int argc, char **argv)
     current_state = STATE_INIT;
 
     // Wait for other ROS nodes
-    // ur5_move_client.waitForExistence();
-    // shelfino_rotate_client.waitForExistence();
-    // detection_client.waitForExistence();
+    ur5_move_client.waitForExistence();
+    shelfino_rotate_client.waitForExistence();
+    shelfino_forward_client.waitForExistence();
+    detection_client.waitForExistence();
     // system("clear");
 
     while (ros::ok())
