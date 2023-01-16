@@ -2,8 +2,8 @@
 
 <launch>
     <!-- Set parameters -->
-    <arg name="assignment_number"  default="1"/>
-    <arg name="areas_filename"  default="areas1.yaml"/>
+    <arg name="assignment_number"  default="3"/>
+    <arg name="areas_filename"  default="areas2.yaml"/>
 
     <!-- Set ROS log -->
     <env name="ROSCONSOLE_CONFIG_FILE" value="$(find main_controller)/launch/rosconsole.conf"/>
