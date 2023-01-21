@@ -140,7 +140,6 @@ void ass_2::shelfino_check_block(void)
     }
 
     // Check in which area shelfino is
-    // TODO: block position should be used instead of shelfino position
     bool area_found = false;
     for (int i = 0; i < areas.size(); i++)
     {
@@ -178,7 +177,6 @@ void ass_2::ur5_load(void)
     // Move ur5 to load position
     ur5_move(ur5_load_pos, ur5_default_rot);
     // Grab
-    // TODO: close the gripper based on block class
     ur5_grip(31);
     attach((int)areas[current_area_index][3], true);
 

@@ -18,12 +18,12 @@
       </inertial>
       <collision name="collision">
         <geometry>
-          <mesh><uri>/home/enea/robotics_group_v/locosim/models/X2-Y2-Z2/X2-Y2-Z2.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/X2-Y2-Z2/X2-Y2-Z2.stl</uri></mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
-          <mesh><uri>/home/enea/robotics_group_v/locosim/models/X2-Y2-Z2/X2-Y2-Z2.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/X2-Y2-Z2/X2-Y2-Z2.stl</uri></mesh>
         </geometry>
       </visual>
     </link>

@@ -95,7 +95,6 @@ void ass_1::shelfino_check_block(void)
     vision_stop_client.call(vision_stop_srv); // Blacklist this block
 
     // Check in which area shelfino is
-    // TODO: block position should be used instead of shelfino position
     bool area_found = false;
     for (int i = 0; i < areas.size(); i++)
     {

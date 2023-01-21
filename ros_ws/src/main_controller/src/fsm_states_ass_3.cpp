@@ -61,7 +61,6 @@ void ass_3::init(void)
     ur5_move(ur5_home_pos, ur5_default_rot);
 
     current_state = STATE_SHELFINO_ROTATE_AREA;
-    // current_state = STATE_UR5_LOAD;
 }
 
 void ass_3::shelfino_rotate_towards_next_area(void)
@@ -127,7 +126,6 @@ void ass_3::shelfino_check_block(void)
     vision_stop_client.call(vision_stop_srv); // Blacklist this block
 
     // Check in which area shelfino is
-    // TODO: block position should be used instead of shelfino position
     bool area_found = false;
     for (int i = 0; i < areas.size(); i++)
     {
@@ -190,7 +188,6 @@ void ass_3::ur5_load(void)
     {
         ROS_WARN("UR5 could not find object. Cannot proceed.");
         ros::Duration(1.0).sleep();
-        // TODO? Shake shelfino to let ur5 find the block
         return;
     }
 
@@ -243,7 +240,6 @@ void ass_3::ur5_load(void)
     }
 
     // Grab
-    // TODO: close the gripper based on block class
     ur5_grip(31);
     attach((int)areas[current_area_index][3], true);
 

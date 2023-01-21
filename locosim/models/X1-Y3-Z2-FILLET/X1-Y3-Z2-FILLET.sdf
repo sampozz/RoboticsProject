@@ -18,13 +18,19 @@
       </inertial>
       <collision name="collision">
         <geometry>
-          <mesh><uri>/home/enea/robotics_group_v/locosim/models/X1-Y3-Z2-FILLET/X1-Y3-Z2-FILLET.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/X1-Y3-Z2-FILLET/X1-Y3-Z2-FILLET.stl</uri></mesh>
         </geometry>
       </collision>
       <visual name="visual">
         <geometry>
-          <mesh><uri>/home/enea/robotics_group_v/locosim/models/X1-Y3-Z2-FILLET/X1-Y3-Z2-FILLET.stl</uri></mesh>
+          <mesh><uri>/home/sam/robotics_group_v/locosim/models/X1-Y3-Z2-FILLET/X1-Y3-Z2-FILLET.stl</uri></mesh>
         </geometry>
+        <!-- <material> 
+          <ambient>1.0 1.0 0.1 1</ambient>
+          <diffuse>1.0 1.0 0.1 1</diffuse>
+          <specular>0 1 0 0</specular>
+          <emissive>0 0 0 1</emissive>
+        </material> -->
       </visual>
     </link>
   </model>

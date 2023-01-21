@@ -58,7 +58,7 @@ typedef std::map<int, state_function> StateMachine_t;
  */
 
 /**
- * @brief State functions for asssignment 1
+ * @brief State functions for assignment 1
  */
 namespace ass_1
 {
@@ -70,7 +70,7 @@ namespace ass_1
 }
 
 /**
- * @brief State functions for asssignment 2
+ * @brief State functions for assignment 2
  */
 namespace ass_2 
 {
@@ -84,7 +84,7 @@ namespace ass_2
 }
 
 /**
- * @brief State functions for asssignment 3
+ * @brief State functions for assignment 3
  */
 namespace ass_3
 {

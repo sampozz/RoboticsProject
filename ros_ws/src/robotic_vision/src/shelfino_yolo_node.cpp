@@ -16,7 +16,7 @@ void yolo_callback(const robotic_vision::BoundingBoxes::ConstPtr &msg)
         robotic_vision::BoundingBox b = msg->bounding_boxes[i];
         if (b.is_blacklisted || b.distance > 2.5)
         {
-            ROS_DEBUG("Detected block is blacklisted or too far");
+            ROS_DEBUG("Detected block is blacklisted or too far, %.2f", b.distance);
             continue;
         }
 

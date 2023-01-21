@@ -3,7 +3,7 @@
     <arg name="shelfino_weights"      default="$(find robotic_vision)/scripts/yolov5/best3.pt"/>
     <arg name="ur5_weights"           default="$(find robotic_vision)/scripts/yolov5/best3.pt"/>
     <arg name="data"                  default="$(find robotic_vision)/scripts/yolov5/data/megablocks.yaml"/>
-    <arg name="confidence_threshold"  default="0.50"/>
+    <arg name="confidence_threshold"  default="0.60"/>
     <arg name="iou_threshold"         default="0.45"/>
     <arg name="maximum_detections"    default="1000"/>
     <arg name="device"                default="0"/>
